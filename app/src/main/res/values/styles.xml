@@ -8,4 +8,51 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppThemeOther" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryB</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkB</item>
+        <item name="colorAccent">@color/colorAccentB</item>
+    </style>
+
+    <style name="AppThemeBancomer" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryC</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkC</item>
+        <item name="colorAccent">@color/colorAccentC</item>
+    </style>
+
+    <style name="AppThemeSantander" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryD</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkD</item>
+        <item name="colorAccent">@color/colorAccentD</item>
+    </style>
+
+
+    <style name="AppThemeBanamex" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryD</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkD</item>
+        <item name="colorAccent">@color/colorAccentD</item>
+    </style>
+
+
+    <style name="EditTextGnr">
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:backgroundTint">@color/white</item>
+
+    </style>
+
+
 </resources>
