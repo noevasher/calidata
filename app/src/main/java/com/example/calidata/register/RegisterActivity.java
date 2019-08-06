@@ -84,16 +84,16 @@ public class RegisterActivity extends ParentActivity{
         });
 
         if(toolbar != null){
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-            toolbar.setTitle("Registrar");
+            toolbar.setTitle(getResources().getString(R.string.register_title));
+            toolbar.setSubtitle("...");
             final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_24px);
             upArrow.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
 
             toolbar.setNavigationIcon(upArrow);
             toolbar.setNavigationOnClickListener(view -> finish());
-            //getSupportActionBar().setHomeAsUpIndicator(upArrow);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

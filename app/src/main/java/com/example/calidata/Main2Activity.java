@@ -5,30 +5,27 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import com.example.calidata.check.CheckActivity;
-import com.example.calidata.main.ParentActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends ParentActivity {
-
+public class Main2Activity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
     private int primaryColor;
-    //String[] bank = { "Banamex", "Santander", "Bancomer", "Otro"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //sessionManager.checkLogin();
+        setTheme(R.style.AppThemeSantander);
         Intent intent = getIntent();
-        String message = intent.getStringExtra("tema");
         int positionBank = intent.getIntExtra("bank", 4);
 
         switch (positionBank){
@@ -41,8 +38,8 @@ public class MainActivity extends ParentActivity {
                 setTheme(R.style.AppThemeSantander);
                 break;
             case 3:
-                setTheme(R.style.Theme_AppCompat_Light_NoActionBar);
-                //setTheme(R.style.AppThemeBancomer);
+                //setTheme(R.style.Theme_AppCompat_Light_NoActionBar);
+                setTheme(R.style.AppThemeBancomer);
                 break;
             case 4:
                 setTheme(R.style.AppThemeOther);
@@ -50,8 +47,9 @@ public class MainActivity extends ParentActivity {
 
         }
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
         ButterKnife.bind(this);
+
         ImageView image1 = findViewById(R.id.imageView);
         ImageView image2 = findViewById(R.id.imageView2);
         ImageView image3 = findViewById(R.id.imageView3);
@@ -67,29 +65,35 @@ public class MainActivity extends ParentActivity {
         image3.setColorFilter(primaryColor, PorterDuff.Mode.SRC_IN);
         image4.setColorFilter(primaryColor, PorterDuff.Mode.SRC_IN);
 
-        image1.setOnClickListener(v->{
-            Intent intentCheck = new Intent(MainActivity.this, CheckActivity.class);
-            startActivity(intentCheck);
-        });
-        initToolbar();
-    }
 
-
-    private void initToolbar(){
         if(toolbar != null){
-            setSupportActionBar(toolbar);
-            //getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-            toolbar.setTitle("Actividad");
+            final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_24px);
+            upArrow.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+
+            toolbar.setNavigationIcon(upArrow);
+            toolbar.setNavigationOnClickListener(view -> finish());
+            toolbar.setTitle(getResources().getString(R.string.main_title));
             toolbar.setBackgroundColor(primaryColor);
-            //final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_24px);
-            //upArrow.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+            toolbar.setSubtitle("....");
 
-            //toolbar.setNavigationIcon(upArrow);
-            //toolbar.setNavigationOnClickListener(view -> finish());
-            //getSupportActionBar().setHomeAsUpIndicator(upArrow);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         }
+
+
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

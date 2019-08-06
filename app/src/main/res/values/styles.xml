@@ -17,21 +17,21 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="AppThemeOther" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppThemeOther" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryB</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkB</item>
         <item name="colorAccent">@color/colorAccentB</item>
     </style>
 
-    <style name="AppThemeBancomer" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppThemeBancomer" parent="AppTheme.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryC</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkC</item>
         <item name="colorAccent">@color/colorAccentC</item>
     </style>
 
-    <style name="AppThemeSantander" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppThemeSantander" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryD</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkD</item>
@@ -39,7 +39,7 @@
     </style>
 
 
-    <style name="AppThemeBanamex" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppThemeBanamex" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryD</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkD</item>
