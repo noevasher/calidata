@@ -2,15 +2,12 @@ package com.example.calidata.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 
-import com.example.calidata.Main2Activity;
 import com.example.calidata.MainActivity;
 import com.example.calidata.R;
 import com.example.calidata.main.ParentActivity;
@@ -92,7 +89,7 @@ public class LoginActivity extends ParentActivity {
             String user = usernameEditText.getText().toString();
             String password = passwordEditText.getText().toString();
             //"Banamex", "Santander", "Bancomer", "Otro"
-            Intent intent = new Intent(LoginActivity.this, Main2Activity.class);
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             String word = usernameEditText.getText().toString();
             switch (user){
