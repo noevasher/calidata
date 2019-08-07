@@ -1,0 +1,80 @@
+package com.example.calidata.activities.CheckQuery;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Bundle;
+import android.widget.ImageView;
+
+import com.example.calidata.R;
+import com.example.calidata.main.ParentActivity;
+import com.example.calidata.management.ManagerTheme;
+
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class CheckQueryActivity extends ParentActivity {
+
+    @BindView(R.id.imageView_back)
+    public ImageView backImg;
+
+    @BindView(R.id.constraint_search)
+    public ConstraintLayout constraintSearch;
+
+    RecyclerViewAdapterCheck adapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_check_query);
+        ButterKnife.bind(this);
+        // data to populate the RecyclerView with
+        ArrayList<String> animalNames = new ArrayList<>();
+        animalNames.add("Horse");
+        animalNames.add("Cow");
+        animalNames.add("Camel");
+        animalNames.add("Sheep");
+        animalNames.add("Goat");
+
+        // set up the RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        adapter = new RecyclerViewAdapterCheck(this, animalNames);
+        //adapter.setClickListener(this);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                linearLayoutManager.getOrientation());
+        //recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), R.drawable.divider));
+
+        DividerItemDecoration itemDecorator = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        itemDecorator.setDrawable(ContextCompat.getDrawable(this, R.drawable.divider));
+
+        recyclerView.addItemDecoration(itemDecorator);
+
+        recyclerView.setAdapter(adapter);
+
+
+        //String themeName = getThemeName();
+        printConstraintSearch();
+        setImageListener();
+    }
+
+    private void setImageListener(){
+        backImg.setOnClickListener(v->{
+            finish();
+        });
+    }
+
+    private void printConstraintSearch(){
+        ManagerTheme managerTheme = ManagerTheme.getInstance();
+        int themeId = managerTheme.getThemeId();
+        setTheme(themeId);
+        constraintSearch.setBackgroundColor(getPrimaryColorInTheme());
+    }
+}

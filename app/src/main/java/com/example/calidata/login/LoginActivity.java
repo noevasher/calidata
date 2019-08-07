@@ -94,16 +94,16 @@ public class LoginActivity extends ParentActivity {
             String word = usernameEditText.getText().toString();
             switch (user){
                 case "banamex":
-                    intent.putExtra("bank", 0);
-                    break;
-                case "santander":
                     intent.putExtra("bank", 1);
                     break;
-                case "bancomer":
+                case "santander":
                     intent.putExtra("bank", 2);
                     break;
-                default:
+                case "bancomer":
                     intent.putExtra("bank", 3);
+                    break;
+                default:
+                    intent.putExtra("bank", 2);
                     break;
             }
             startActivity(intent);

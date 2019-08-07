@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/activities" android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_active"
+            android:icon="@drawable/ic_round_spellcheck_24px"
+            android:title="Activar Chequera" />
+        <item
+            android:id="@+id/nav_send"
+            android:icon="@drawable/ic_send_check"
+            android:title="Emitir cheque" />
+        <item
+            android:id="@+id/nav_status"
+            android:icon="@drawable/ic_status_check"
+            android:title="Estado de Cheques" />
+    </group>
+
+
+    <group android:id="@+id/userItems" android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_20px"
+            android:title="Opciones" />
+        <item
+            android:id="@+id/nav_close"
+            android:icon="@drawable/ic_close_app_24px"
+            android:title="Salir" />
+    </group>
+
+</menu>

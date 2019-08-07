@@ -29,6 +29,7 @@
         <item name="colorPrimary">@color/colorPrimaryC</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkC</item>
         <item name="colorAccent">@color/colorAccentC</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="AppThemeSantander" parent="Theme.AppCompat.Light.NoActionBar">
