@@ -31,6 +31,7 @@ public class RegisterActivity extends ParentActivity{
 
     String[] bank = { "Selecciona Entidad", "Banamex", "Santander", "Bancomer", "Otro"};
     private boolean spinActive = false;
+
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 

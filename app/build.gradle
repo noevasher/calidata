@@ -36,11 +36,12 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-    //implementation 'com.android.support:appcompat-v7:29.0.0'
-    //implementation 'com.android.support.design:27+'
-
     implementation "android.arch.navigation:navigation-fragment:1.0.0"
     // For Kotlin use navigation-fragment-ktx
     implementation "android.arch.navigation:navigation-ui:1.0.0" // For Kotlin use navigation-ui-ktx
+    //implementation 'com.github.Mohammed-Alaa:RangeSeekBar:1.0.3'
+    implementation 'com.edmodo:rangebar:1.0.0'
+    implementation 'com.appyvet:materialrangebar:1.4.6'
+
 
 }

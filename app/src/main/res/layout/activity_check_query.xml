@@ -45,12 +45,12 @@
                 android:ems="10"
                 android:hint="@string/search"
                 android:inputType="textPersonName"
-                app:layout_constraintEnd_toStartOf="@+id/search"
+                app:layout_constraintEnd_toStartOf="@+id/search_icon"
                 app:layout_constraintStart_toEndOf="@+id/imageView_back"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/search"
+                android:id="@+id/search_icon"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="16dp"
@@ -59,21 +59,21 @@
                 android:text="@string/search"
                 android:tint="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/editText_search"
-                app:layout_constraintEnd_toStartOf="@+id/filter"
+                app:layout_constraintEnd_toStartOf="@+id/filter_icon"
                 app:layout_constraintTop_toTopOf="@+id/editText_search"
                 app:srcCompat="@drawable/ic_search" />
 
             <ImageView
-                android:id="@+id/filter"
+                android:id="@+id/filter_icon"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="16dp"
                 android:background="@android:color/transparent"
                 android:text="@string/search"
                 android:tint="@color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/search"
+                app:layout_constraintBottom_toBottomOf="@+id/search_icon"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/search"
+                app:layout_constraintTop_toTopOf="@+id/search_icon"
                 app:srcCompat="@drawable/ic_filter_list" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

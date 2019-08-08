@@ -1,16 +1,17 @@
 package com.example.calidata.activities.CheckQuery;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.ImageView;
+
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
-import android.widget.ImageView;
-
 import com.example.calidata.R;
+import com.example.calidata.activities.CheckQuery.filter.FilterActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
 
@@ -26,6 +27,12 @@ public class CheckQueryActivity extends ParentActivity {
 
     @BindView(R.id.constraint_search)
     public ConstraintLayout constraintSearch;
+
+    @BindView(R.id.filter_icon)
+    public ImageView filterIcon;
+
+    @BindView(R.id.search_icon)
+    public ImageView searchIcon;
 
     RecyclerViewAdapterCheck adapter;
 
@@ -68,6 +75,11 @@ public class CheckQueryActivity extends ParentActivity {
     private void setImageListener(){
         backImg.setOnClickListener(v->{
             finish();
+        });
+
+        filterIcon.setOnClickListener(v->{
+            Intent intent = new Intent(this, FilterActivity.class);
+            startActivity(intent);
         });
     }
 
