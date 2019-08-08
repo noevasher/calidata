@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.calidata.activities.CheckQuery.CheckQueryActivity;
+import com.example.calidata.login.managmentLogin.AESCrypt;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
 import com.google.android.material.navigation.NavigationView;
@@ -143,6 +145,14 @@ public class MainActivity extends ParentActivity {
             Intent intentQ = new Intent(this, CheckQueryActivity.class);
             startActivity(intentQ);
         });
+
+        try {
+            String desEncrypt = AESCrypt.decrypt("K/WvQWibfA0CKa8pvdJjSw==");
+
+            Log.i("TAG-Desencrypt", desEncrypt);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

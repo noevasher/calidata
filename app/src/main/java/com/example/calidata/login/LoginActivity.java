@@ -2,6 +2,7 @@ package com.example.calidata.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -10,9 +11,12 @@ import androidx.annotation.StringRes;
 
 import com.example.calidata.MainActivity;
 import com.example.calidata.R;
+import com.example.calidata.login.managmentLogin.AESCrypt;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.register.RegisterActivity;
 import com.example.calidata.session.SessionManager;
+
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -88,6 +92,15 @@ public class LoginActivity extends ParentActivity {
         loginButton.setOnClickListener(v -> {
             String user = usernameEditText.getText().toString();
             String password = passwordEditText.getText().toString();
+            try {
+                String encrypt = AESCrypt.encrypt(password);
+                Log.i("TAG- encrypt", encrypt);
+                String random = UUID.randomUUID().toString();
+                Log.i("TAG- random", random);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             //"Banamex", "Santander", "Bancomer", "Otro"
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             //Intent intent = new Intent(LoginActivity.this, MainActivity.class);

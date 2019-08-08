@@ -37,8 +37,9 @@
         <item name="colorPrimary">@color/colorPrimaryD</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkD</item>
         <item name="colorAccent">@color/colorAccentD</item>
-    </style>
+        <item name="android:itemBackground">@color/colorBackgroundMenuD</item>
 
+    </style>
 
     <style name="AppThemeBanamex" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->

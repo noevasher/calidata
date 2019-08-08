@@ -19,6 +19,10 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.calidata.MainActivity;
 import com.example.calidata.R;
 import com.example.calidata.main.ParentActivity;
+import com.example.calidata.models.UserModel;
+import com.google.gson.Gson;
+
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,33 +58,34 @@ public class RegisterActivity extends ParentActivity{
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
 
-        //Creating the ArrayAdapter instance having the country list
         ArrayAdapter adapter = new ArrayAdapter(this,R.layout.labels_bank,bank);
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //Setting the ArrayAdapter data on the Spinner
-        //adapter.setDropDownViewResource(R.layout.spinner_text_color);
-
         adapter.setDropDownViewResource(R.layout.labels_bank);
 
         spin.setAdapter(adapter);
 
         registerBtn.setOnClickListener(v->{
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            if(spin.getSelectedItemPosition() == 0){
-                //Toast.makeText(getApplicationContext(), "Selecciona una entidad", Toast.LENGTH_LONG).show();
-                //if(spinActive){
-                    TextView errorText = (TextView)spin.getSelectedView();
-                    errorText.setError("anything here, just to add the icon");
-                    errorText.setTextColor(Color.RED);//just to highlight that this is an error
-                    errorText.setText("Selecciona una entidad");//changes the selected item text to this
-                    //spinActive = true;
-                //}
-            }
+
             if(ifValidForm()) {
                 intent.putExtra("bank", spin.getSelectedItemPosition());
                 startActivity(intent);
                 finish();
             }
+            String name  = nameText.getText().toString();
+            String email  = emailText.getText().toString();
+            String password = passText.getText().toString();
+
+            UserModel userModel = new UserModel();
+            userModel.setName(name);
+            userModel.setEmail(email);
+            userModel.setPassword(password);
+            userModel.setToken(UUID.randomUUID().toString());
+            Gson gson = new Gson();
+            //gson = new GsonBuilder().setPrettyPrinting().create();
+            String json = gson.toJson(userModel);
+
+            System.out.println(json);
+
         });
 
         if(toolbar != null){
@@ -116,10 +121,16 @@ public class RegisterActivity extends ParentActivity{
         displayEmptyField(emailText);
         displayEmptyField(passText);
         displayEmptyField(confirmPassText);
+        displayEmptyField(spin);
 
-        return !isEmptyField(nameText) || !isEmptyField(emailText) || !isEmptyField(passText) || !isEmptyField(confirmPassText);
+        return !isEmptyField(nameText) && !isEmptyField(emailText) && !isEmptyField(passText)
+                && !isEmptyField(confirmPassText) && !isValidSpinner(spin)
+                && comparePassword(passText, confirmPassText);
     }
 
+    private boolean isValidSpinner(Spinner spinner){
+        return spinner.getSelectedItemPosition() == 0;
+    }
 
     private void validEmptyFields(){
         nameText.setOnFocusChangeListener((view, focus) -> {
@@ -132,6 +143,7 @@ public class RegisterActivity extends ParentActivity{
                 displayEmptyField(emailText);
             }
         });
+
         passText.setOnFocusChangeListener((view, focus) -> {
             if(!focus){
                 displayEmptyField(passText);

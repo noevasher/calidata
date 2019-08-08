@@ -3,11 +3,14 @@ package com.example.calidata.main;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.util.TypedValue;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,6 +28,15 @@ public class ParentActivity extends AppCompatActivity {
         return target.length() >= WORD_LENGTH;
     }
 
+    public static void displayEmptyField(Spinner spinner){
+        if(spinner.getSelectedItemPosition() == 0){
+            TextView errorText = (TextView)spinner.getSelectedView();
+            errorText.setError("anything here, just to add the icon");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Selecciona una entidad");//changes the selected item text to this
+        }
+    }
+
     public static void displayEmptyField(EditText editText){
         if(editText.getText().toString().isEmpty())
             editText.setError("Campo Obligatorio");
@@ -35,9 +47,12 @@ public class ParentActivity extends AppCompatActivity {
         //return editText.getText().toString().isEmpty();
     }
 
-    public static void comparePassword(EditText password, EditText passwordConfirm){
-        if(password.getText().toString().equals(passwordConfirm.getText().toString())){
+    public static boolean comparePassword(EditText password, EditText passwordConfirm){
+        if(!password.getText().toString().equals(passwordConfirm.getText().toString())){
             passwordConfirm.setError("La contraseña debe de coincidir");
+            return false;
+        }else {
+            return true;
         }
     }
 
