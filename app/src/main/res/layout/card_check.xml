@@ -20,18 +20,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Fecha:"
-            app:layout_constraintStart_toStartOf="@+id/imageView5"
+            app:layout_constraintStart_toStartOf="@+id/logo"
             app:layout_constraintTop_toBottomOf="@+id/separator1" />
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/logo"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/santander_logo" />
+            app:srcCompat="@drawable/ic_santander_logo" />
 
         <TextView
             android:id="@+id/textView7"
@@ -50,7 +50,7 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="@+id/textView9"
             app:layout_constraintStart_toStartOf="@+id/textView9"
-            app:layout_constraintTop_toTopOf="@+id/imageView5" />
+            app:layout_constraintTop_toTopOf="@+id/logo" />
 
         <TextView
             android:id="@+id/textView9"
@@ -59,7 +59,7 @@
             android:layout_marginEnd="16dp"
             android:text="152639808"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView5"
+            app:layout_constraintBottom_toBottomOf="@+id/logo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
@@ -162,19 +162,19 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="Banco"
-            app:layout_constraintStart_toEndOf="@+id/imageView5"
-            app:layout_constraintTop_toTopOf="@+id/imageView5" />
+            app:layout_constraintStart_toEndOf="@+id/logo"
+            app:layout_constraintTop_toTopOf="@+id/logo" />
 
         <TextView
-            android:id="@+id/textView22"
+            android:id="@+id/textView_bank"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="Santander"
             android:textSize="28sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView5"
-            app:layout_constraintStart_toEndOf="@+id/imageView5"
+            app:layout_constraintBottom_toBottomOf="@+id/logo"
+            app:layout_constraintStart_toEndOf="@+id/logo"
             app:layout_constraintTop_toBottomOf="@+id/textView21" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -185,7 +185,7 @@
             android:background="@color/colorBackgroundSantander"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView5">
+            app:layout_constraintTop_toBottomOf="@+id/logo">
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

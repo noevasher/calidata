@@ -62,7 +62,7 @@ public class CheckQueryActivity extends ParentActivity {
         DividerItemDecoration itemDecorator = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         itemDecorator.setDrawable(ContextCompat.getDrawable(this, R.drawable.divider));
 
-        recyclerView.addItemDecoration(itemDecorator);
+        //recyclerView.addItemDecoration(itemDecorator);
 
         recyclerView.setAdapter(adapter);
 
@@ -88,5 +88,6 @@ public class CheckQueryActivity extends ParentActivity {
         int themeId = managerTheme.getThemeId();
         setTheme(themeId);
         constraintSearch.setBackgroundColor(getPrimaryColorInTheme());
+
     }
 }
