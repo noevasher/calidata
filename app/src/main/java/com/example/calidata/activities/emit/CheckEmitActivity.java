@@ -1,26 +1,23 @@
 package com.example.calidata.activities.emit;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.viewpager.widget.ViewPager;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.calidata.R;
 import com.example.calidata.activities.emit.adapters.PagerAdapter;
-import com.example.calidata.activities.emit.fragments.FragmentSearch;
 import com.example.calidata.activities.emit.fragments.FragmentQR;
+import com.example.calidata.activities.emit.fragments.FragmentSearch;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class CheckEmitActivity extends AppCompatActivity  {
+public class CheckEmitActivity extends AppCompatActivity {
     private ZXingScannerView mScannerView;
 
     //@BindView(R.id.button_scann)
@@ -44,10 +41,10 @@ public class CheckEmitActivity extends AppCompatActivity  {
 
         Intent intent = getIntent();
         boolean isQR = intent.getBooleanExtra("QR", false);
-        if(isQR){
+        if (isQR) {
             //readQR();
             viewPager.setCurrentItem(1);
-        }else{
+        } else {
             viewPager.setCurrentItem(0);
 
         }
@@ -70,7 +67,7 @@ public class CheckEmitActivity extends AppCompatActivity  {
         viewPager.setAdapter(pagerAdapter);
     }
 
-    private void readQR(){
+    private void readQR() {
         try {
 
             Intent intent = new Intent("com.google.zxing.client.android.SCAN");
@@ -82,7 +79,7 @@ public class CheckEmitActivity extends AppCompatActivity  {
         } catch (Exception e) {
 
             Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
-            Intent marketIntent = new Intent(Intent.ACTION_VIEW,marketUri);
+            Intent marketIntent = new Intent(Intent.ACTION_VIEW, marketUri);
             startActivity(marketIntent);
 
         }
@@ -97,7 +94,6 @@ public class CheckEmitActivity extends AppCompatActivity  {
                 String format = data.getStringExtra("SCAN_RESULT_FORMAT");
 
 
-
                 //TextView textView = fragmentQR.getView().findViewById(R.id.textView_content);
                 //textView.setText(contents + "\n" + format);
 
@@ -106,7 +102,7 @@ public class CheckEmitActivity extends AppCompatActivity  {
                 //Log.i("TAG-QR data sqcheme", data.getData().getScheme());
 
             }
-            if(resultCode == RESULT_CANCELED){
+            if (resultCode == RESULT_CANCELED) {
                 //handle cancel
                 Log.i("TAG-QR", "CANCELADO");
             }

@@ -20,6 +20,6 @@
     <string name="search">Buscar</string>
     <string name="filter_title">Filtros</string>
     <string name="cancel">Cancelar</string>
-    <string name="option_title">Selecciona una opción</string>
+    <string name="option_title">Selecciona una opción para emitir cheque</string>
 
 </resources>

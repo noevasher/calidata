@@ -59,8 +59,8 @@ public class CheckQueryActivity extends ParentActivity {
                 linearLayoutManager.getOrientation());
         //recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), R.drawable.divider));
 
-        DividerItemDecoration itemDecorator = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        itemDecorator.setDrawable(ContextCompat.getDrawable(this, R.drawable.divider));
+        //DividerItemDecoration itemDecorator = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        //itemDecorator.setDrawable(ContextCompat.getDrawable(this, R.drawable.divider));
 
         //recyclerView.addItemDecoration(itemDecorator);
 

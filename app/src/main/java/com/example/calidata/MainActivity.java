@@ -204,6 +204,7 @@ public class MainActivity extends ParentActivity {
 
 
         Button scanBtn = view.findViewById(R.id.button_scan);
+        scanBtn.setBackgroundColor(getPrimaryColorInTheme());
         scanBtn.setOnClickListener(v->{
             Intent intent = new Intent(v.getContext(), CheckEmitActivity.class);
             intent.putExtra("QR", true);
@@ -211,6 +212,7 @@ public class MainActivity extends ParentActivity {
         });
 
         Button searchBtn = view.findViewById(R.id.button_search);
+        searchBtn.setBackgroundColor(getPrimaryColorInTheme());
         searchBtn.setOnClickListener(v->{
             Intent intent = new Intent(v.getContext(), CheckEmitActivity.class);
             intent.putExtra("QR", false);

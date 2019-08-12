@@ -95,7 +95,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:ems="10"
             android:hint="Nombre"
             android:inputType="textPersonName"
             app:layout_constraintBottom_toBottomOf="@+id/imageView8"
@@ -154,29 +153,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView18">
 
-<!--
-        <com.edmodo.rangebar.RangeBar xmlns:custom="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/rangebar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            custom:barColor="@color/primaryPurple"
-            custom:layout_constraintEnd_toEndOf="parent"
-            custom:layout_constraintStart_toStartOf="parent"
-            custom:layout_constraintTop_toTopOf="parent"
-            custom:tickCount="20" />
-            -->
-        <!--
-        <androidx.appcompat.widget.AppCompatSeekBar
-            android:id="@+id/simpleSeekBar"
-            android:layout_width="0dp"
+        <com.github.guilhe.views.SeekBarRangedView
+            android:id="@+id/rangebar1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:max="150"
+            android:layout_marginBottom="8dp"
+            app:progressColor="@color/primaryPurple"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
--->
 
+        <TextView
+            android:id="@+id/textView_min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/rangebar1"
+            app:layout_constraintTop_toBottomOf="@+id/rangebar1" />
+
+        <TextView
+            android:id="@+id/textView_max"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:text="Max"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/rangebar1"
+            app:layout_constraintTop_toBottomOf="@+id/rangebar1" />
+        <!--
         <com.appyvet.materialrangebar.RangeBar xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/rangebar1"
             android:layout_width="match_parent"
@@ -205,10 +216,11 @@
             app:mrb_tickInterval="1"
             app:mrb_tickLabelSize="4sp"
             app:mrb_tickStart="1" />
+            -->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button_apply"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

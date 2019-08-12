@@ -92,14 +92,13 @@ public class RegisterActivity extends ParentActivity{
         if(toolbar != null){
 
             toolbar.setTitle(getResources().getString(R.string.register_title));
-            toolbar.setSubtitle("...");
             final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_24px);
             upArrow.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+            setSupportActionBar(toolbar);
 
             toolbar.setNavigationIcon(upArrow);
             toolbar.setNavigationOnClickListener(view -> finish());
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            //getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
