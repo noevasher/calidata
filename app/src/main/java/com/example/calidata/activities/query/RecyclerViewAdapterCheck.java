@@ -1,4 +1,4 @@
-package com.example.calidata.activities.CheckQuery;
+package com.example.calidata.activities.query;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -27,7 +27,8 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
     // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.check_card, parent, false);
+        //View view = mInflater.inflate(R.layout.check_card, parent, false);
+        View view = mInflater.inflate(R.layout.card_theme, parent, false);
         return new ViewHolder(view);
     }
 

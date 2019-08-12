@@ -9,8 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".activities.CheckQuery.filter.FilterActivity"></activity>
-        <activity android:name=".activities.CheckQuery.CheckQueryActivity" />
+        <activity android:name=".activities.active.CheckActiveActivity"></activity>
+        <activity android:name=".activities.emit.CheckEmitActivity" />
+        <activity android:name=".activities.query.filter.FilterActivity" />
+        <activity android:name=".activities.query.CheckQueryActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".check.CheckActivity" />
         <activity android:name=".register.RegisterActivity" />

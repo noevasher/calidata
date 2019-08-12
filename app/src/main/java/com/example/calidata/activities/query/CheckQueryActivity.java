@@ -1,4 +1,4 @@
-package com.example.calidata.activities.CheckQuery;
+package com.example.calidata.activities.query;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calidata.R;
-import com.example.calidata.activities.CheckQuery.filter.FilterActivity;
+import com.example.calidata.activities.query.filter.FilterActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
 

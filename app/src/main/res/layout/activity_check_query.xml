@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.CheckQuery.CheckQueryActivity">
+    tools:context=".activities.query.CheckQueryActivity"
+    android:windowSoftInputMode="stateHidden"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
@@ -28,10 +31,12 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:tint="@color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/editText_search"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/editText_search"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_arrow_back_24px" />
 
             <EditText
@@ -39,29 +44,28 @@
                 style="@style/EditTextGnr"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginEnd="8dp"
                 android:ems="10"
                 android:hint="@string/search"
                 android:inputType="textPersonName"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView_back"
                 app:layout_constraintEnd_toStartOf="@+id/search_icon"
                 app:layout_constraintStart_toEndOf="@+id/imageView_back"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@+id/imageView_back" />
 
             <ImageView
                 android:id="@+id/search_icon"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
                 android:background="@android:color/transparent"
                 android:text="@string/search"
                 android:tint="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/editText_search"
                 app:layout_constraintEnd_toStartOf="@+id/filter_icon"
                 app:layout_constraintTop_toTopOf="@+id/editText_search"
-                app:srcCompat="@drawable/ic_search" />
+                app:srcCompat="@drawable/ic_search_24px" />
 
             <ImageView
                 android:id="@+id/filter_icon"

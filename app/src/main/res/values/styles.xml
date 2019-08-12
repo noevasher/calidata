@@ -37,7 +37,10 @@
         <item name="colorPrimary">@color/colorPrimaryD</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkD</item>
         <item name="colorAccent">@color/colorAccentD</item>
+        <!--
         <item name="android:itemBackground">@color/colorBackgroundMenuD</item>
+        -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
 
     </style>
 
@@ -46,6 +49,8 @@
         <item name="colorPrimary">@color/colorPrimaryD</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkD</item>
         <item name="colorAccent">@color/colorAccentD</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
     </style>
 
 

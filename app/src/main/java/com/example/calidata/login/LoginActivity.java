@@ -65,28 +65,7 @@ public class LoginActivity extends ParentActivity {
                 }
             }
         });
-/*
-        TextWatcher afterTextChangedListener = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // ignore
-            }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ignore
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-
-            }
-        };
-        //*/
-        //usernameEditText.addTextChangedListener(afterTextChangedListener);
-        //passwordEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.setOnEditorActionListener((v, actionId, event) -> false);
 
         loginButton.setOnClickListener(v -> {

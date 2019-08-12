@@ -19,5 +19,7 @@
     <string name="openDrwawer">open</string>
     <string name="search">Buscar</string>
     <string name="filter_title">Filtros</string>
+    <string name="cancel">Cancelar</string>
+    <string name="option_title">Selecciona una opción</string>
 
 </resources>

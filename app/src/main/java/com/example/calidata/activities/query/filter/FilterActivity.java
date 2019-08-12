@@ -1,4 +1,4 @@
-package com.example.calidata.activities.CheckQuery.filter;
+package com.example.calidata.activities.query.filter;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
