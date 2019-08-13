@@ -27,6 +27,9 @@ public class FragmentQR extends Fragment {
     private Context mContext;
     protected FragmentActivity mActivity;
 
+    public FragmentQR (){
+
+    }
     public FragmentQR (Context context){
         this.mContext = context;
     }

@@ -45,13 +45,16 @@ public class MainActivity extends ParentActivity {
     public NavigationView navigationView;
 
     @BindView(R.id.imageView_query)
-    ImageView imageViewQuery;
+    public ImageView imageViewQuery;
 
     @BindView(R.id.imageView_active)
-    ImageView imageViewActive;
+    public ImageView imageViewActive;
 
     @BindView(R.id.imageView_emit)
-    ImageView imageViewEmit;
+    public ImageView imageViewEmit;
+
+    @BindView(R.id.imageView_cancel)
+    public ImageView imageViewCancel;
 
     private int primaryColor;
 
@@ -175,7 +178,7 @@ public class MainActivity extends ParentActivity {
         imageViewQuery.setColorFilter(primaryColor, PorterDuff.Mode.SRC_IN);
         imageViewEmit.setColorFilter(primaryColor, PorterDuff.Mode.SRC_IN);
         imageViewActive.setColorFilter(primaryColor, PorterDuff.Mode.SRC_IN);
-
+        imageViewCancel.setColorFilter(primaryColor, PorterDuff.Mode.SRC_IN);
         imageViewQuery.setOnClickListener(v -> {
             Intent intent = new Intent(this, CheckQueryActivity.class);
             startActivity(intent);
@@ -202,6 +205,7 @@ public class MainActivity extends ParentActivity {
         ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.emit_dialog, null);
         builder.setView(view);
 
+        AlertDialog alertDialog = builder.create();
 
         Button scanBtn = view.findViewById(R.id.button_scan);
         scanBtn.setBackgroundColor(getPrimaryColorInTheme());
@@ -209,6 +213,7 @@ public class MainActivity extends ParentActivity {
             Intent intent = new Intent(v.getContext(), CheckEmitActivity.class);
             intent.putExtra("QR", true);
             startActivity(intent);
+            alertDialog.dismiss();
         });
 
         Button searchBtn = view.findViewById(R.id.button_search);
@@ -217,10 +222,10 @@ public class MainActivity extends ParentActivity {
             Intent intent = new Intent(v.getContext(), CheckEmitActivity.class);
             intent.putExtra("QR", false);
             startActivity(intent);
+            alertDialog.dismiss();
 
         });
         //*/
-        AlertDialog alertDialog = builder.create();
 
         alertDialog.show();
 

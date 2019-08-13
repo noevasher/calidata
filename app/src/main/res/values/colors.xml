@@ -27,6 +27,8 @@
 
     <color name="colorPrimaryGray">#DDDDDD</color>
     <color name="colorGray">#BABABA</color>
+    <color name="colorGrayHigh">#9E9E9E</color>
+    <color name="colorGrayLow">#EEEEEE</color>
 
 
 </resources>

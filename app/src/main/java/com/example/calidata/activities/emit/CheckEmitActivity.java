@@ -1,23 +1,29 @@
 package com.example.calidata.activities.emit;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.calidata.R;
 import com.example.calidata.activities.emit.adapters.PagerAdapter;
 import com.example.calidata.activities.emit.fragments.FragmentQR;
 import com.example.calidata.activities.emit.fragments.FragmentSearch;
+import com.example.calidata.main.ParentActivity;
+import com.example.calidata.management.ManagerTheme;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class CheckEmitActivity extends AppCompatActivity {
+public class CheckEmitActivity extends ParentActivity {
     private ZXingScannerView mScannerView;
 
     //@BindView(R.id.button_scann)
@@ -31,16 +37,21 @@ public class CheckEmitActivity extends AppCompatActivity {
     private FragmentSearch fragmentSearch;
     private FragmentQR fragmentQR;
 
+    @BindView(R.id.toolbar)
+    public Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.emit_activity);
         ButterKnife.bind(this);
 
-        initPaging();
 
         Intent intent = getIntent();
         boolean isQR = intent.getBooleanExtra("QR", false);
+        initPaging(isQR);
+        initToolbar();
+        /*
         if (isQR) {
             //readQR();
             viewPager.setCurrentItem(1);
@@ -48,22 +59,21 @@ public class CheckEmitActivity extends AppCompatActivity {
             viewPager.setCurrentItem(0);
 
         }
+
         //*/
 
     }
 
-    private void initPaging() {
-
-        fragmentSearch = new FragmentSearch(this);
-        fragmentQR = new FragmentQR(this);
-
+    private void initPaging(boolean isQR) {
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
-        pagerAdapter.addFragment(fragmentSearch);
-        pagerAdapter.addFragment(fragmentQR);
+        if(isQR) {
+            fragmentQR = new FragmentQR(this);
+            pagerAdapter.addFragment(fragmentQR);
 
-        fragmentSearch = (FragmentSearch) pagerAdapter.getItem(0);
-        fragmentQR = (FragmentQR) pagerAdapter.getItem(1);
-
+        }else{
+            fragmentSearch = new FragmentSearch(this);
+            pagerAdapter.addFragment(fragmentSearch);
+        }
         viewPager.setAdapter(pagerAdapter);
     }
 
@@ -109,5 +119,28 @@ public class CheckEmitActivity extends AppCompatActivity {
         }
     }
 
+
+    private void initToolbar(){
+        if(toolbar != null){
+
+            ManagerTheme managerTheme = ManagerTheme.getInstance();
+            int themeId = managerTheme.getThemeId();
+            setTheme(themeId);
+
+            toolbar.setTitle(getResources().getString(R.string.emit_title));
+            toolbar.setBackgroundColor(getPrimaryColorInTheme());
+            final Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_24px);
+            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
+            setSupportActionBar(toolbar);
+
+            toolbar.setNavigationIcon(upArrow);
+            toolbar.setNavigationOnClickListener(view -> {
+                Log.i("TAG", "finish filter");
+                finish();
+            });
+
+        }
+
+    }
 
 }

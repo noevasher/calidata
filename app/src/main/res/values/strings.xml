@@ -21,5 +21,11 @@
     <string name="filter_title">Filtros</string>
     <string name="cancel">Cancelar</string>
     <string name="option_title">Selecciona una opción para emitir cheque</string>
+    <string name="emit_title">Emitir Cheque</string>
+    <string name="emit_label">Emitir</string>
+    <string name="quantity">Cantidad</string>
+    <string name="comment">Comentarios</string>
+    <string name="see_options_label">Ver Opciones</string>
+    <string name="hide_options_label">Ocultar Opciones</string>
 
 </resources>
