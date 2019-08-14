@@ -30,6 +30,10 @@
     <color name="colorGrayHigh">#9E9E9E</color>
     <color name="colorGrayLow">#EEEEEE</color>
 
+    <color name="colorCheckbookHigh">#00695C</color>
+    <color name="colorCheckbookMiddle">#26A69A</color>
+    <color name="colorCheckbookLow">#80CBC4</color>
+
 
 </resources>
 

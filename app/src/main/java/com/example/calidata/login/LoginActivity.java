@@ -9,9 +9,9 @@ import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 
-import com.example.calidata.MainActivity;
 import com.example.calidata.R;
 import com.example.calidata.login.managmentLogin.AESCrypt;
+import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.register.RegisterActivity;
 import com.example.calidata.session.SessionManager;
@@ -80,9 +80,8 @@ public class LoginActivity extends ParentActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            //"Banamex", "Santander", "Bancomer", "Otro"
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent intent = new Intent(LoginActivity.this, CheckbookActivity.class);
             String word = usernameEditText.getText().toString();
             switch (user){
                 case "banamex":

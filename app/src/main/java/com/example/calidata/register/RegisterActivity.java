@@ -1,7 +1,6 @@
 package com.example.calidata.register;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -11,12 +10,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.calidata.MainActivity;
+import com.example.calidata.main.MainActivity;
 import com.example.calidata.R;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.models.UserModel;

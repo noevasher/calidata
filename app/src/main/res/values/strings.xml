@@ -14,6 +14,7 @@
     <string name="prompt_password_confirm">Confirma Password</string>
     <string name="prompt_name">Nombre</string>
 
+    <string name="checkbook_title">Mis Chequeras</string>
     <string name="main_title">Acciones</string>
     <string name="register_title">Registro</string>
     <string name="openDrwawer">open</string>
@@ -27,5 +28,6 @@
     <string name="comment">Comentarios</string>
     <string name="see_options_label">Ver Opciones</string>
     <string name="hide_options_label">Ocultar Opciones</string>
+
 
 </resources>

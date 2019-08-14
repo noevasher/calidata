@@ -1,4 +1,4 @@
-package com.example.calidata;
+package com.example.calidata.main;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -23,6 +23,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.calidata.R;
 import com.example.calidata.activities.active.CheckActiveActivity;
 import com.example.calidata.activities.emit.CheckEmitActivity;
 import com.example.calidata.activities.query.CheckQueryActivity;
