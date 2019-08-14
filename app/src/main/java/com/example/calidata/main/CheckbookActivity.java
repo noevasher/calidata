@@ -1,22 +1,20 @@
 package com.example.calidata.main;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.calidata.R;
-import com.example.calidata.activities.query.RecyclerViewAdapterCheck;
+import com.example.calidata.main.adapters.ItemClickSupport;
 import com.example.calidata.main.adapters.RecyclerViewAdapterCheckbook;
 import com.example.calidata.management.ManagerTheme;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -56,30 +54,31 @@ public class CheckbookActivity extends ParentActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new RecyclerViewAdapterCheckbook(this, checkbooks);
-        //adapter.setClickListener(this);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                linearLayoutManager.getOrientation());
-        //recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), R.drawable.divider));
-
-        //DividerItemDecoration itemDecorator = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        //itemDecorator.setDrawable(ContextCompat.getDrawable(this, R.drawable.divider));
-
-        //recyclerView.addItemDecoration(itemDecorator);
 
         recyclerView.setAdapter(adapter);
-        addCheckbookBtn.setOnClickListener(v->{
+        addCheckbookBtn.setOnClickListener(v -> {
             Toast.makeText(this, "Add new checkbook", Toast.LENGTH_LONG).show();
+
         });
         addCheckbookBtn.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
 
         addCheckbookBtn.bringToFront();
+
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(
+                (recyclerView1, position, v) -> {
+                    Toast.makeText(CheckbookActivity.this, "position: " + adapter.getItem(position), Toast.LENGTH_LONG).show();
+                    Intent intent1 = new Intent(CheckbookActivity.this, MainActivity.class);
+                    startActivity(intent1);
+                }
+        );
+
     }
 
-    private void setTheame(Intent intent){
+    private void setTheame(Intent intent) {
         int positionBank = intent.getIntExtra("bank", 4);
         ManagerTheme managerTheme = ManagerTheme.getInstance();
 
-        switch (positionBank){
+        switch (positionBank) {
             case 0:
                 setTheme(R.style.AppTheme);
                 setThemeResId(R.style.AppTheme);
@@ -108,8 +107,8 @@ public class CheckbookActivity extends ParentActivity {
         }
     }
 
-    private void setToolbar(){
-        if(toolbar != null){
+    private void setToolbar() {
+        if (toolbar != null) {
             toolbar.setTitle(getResources().getString(R.string.checkbook_title));
             toolbar.setBackgroundColor(getPrimaryColorInTheme());
             setSupportActionBar(toolbar);

@@ -1,6 +1,7 @@
 package com.example.calidata.main.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calidata.R;
 import com.example.calidata.activities.query.CheckQueryActivity;
+import com.example.calidata.main.MainActivity;
 import com.example.calidata.management.ManagerTheme;
 
 import java.util.List;
@@ -23,7 +26,6 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
     private List<String> mData;
     private LayoutInflater mInflater;
-    private ItemClickListener mClickListener;
     private Context mContext;
     private ManagerTheme managerTheme;
     private int themeId;
@@ -43,7 +45,6 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //View view = mInflater.inflate(R.layout.check_card, parent, false);
         View view = mInflater.inflate(R.layout.card_checkbook, parent, false);
-
         return new ViewHolder(view);
     }
 
@@ -65,7 +66,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
 
     // stores and recycles views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder {
         ImageView logo;
         TextView textBank;
         TextView textViewCheckNumber;
@@ -75,28 +76,13 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
             logo = itemView.findViewById(R.id.logo);
             textBank = itemView.findViewById(R.id.textView_bank_name);
             textViewCheckNumber = itemView.findViewById(R.id.textView_check_number);
-            itemView.setOnClickListener(this);
-        }
 
-        @Override
-        public void onClick(View view) {
-            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
         }
     }
 
     // convenience method for getting data at click position
-    String getItem(int id) {
+    public String getItem(int id) {
         return mData.get(id);
-    }
-
-    // allows clicks events to be caught
-    void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
-    }
-
-    // parent activity will implement this method to respond to click events
-    public interface ItemClickListener {
-        void onItemClick(View view, int position);
     }
 
 
