@@ -1,4 +1,4 @@
-package com.example.calidata.activities.query;
+package com.example.calidata.activities.cancel.adapters;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -6,22 +6,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calidata.R;
-import com.example.calidata.main.ParentActivity;
+import com.example.calidata.activities.query.CheckQueryActivity;
 import com.example.calidata.management.ManagerTheme;
 
 import java.util.List;
 
-public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewAdapterCheck.ViewHolder> {
+public class RecyclerViewAdapterCancelCheck extends RecyclerView.Adapter<RecyclerViewAdapterCancelCheck.ViewHolder> {
 
     private List<String> mData;
     private LayoutInflater mInflater;
@@ -29,24 +27,22 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
     private Context mContext;
     private ManagerTheme managerTheme;
     private int themeId;
-    private int cardLayout;
 
     // data is passed into the constructor
-    public RecyclerViewAdapterCheck(Context context, List<String> data, int cardCancel) {
+    RecyclerViewAdapterCancelCheck(Context context, List<String> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
         this.mContext = context;
         managerTheme = ManagerTheme.getInstance();
         themeId = managerTheme.getThemeId();
-        cardLayout = cardCancel;
-    }
 
+    }
 
     // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //View view = mInflater.inflate(R.layout.check_card, parent, false);
-        View view = mInflater.inflate(cardLayout, parent, false);
+        View view = mInflater.inflate(R.layout.card_check, parent, false);
 
         return new ViewHolder(view);
     }
@@ -59,14 +55,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         Drawable logoDrawable = getLogoDrawable(themeId);
         holder.logo.setImageDrawable(logoDrawable);
         holder.textBank.setText(getBankName(themeId));
-        holder.separator.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
-        if (holder.cancelBtn != null) {
-            holder.cancelBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
-            holder.cancelBtn.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-            holder.cancelBtn.setOnClickListener(v -> {
-                openDialog(animal);
-            });
-        }
+        holder.separator.setBackgroundColor(((CheckQueryActivity)mContext).getPrimaryColorInTheme());
     }
 
     // total number of rows
@@ -82,7 +71,6 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         ImageView logo;
         ConstraintLayout separator;
         TextView textBank;
-        Button cancelBtn;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -90,7 +78,6 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             logo = itemView.findViewById(R.id.logo);
             separator = itemView.findViewById(R.id.separator1);
             textBank = itemView.findViewById(R.id.textView_bank);
-            cancelBtn = itemView.findViewById(R.id.button_cancel);
             itemView.setOnClickListener(this);
         }
 
@@ -138,7 +125,6 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         }
         return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
     }
-
     private String getBankName(int themeId) {
 
         switch (themeId) {
@@ -160,36 +146,6 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
                 break;
         }
         return "Otro Banco";
-    }
-
-
-    private void openDialog(String data) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        LayoutInflater inflater = ((ParentActivity) mContext).getLayoutInflater();
-        ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.cancel_dialog, null);
-        builder.setView(view);
-
-        AlertDialog alertDialog = builder.create();
-
-        TextView label = view.findViewById(R.id.textView_label);
-        label.setText(label.getText().toString() + ": " + data);
-        Button yesBtn = view.findViewById(R.id.button_yes);
-        yesBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
-        yesBtn.setOnClickListener(v -> {
-            alertDialog.dismiss();
-        });
-
-        Button noBtn = view.findViewById(R.id.button_no);
-        noBtn.setBackgroundColor(mContext.getColor(R.color.white));
-        noBtn.setTextColor(((ParentActivity) mContext).getPrimaryColorInTheme());
-        noBtn.setOnClickListener(v -> {
-            alertDialog.dismiss();
-
-        });
-
-
-        alertDialog.show();
-
     }
 
 }

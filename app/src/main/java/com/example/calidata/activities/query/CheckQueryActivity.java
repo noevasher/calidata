@@ -49,25 +49,13 @@ public class CheckQueryActivity extends ParentActivity {
         animalNames.add("Sheep");
         animalNames.add("Goat");
 
-        // set up the RecyclerView
+        // set up the RecyclerView-
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new RecyclerViewAdapterCheck(this, animalNames);
-        //adapter.setClickListener(this);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                linearLayoutManager.getOrientation());
-        //recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), R.drawable.divider));
-
-        //DividerItemDecoration itemDecorator = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        //itemDecorator.setDrawable(ContextCompat.getDrawable(this, R.drawable.divider));
-
-        //recyclerView.addItemDecoration(itemDecorator);
-
+        adapter = new RecyclerViewAdapterCheck(this, animalNames, R.layout.card_check);
         recyclerView.setAdapter(adapter);
 
-
-        //String themeName = getThemeName();
         printConstraintSearch();
         setImageListener();
     }
@@ -84,7 +72,7 @@ public class CheckQueryActivity extends ParentActivity {
     }
 
     private void printConstraintSearch(){
-        ManagerTheme managerTheme = ManagerTheme.getInstance();
+        managerTheme = ManagerTheme.getInstance();
         int themeId = managerTheme.getThemeId();
         setTheme(themeId);
         constraintSearch.setBackgroundColor(getPrimaryColorInTheme());

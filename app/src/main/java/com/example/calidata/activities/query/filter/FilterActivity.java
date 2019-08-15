@@ -51,25 +51,26 @@ public class FilterActivity extends ParentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        managerTheme = ManagerTheme.getInstance();
+        setTheme(managerTheme.getThemeId());
         setContentView(R.layout.activity_filter);
 
         ButterKnife.bind(this);
-        initToolbar();
+
+        String title = getResources().getString(R.string.filter_title);
+        setToolbar(toolbar, title, true);
+
         SeekBarRangedView rangebar = findViewById(R.id.rangebar1);
         initSeekBar(rangebar);
+        applyBtn.setBackgroundColor(getPrimaryColorInTheme());
 
     }
 
     private void initSeekBar(SeekBarRangedView rangebar){
         String min = "min: 0";
         String max = "max: " + MAX;
-        //editText.setHighlightColor(getPrimaryColorInTheme());
-        //editText.setHintTextColor(getPrimaryColorInTheme());
         minText.setText(min);
-
-        //editText.setBackgroundColor(getPrimaryColorInTheme());
-        //editText.getBackground().mutate().setColorFilter(ContextCompat.getColor(this, R.color.colorBackgroundSantander), PorterDuff.Mode.SRC_ATOP);
-
         maxText.setText(max);
 
         rangebar.setRounded(true);
@@ -89,8 +90,6 @@ public class FilterActivity extends ParentActivity {
             }
 
             private void updateLayout(float minValue, float maxValue) {
-                //binding.activitySeekbarCCurrentTextView.setText(String.format(Locale.getDefault(), "min: %2.0f max: %2.0f", minValue, maxValue));
-                //Toast.makeText(FilterActivity.this, "min: " + minValue + " max value: " + maxValue, Toast.LENGTH_LONG).show();
                 String min = String.format(Locale.getDefault(), "min: %2.0f", minValue);
                 String max = String.format(Locale.getDefault(), "max: %2.0f", maxValue);
 
@@ -101,31 +100,6 @@ public class FilterActivity extends ParentActivity {
 
     }
 
-    private void printTheme(){
-        ManagerTheme managerTheme = ManagerTheme.getInstance();
-        int themeId = managerTheme.getThemeId();
-        setTheme(themeId);
-        toolbar.setBackgroundColor(getPrimaryColorInTheme());
-        applyBtn.setBackgroundColor(getPrimaryColorInTheme());
-
-    }
-    private void initToolbar(){
-        if(toolbar != null){
-            toolbar.setTitle(getResources().getString(R.string.filter_title));
-            final Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_24px);
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
-            setSupportActionBar(toolbar);
-
-            toolbar.setNavigationIcon(upArrow);
-            toolbar.setNavigationOnClickListener(view -> {
-                Log.i("TAG", "finish filter");
-                finish();
-            });
-            printTheme();
-
-            //getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

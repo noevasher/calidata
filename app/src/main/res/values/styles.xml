@@ -24,23 +24,25 @@
         <item name="colorAccent">@color/colorAccentB</item>
     </style>
 
-    <style name="AppThemeBancomer" parent="AppTheme.NoActionBar">
+    <style name="AppThemeBancomer" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryC</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkC</item>
         <item name="colorAccent">@color/colorAccentC</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@color/colorAccentC</item>
+
     </style>
 
     <style name="AppThemeSantander" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryD</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkD</item>
-        <item name="colorAccent">@color/colorAccentD</item>
+        <item name="colorAccent">@android:color/darker_gray</item>
         <!--
         <item name="android:itemBackground">@color/colorBackgroundMenuD</item>
-        -->
         <item name="android:statusBarColor">@android:color/transparent</item>
+-->
+        <item name="android:statusBarColor">@android:color/darker_gray</item>
 
     </style>
 

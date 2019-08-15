@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -15,13 +16,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.example.calidata.R;
+import com.example.calidata.management.ManagerTheme;
 
 public class ParentActivity extends AppCompatActivity {
     private static final int WORD_LENGTH = 6;
     private int themeResId;
+    public ManagerTheme managerTheme;
 
     public static boolean isValidEmail(String target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
@@ -89,36 +93,28 @@ public class ParentActivity extends AppCompatActivity {
         return ContextCompat.getDrawable(this, R.drawable.ic_default_logo);
     }
 
-    public String getThemeName() {
-        PackageInfo packageInfo;
-        try {
-            packageInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_META_DATA);
-            int themeResId = packageInfo.applicationInfo.theme;
-            switch (themeResId) {
-                case R.style.AppThemeBanamex:
-                    break;
-                case R.style.AppThemeBancomer:
-                    break;
-                case R.style.AppThemeSantander:
-                    break;
-                case R.style.AppTheme:
-                    Log.i("TAG", "tema default");
-                    break;
-                default:
-                    break;
-            }
-            return getResources().getResourceEntryName(themeResId);
-        } catch (PackageManager.NameNotFoundException e) {
-            return null;
+
+    protected void setToolbar(Toolbar toolbar, String title, boolean hasArrow) {
+        if (toolbar != null) {
+            toolbar.setTitle(title);
+            toolbar.setBackgroundColor(getPrimaryColorInTheme());
+            setSupportActionBar(toolbar);
         }
-        //*/
+
+        if(hasArrow){
+            setArrowToolbar(toolbar);
+        }
     }
 
-    public int getThemeResId() {
-        return themeResId;
+    protected void setArrowToolbar(Toolbar toolbar){
+        final Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_24px);
+        upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
+
+        toolbar.setNavigationIcon(upArrow);
+        toolbar.setNavigationOnClickListener(view -> {
+            finish();
+        });
+
     }
 
-    public void setThemeResId(int themeResId) {
-        this.themeResId = themeResId;
-    }
 }

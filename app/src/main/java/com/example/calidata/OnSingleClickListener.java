@@ -16,7 +16,6 @@ public abstract class OnSingleClickListener implements View.OnClickListener {
         mLastClickTime = currentClickTime;
         if (elapsedTime <= MIN_CLICK_INTERVAL)
             return;
-
         onSingleClick(v);
     }
 

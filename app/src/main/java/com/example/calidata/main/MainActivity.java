@@ -1,16 +1,10 @@
 package com.example.calidata.main;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.text.Html;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,15 +14,13 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.calidata.R;
 import com.example.calidata.activities.active.CheckActiveActivity;
+import com.example.calidata.activities.cancel.CheckCancelActivity;
 import com.example.calidata.activities.emit.CheckEmitActivity;
 import com.example.calidata.activities.query.CheckQueryActivity;
-import com.example.calidata.login.managmentLogin.AESCrypt;
-import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
 import com.google.android.material.navigation.NavigationView;
 
@@ -57,65 +49,36 @@ public class MainActivity extends ParentActivity {
     @BindView(R.id.imageView_cancel)
     public ImageView imageViewCancel;
 
+    @BindView(R.id.textView_active)
+    public TextView textViewActive;
+
+    @BindView(R.id.separator2)
+    public ConstraintLayout separator2;
+
     private int primaryColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        int positionBank = intent.getIntExtra("bank", 4);
-        ManagerTheme managerTheme = ManagerTheme.getInstance();
-
-        switch (positionBank){
-            case 0:
-                setTheme(R.style.AppTheme);
-                setThemeResId(R.style.AppTheme);
-                managerTheme.setThemeId(R.style.AppTheme);
-                break;
-            case 1:
-                setTheme(R.style.AppThemeBanamex);
-                setThemeResId(R.style.AppThemeBanamex);
-                managerTheme.setThemeId(R.style.AppThemeBanamex);
-                break;
-            case 2:
-                setTheme(R.style.AppThemeSantander);
-                setThemeResId(R.style.AppThemeSantander);
-                managerTheme.setThemeId(R.style.AppThemeSantander);
-                break;
-            case 3:
-                setTheme(R.style.AppThemeBancomer);
-                setThemeResId(R.style.AppThemeBancomer);
-                managerTheme.setThemeId(R.style.AppThemeBancomer);
-                break;
-            case 4:
-                setTheme(R.style.AppThemeOther);
-                setThemeResId(R.style.AppThemeOther);
-                managerTheme.setThemeId(R.style.AppThemeOther);
-                break;
-        }
-
-
+        managerTheme = ManagerTheme.getInstance();
+        setTheme(managerTheme.getThemeId());
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        imageViewActive.setVisibility(View.GONE);
+        textViewActive.setVisibility(View.GONE);
+        separator2.setVisibility(View.GONE);
 
         TypedValue typedValue = new TypedValue();
         getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
         primaryColor = typedValue.data;
 
 
-        if(toolbar != null){
-
-            toolbar.setTitle(getResources().getString(R.string.main_title));
-            toolbar.setBackgroundColor(primaryColor);
-
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        }
+        String title = getString(R.string.main_title);
+        setToolbar(toolbar, title, false);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
-                R.string.openDrwawer, R.string.openDrwawer){
+                R.string.openDrwawer, R.string.openDrwawer) {
 
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -133,7 +96,7 @@ public class MainActivity extends ParentActivity {
 
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             drawerLayout.closeDrawers();
-            switch (menuItem.getItemId()){
+            switch (menuItem.getItemId()) {
                 /*case R.id.action_favorite:
                     return true;
                 case R.id.action_favorite2:
@@ -150,32 +113,7 @@ public class MainActivity extends ParentActivity {
 
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
-                return true;
-
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-
-        }
-    }
-
-    private void setImagesListeners(){
+    private void setImagesListeners() {
         imageViewQuery.setColorFilter(primaryColor, PorterDuff.Mode.SRC_IN);
         imageViewEmit.setColorFilter(primaryColor, PorterDuff.Mode.SRC_IN);
         imageViewActive.setColorFilter(primaryColor, PorterDuff.Mode.SRC_IN);
@@ -198,6 +136,10 @@ public class MainActivity extends ParentActivity {
             startActivity(intent);
         });
 
+        imageViewCancel.setOnClickListener(v -> {
+            Intent intent = new Intent(this, CheckCancelActivity.class);
+            startActivity(intent);
+        });
     }
 
     public void openDialog() {
@@ -208,18 +150,18 @@ public class MainActivity extends ParentActivity {
 
         AlertDialog alertDialog = builder.create();
 
-        Button scanBtn = view.findViewById(R.id.button_scan);
+        Button scanBtn = view.findViewById(R.id.button_yes);
         scanBtn.setBackgroundColor(getPrimaryColorInTheme());
-        scanBtn.setOnClickListener(v->{
+        scanBtn.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), CheckEmitActivity.class);
             intent.putExtra("QR", true);
             startActivity(intent);
             alertDialog.dismiss();
         });
 
-        Button searchBtn = view.findViewById(R.id.button_search);
+        Button searchBtn = view.findViewById(R.id.button_no);
         searchBtn.setBackgroundColor(getPrimaryColorInTheme());
-        searchBtn.setOnClickListener(v->{
+        searchBtn.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), CheckEmitActivity.class);
             intent.putExtra("QR", false);
             startActivity(intent);
