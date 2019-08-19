@@ -45,6 +45,7 @@
     <string name="options_label">Opciones</string>
     <string name="help_label">Ayuda</string>
     <string name="singout_label">Salir</string>
+    <string name="username_label">Nombre de Usuario</string>
 
 
 </resources>
