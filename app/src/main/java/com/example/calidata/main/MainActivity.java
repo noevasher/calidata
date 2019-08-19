@@ -21,7 +21,10 @@ import com.example.calidata.activities.active.CheckActiveActivity;
 import com.example.calidata.activities.cancel.CheckCancelActivity;
 import com.example.calidata.activities.emit.CheckEmitActivity;
 import com.example.calidata.activities.query.CheckQueryActivity;
+import com.example.calidata.login.LoginActivity;
 import com.example.calidata.management.ManagerTheme;
+import com.example.calidata.utilities.HelpActivity;
+import com.example.calidata.utilities.SettingsActivity;
 import com.google.android.material.navigation.NavigationView;
 
 import butterknife.BindView;
@@ -96,13 +99,32 @@ public class MainActivity extends ParentActivity {
 
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             drawerLayout.closeDrawers();
+            Intent intent;
             switch (menuItem.getItemId()) {
-                /*case R.id.action_favorite:
+                case R.id.nav_query:
+                    intent = new Intent(this, CheckQueryActivity.class);
+                    startActivity(intent);
                     return true;
-                case R.id.action_favorite2:
+                case R.id.nav_emit:
+                    intent = new Intent(this, CheckEmitActivity.class);
+                    startActivity(intent);
                     return true;
-                //*/
-                case R.id.action_settings:
+                case R.id.nav_cancel:
+                    intent = new Intent(this, CheckCancelActivity.class);
+                    startActivity(intent);
+                    return true;
+                case R.id.nav_settings:
+                    intent = new Intent(this, SettingsActivity.class);
+                    startActivity(intent);
+                    return true;
+                case R.id.nav_help:
+                    intent = new Intent(this, HelpActivity.class);
+                    startActivity(intent);
+                    return true;
+                case R.id.nav_close:
+                    intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
                     return true;
                 default:
                     return false;

@@ -43,10 +43,8 @@ public class CheckCancelActivity extends ParentActivity {
         setToolbar(toolbar, title, true);
 
         ArrayList<String> animalNames = new ArrayList<>();
-        /*
+
         animalNames.add("Horse");
-        animalNames.add("Cow");
-        animalNames.add("Camel");
         animalNames.add("Sheep");
         animalNames.add("Goat");
 

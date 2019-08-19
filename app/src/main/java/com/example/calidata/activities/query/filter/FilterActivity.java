@@ -1,5 +1,6 @@
 package com.example.calidata.activities.query.filter;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -8,7 +9,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -19,13 +19,17 @@ import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
 import com.github.guilhe.views.SeekBarRangedView;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class FilterActivity extends ParentActivity implements AdapterView.OnItemSelectedListener {
     private final static int MAX = 500000;
+    private static final String CERO = "0";
+    private static final String BARRA = "/";
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -40,12 +44,63 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
     @BindView(R.id.textView_max)
     public TextView maxText;
 
-    @BindView(R.id.editText)
-    public EditText editText;
-
     @BindView(R.id.spinner)
     public Spinner spinner;
 
+    @BindView(R.id.textView_date_start)
+    public TextView dateText;
+
+    @BindView(R.id.textView_date_end)
+    public TextView endText;
+
+
+    //Calendario para obtener fecha & hora
+    public final Calendar c = Calendar.getInstance();
+
+    //Variables para obtener la fecha
+    final int mes = c.get(Calendar.MONTH);
+    final int dia = c.get(Calendar.DAY_OF_MONTH);
+    final int anio = c.get(Calendar.YEAR);
+
+    @OnClick(R.id.constraintLayout_date_start)
+    public void getStartDate(){
+        //Estos valores deben ir en ese orden, de lo contrario no mostrara la fecha actual
+/**
+ *También puede cargar los valores que usted desee
+ */
+        DatePickerDialog recogerFecha = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            //Esta variable lo que realiza es aumentar en uno el mes ya que comienza desde 0 = enero
+            final int mesActual = month + 1;
+            //Formateo el día obtenido: antepone el 0 si son menores de 10
+            String diaFormateado = (dayOfMonth < 10)? CERO + String.valueOf(dayOfMonth):String.valueOf(dayOfMonth);
+            //Formateo el mes obtenido: antepone el 0 si son menores de 10
+            String mesFormateado = (mesActual < 10)? CERO + String.valueOf(mesActual):String.valueOf(mesActual);
+            //Muestro la fecha con el formato deseado
+            dateText.setText(diaFormateado + BARRA + mesFormateado + BARRA + year);
+
+
+        },anio, mes, dia);
+        //Muestro el widget
+        recogerFecha.show();
+    }
+
+    @OnClick(R.id.constraintLayout_date_end)
+    public void getEndDate() {
+        DatePickerDialog recogerFecha = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            //Esta variable lo que realiza es aumentar en uno el mes ya que comienza desde 0 = enero
+            final int mesActual = month + 1;
+            //Formateo el día obtenido: antepone el 0 si son menores de 10
+            String diaFormateado = (dayOfMonth < 10)? CERO + String.valueOf(dayOfMonth):String.valueOf(dayOfMonth);
+            //Formateo el mes obtenido: antepone el 0 si son menores de 10
+            String mesFormateado = (mesActual < 10)? CERO + String.valueOf(mesActual):String.valueOf(mesActual);
+            //Muestro la fecha con el formato deseado
+            endText.setText(diaFormateado + BARRA + mesFormateado + BARRA + year);
+
+
+        },anio, mes, dia);
+        //Muestro el widget
+        recogerFecha.show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -20,9 +20,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calidata.R;
+import com.example.calidata.login.LoginActivity;
 import com.example.calidata.main.adapters.ItemClickSupport;
 import com.example.calidata.main.adapters.RecyclerViewAdapterCheckbook;
 import com.example.calidata.management.ManagerTheme;
+import com.example.calidata.utilities.SettingsActivity;
 
 import java.util.ArrayList;
 
@@ -53,7 +55,7 @@ public class CheckbookActivity extends ParentActivity {
         setToolbar(toolbar, title, false);
 
         checkbooks = new ArrayList<>();
-        /*
+
         checkbooks.add("**** **** **** **** 1800");
         checkbooks.add("**** **** **** **** 1856");
         checkbooks.add("**** **** **** **** 7800");
@@ -129,11 +131,17 @@ public class CheckbookActivity extends ParentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
+                intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 return true;
-
+            case R.id.action_logout:
+                intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.

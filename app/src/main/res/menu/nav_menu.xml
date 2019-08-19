@@ -3,17 +3,17 @@
 
     <group android:id="@+id/activities" android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_active"
+            android:id="@+id/nav_query"
             android:icon="@drawable/ic_round_spellcheck_24px"
-            android:title="Activar Chequera" />
+            android:title="@string/query_check_title" />
         <item
-            android:id="@+id/nav_send"
+            android:id="@+id/nav_emit"
             android:icon="@drawable/ic_send_check"
-            android:title="Emitir cheque" />
+            android:title="@string/emit_title" />
         <item
-            android:id="@+id/nav_status"
-            android:icon="@drawable/ic_status_check"
-            android:title="Estado de Cheques" />
+            android:id="@+id/nav_cancel"
+            android:icon="@drawable/ic_clipboard_cancel"
+            android:title="@string/cancel_check_title" />
     </group>
 
 
@@ -21,15 +21,15 @@
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_20px"
-            android:title="Opciones" />
+            android:title="@string/options_label" />
         <item
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_help"
-            android:title="Ayuda" />
+            android:title="@string/help_label" />
         <item
             android:id="@+id/nav_close"
             android:icon="@drawable/ic_close_app_24px"
-            android:title="Salir" />
+            android:title="@string/singout_label" />
     </group>
 
 </menu>

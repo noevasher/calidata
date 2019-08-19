@@ -39,6 +39,12 @@
     <string name="empty_checks_label">No se encuentran cheques dispobibles</string>
     <string name="empty_checks_active">No se encuentran cheques con estatus ACTIVO</string>
     <string name="empty_checks_empty_cancel">No se tienen cheques para cancelar</string>
+    <string name="start_date_label">Fecha Inicial</string>
+    <string name="end_date_label">Fecha Final</string>
+    <string name="query_check_title">Consultar Cheque</string>
+    <string name="options_label">Opciones</string>
+    <string name="help_label">Ayuda</string>
+    <string name="singout_label">Salir</string>
 
 
 </resources>
