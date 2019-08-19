@@ -43,12 +43,14 @@ public class CheckQueryActivity extends ParentActivity {
         ButterKnife.bind(this);
         // data to populate the RecyclerView with
         ArrayList<String> animalNames = new ArrayList<>();
+        /*
         animalNames.add("Horse");
         animalNames.add("Cow");
         animalNames.add("Camel");
         animalNames.add("Sheep");
         animalNames.add("Goat");
 
+//*/
         // set up the RecyclerView-
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);

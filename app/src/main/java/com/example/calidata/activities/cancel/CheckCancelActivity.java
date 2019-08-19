@@ -43,12 +43,14 @@ public class CheckCancelActivity extends ParentActivity {
         setToolbar(toolbar, title, true);
 
         ArrayList<String> animalNames = new ArrayList<>();
+        /*
         animalNames.add("Horse");
         animalNames.add("Cow");
         animalNames.add("Camel");
         animalNames.add("Sheep");
         animalNames.add("Goat");
 
+//*/
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new RecyclerViewAdapterCheck(this, animalNames, R.layout.card_cancel);

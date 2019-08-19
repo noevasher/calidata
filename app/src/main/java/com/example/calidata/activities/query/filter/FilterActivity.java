@@ -1,35 +1,30 @@
 package com.example.calidata.activities.query.filter;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Filter;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.calidata.R;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import com.appyvet.materialrangebar.RangeBar;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
 import com.github.guilhe.views.SeekBarRangedView;
 
 import java.util.Locale;
 
-public class FilterActivity extends ParentActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class FilterActivity extends ParentActivity implements AdapterView.OnItemSelectedListener {
     private final static int MAX = 500000;
 
     @BindView(R.id.toolbar)
@@ -48,6 +43,10 @@ public class FilterActivity extends ParentActivity {
     @BindView(R.id.editText)
     public EditText editText;
 
+    @BindView(R.id.spinner)
+    public Spinner spinner;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,9 +64,15 @@ public class FilterActivity extends ParentActivity {
         initSeekBar(rangebar);
         applyBtn.setBackgroundColor(getPrimaryColorInTheme());
 
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.status_check, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+
     }
 
-    private void initSeekBar(SeekBarRangedView rangebar){
+    private void initSeekBar(SeekBarRangedView rangebar) {
         String min = "min: 0";
         String max = "max: " + MAX;
         minText.setText(min);
@@ -117,5 +122,15 @@ public class FilterActivity extends ParentActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }

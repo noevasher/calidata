@@ -35,6 +35,10 @@
     <string name="cancel_title">Esta seguro de cancelar el cheque</string>
     <string name="yes_label">Si</string>
     <string name="no_label">No</string>
+    <string name="empty_checkbook">Aún no cuentas con chequeras registradas</string>
+    <string name="empty_checks_label">No se encuentran cheques dispobibles</string>
+    <string name="empty_checks_active">No se encuentran cheques con estatus ACTIVO</string>
+    <string name="empty_checks_empty_cancel">No se tienen cheques para cancelar</string>
 
 
 </resources>

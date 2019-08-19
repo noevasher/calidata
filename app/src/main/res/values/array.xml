@@ -1,2 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string-array name="status_check">
+        <item>Seleccionar Estado</item>
+        <item>Pagado</item>
+        <item>Activo</item>
+        <item>Cancelado</item>
+        <item>En Proceso</item>
+    </string-array>
+</resources>

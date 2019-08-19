@@ -94,7 +94,7 @@ public class ParentActivity extends AppCompatActivity {
     }
 
 
-    protected void setToolbar(Toolbar toolbar, String title, boolean hasArrow) {
+    public void setToolbar(Toolbar toolbar, String title, boolean hasArrow) {
         if (toolbar != null) {
             toolbar.setTitle(title);
             toolbar.setBackgroundColor(getPrimaryColorInTheme());
@@ -106,7 +106,7 @@ public class ParentActivity extends AppCompatActivity {
         }
     }
 
-    protected void setArrowToolbar(Toolbar toolbar){
+    public void setArrowToolbar(Toolbar toolbar){
         final Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_24px);
         upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
 

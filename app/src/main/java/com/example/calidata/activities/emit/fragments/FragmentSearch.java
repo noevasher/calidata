@@ -40,13 +40,15 @@ public class FragmentSearch extends Fragment {
 
         // data to populate the RecyclerView with
         ArrayList<String> animalNames = new ArrayList<>();
+        /*
         animalNames.add("Horse");
         animalNames.add("Cow");
         animalNames.add("Camel");
         animalNames.add("Sheep");
         animalNames.add("Goat");
 
-
+//*/
+        //ACA SE CONSULTAN LOS CHEQUES CON STATUS ACTIVO
 
         // 3. create an adapter
         RecyclerViewAdapterEmit mAdapter = new RecyclerViewAdapterEmit(getActivity(), animalNames);

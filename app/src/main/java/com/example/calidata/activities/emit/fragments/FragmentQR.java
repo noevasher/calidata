@@ -9,12 +9,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.calidata.R;
+import com.example.calidata.main.ParentActivity;
+
+import java.util.zip.Inflater;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -82,6 +87,12 @@ public class FragmentQR extends Fragment {
 
 
                 TextView textView = view.findViewById(R.id.textView_content);
+                Button emitBtn = view.findViewById(R.id.button_emit);
+
+                emitBtn.setBackgroundColor(((ParentActivity)mContext).getPrimaryColorInTheme());
+                emitBtn.setTextColor(mContext.getColor(R.color.white));
+
+
                 textView.setText(contents + "\n" + format);
 
                 Log.i("TAG-QR contents: ", contents);
@@ -93,6 +104,9 @@ public class FragmentQR extends Fragment {
             if(resultCode == RESULT_CANCELED){
                 //handle cancel
                 Log.i("TAG-QR", "CANCELADO");
+                view.findViewById(R.id.container_fail).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.constraintLayout_expand).setVisibility(View.GONE);
+
             }
         }
     }

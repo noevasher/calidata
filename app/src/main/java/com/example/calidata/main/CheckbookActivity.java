@@ -53,11 +53,12 @@ public class CheckbookActivity extends ParentActivity {
         setToolbar(toolbar, title, false);
 
         checkbooks = new ArrayList<>();
+        /*
         checkbooks.add("**** **** **** **** 1800");
         checkbooks.add("**** **** **** **** 1856");
         checkbooks.add("**** **** **** **** 7800");
         checkbooks.add("**** **** **** **** 9900");
-
+//*/
 
         // set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
@@ -165,9 +166,8 @@ public class CheckbookActivity extends ParentActivity {
         searchBtn.setText(getString(R.string.insert_data));
         searchBtn.setBackgroundColor(getPrimaryColorInTheme());
         searchBtn.setOnClickListener(v -> {
-            //Intent intent = new Intent(v.getContext(), CheckEmitActivity.class);
-            //intent.putExtra("QR", false);
-            //startActivity(intent);
+            Intent i = new Intent(this, CheckbookAddActivity.class);
+            startActivityForResult(i, 0);
             alertDialog.dismiss();
 
         });
@@ -202,14 +202,18 @@ public class CheckbookActivity extends ParentActivity {
             if (resultCode == RESULT_OK) {
                 String contents = data.getStringExtra("SCAN_RESULT");
                 String format = data.getStringExtra("SCAN_RESULT_FORMAT");
+                String num = data.getStringExtra("NUM");
 
-                checkbooks.add(contents);
+                if(num != null)
+                    checkbooks.add(num);
+                else
+                    checkbooks.add(contents);
                 adapter.notifyDataSetChanged();
                 //TextView textView = fragmentQR.getView().findViewById(R.id.textView_content);
                 //textView.setText(contents + "\n" + format);
 
-                Log.i("TAG-QR contents: ", contents);
-                Log.i("TAG-QR format: ", format);
+                //Log.i("TAG-QR contents: ", contents);
+                //Log.i("TAG-QR format: ", format);
                 //Log.i("TAG-QR data sqcheme", data.getData().getScheme());
 
             }

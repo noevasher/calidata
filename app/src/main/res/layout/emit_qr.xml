@@ -6,17 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".activities.emit.CheckEmitActivity">
 
-    <Button
-        android:id="@+id/button_scann"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:text="Scann"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
+
+
 
     <TextView
         android:id="@+id/textView_content"
@@ -28,6 +20,226 @@
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_scann" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout_expand"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_content">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_santander_logo" />
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Banco"
+            app:layout_constraintStart_toEndOf="@+id/logo"
+            app:layout_constraintTop_toTopOf="@+id/logo" />
+
+        <TextView
+            android:id="@+id/textView_bank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Santander"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/logo"
+            app:layout_constraintStart_toEndOf="@+id/logo"
+            app:layout_constraintTop_toBottomOf="@+id/textView21" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Folio:"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@+id/textView9"
+            app:layout_constraintStart_toStartOf="@+id/textView9"
+            app:layout_constraintTop_toTopOf="@+id/logo" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="152639808"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/separator1"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorBackgroundSantander"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/logo">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Estatus"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/separator1" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Activo"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView7"
+            app:layout_constraintStart_toEndOf="@+id/textView7"
+            app:layout_constraintTop_toTopOf="@+id/textView7" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Nombre:"
+            app:layout_constraintBottom_toBottomOf="@+id/editText2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/editText2" />
+
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:enabled="false"
+            android:inputType="textPersonName"
+            android:text="Arturo Gonzalez Ramirez"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/textView12"
+            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/quantity"
+            app:layout_constraintBottom_toBottomOf="@+id/editText3"
+            app:layout_constraintStart_toStartOf="@+id/textView12"
+            app:layout_constraintTop_toTopOf="@+id/editText3" />
+
+        <EditText
+            android:id="@+id/editText3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:enabled="false"
+            android:inputType="number"
+            android:text="18,900.00"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/textView22"
+            app:layout_constraintTop_toBottomOf="@+id/editText2" />
+
+        <TextView
+            android:id="@+id/textView23"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/comment"
+            app:layout_constraintBottom_toBottomOf="@+id/editText4"
+            app:layout_constraintStart_toStartOf="@+id/textView22"
+            app:layout_constraintTop_toTopOf="@+id/editText4" />
+
+        <EditText
+            android:id="@+id/editText4"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:enabled="false"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:text="Cheque Pagado para Arturo el dia Martes "
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/textView23"
+            app:layout_constraintTop_toBottomOf="@+id/editText3" />
+
+        <Button
+            android:id="@+id/button_emit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/emit_label"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/separator2" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/separator2"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorPrimaryGray"
+            app:layout_constraintEnd_toEndOf="@+id/editText4"
+            app:layout_constraintStart_toStartOf="@+id/textView23"
+            app:layout_constraintTop_toBottomOf="@+id/editText4">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_fail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout_expand">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Hubo escaneo fallido"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

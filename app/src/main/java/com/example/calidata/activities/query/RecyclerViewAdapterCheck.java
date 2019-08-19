@@ -23,6 +23,9 @@ import java.util.List;
 
 public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewAdapterCheck.ViewHolder> {
 
+    private static final int VIEW_TYPE_EMPTY = 0;
+    private static final int VIEW_TYPE_DATA = 1;
+
     private List<String> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
@@ -47,6 +50,11 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //View view = mInflater.inflate(R.layout.check_card, parent, false);
         View view = mInflater.inflate(cardLayout, parent, false);
+        if (viewType == VIEW_TYPE_EMPTY) {
+            view = mInflater.inflate(R.layout.card_checkbook_empty, parent, false);
+            //return viewHolder = new ViewHolder(view);
+        }
+
 
         return new ViewHolder(view);
     }
@@ -54,25 +62,49 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String animal = mData.get(position);
-        holder.myTextView.setText(animal);
-        Drawable logoDrawable = getLogoDrawable(themeId);
-        holder.logo.setImageDrawable(logoDrawable);
-        holder.textBank.setText(getBankName(themeId));
-        holder.separator.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
-        if (holder.cancelBtn != null) {
-            holder.cancelBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
-            holder.cancelBtn.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-            holder.cancelBtn.setOnClickListener(v -> {
-                openDialog(animal);
-            });
+
+        int viewType = getItemViewType(position);
+        if (viewType == VIEW_TYPE_EMPTY) {
+            if (cardLayout == R.layout.card_cancel) {
+                holder.emptyText.setText(R.string.empty_checks_empty_cancel);
+            } else {
+                holder.emptyText.setText(R.string.empty_checks_label);
+
+            }
+        } else {
+            String animal = mData.get(position);
+
+            holder.myTextView.setText(animal);
+            Drawable logoDrawable = getLogoDrawable(themeId);
+            holder.logo.setImageDrawable(logoDrawable);
+            holder.textBank.setText(getBankName(themeId));
+            holder.separator.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
+            if (holder.cancelBtn != null) {
+                holder.cancelBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
+                holder.cancelBtn.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+                holder.cancelBtn.setOnClickListener(v -> {
+                    openDialog(animal);
+                });
+            }
         }
     }
 
-    // total number of rows
     @Override
     public int getItemCount() {
+        if (mData.size() == 0) {
+            return 1;
+        }
         return mData.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (mData.size() == 0) {
+            return VIEW_TYPE_EMPTY;
+        } else {
+            return VIEW_TYPE_DATA;
+
+        }
     }
 
 
@@ -83,6 +115,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         ConstraintLayout separator;
         TextView textBank;
         Button cancelBtn;
+        TextView emptyText;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -91,6 +124,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             separator = itemView.findViewById(R.id.separator1);
             textBank = itemView.findViewById(R.id.textView_bank);
             cancelBtn = itemView.findViewById(R.id.button_cancel);
+            emptyText = itemView.findViewById(R.id.textView_empty);
             itemView.setOnClickListener(this);
         }
 

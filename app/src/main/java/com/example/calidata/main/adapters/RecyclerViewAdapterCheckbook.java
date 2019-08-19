@@ -1,7 +1,6 @@
 package com.example.calidata.main.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,25 +8,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calidata.R;
-import com.example.calidata.activities.query.CheckQueryActivity;
-import com.example.calidata.main.MainActivity;
 import com.example.calidata.management.ManagerTheme;
 
 import java.util.List;
 
 public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerViewAdapterCheckbook.ViewHolder> {
 
+    private static final int VIEW_TYPE_EMPTY = 0;
+    private static final int VIEW_TYPE_DATA = 1;
+
     private List<String> mData;
     private LayoutInflater mInflater;
     private Context mContext;
-    private ManagerTheme managerTheme;
     private int themeId;
 
     // data is passed into the constructor
@@ -35,33 +32,59 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
         this.mContext = context;
-        managerTheme = ManagerTheme.getInstance();
+        ManagerTheme managerTheme = ManagerTheme.getInstance();
         themeId = managerTheme.getThemeId();
 
     }
+
 
     // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //View view = mInflater.inflate(R.layout.check_card, parent, false);
         View view = mInflater.inflate(R.layout.card_checkbook, parent, false);
+        //ViewHolder viewHolder;
+        if (viewType == VIEW_TYPE_EMPTY) {
+            view = mInflater.inflate(R.layout.card_checkbook_empty, parent, false);
+            //return viewHolder = new ViewHolder(view);
+        }
+
         return new ViewHolder(view);
     }
 
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String number = mData.get(position);
-        Drawable logoDrawable = getLogoDrawable(themeId);
-        holder.logo.setImageDrawable(logoDrawable);
-        holder.textBank.setText(getBankName(themeId));
-        holder.textViewCheckNumber.setText(number);
+        int viewType = getItemViewType(position);
+        if (viewType == VIEW_TYPE_EMPTY) {
+
+        } else {
+            String number = mData.get(position);
+            Drawable logoDrawable = getLogoDrawable(themeId);
+            holder.logo.setImageDrawable(logoDrawable);
+            holder.textBank.setText(getBankName(themeId));
+            holder.textViewCheckNumber.setText(number);
+        }
     }
 
     // total number of rows
     @Override
     public int getItemCount() {
+        if (mData.size() == 0) {
+            return 1;
+        }
         return mData.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (mData.size() == 0) {
+            return VIEW_TYPE_EMPTY;
+        } else {
+            Object item = mData.get(position);
+            return VIEW_TYPE_DATA;
+
+        }
     }
 
 
@@ -74,7 +97,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         ViewHolder(View itemView) {
             super(itemView);
             logo = itemView.findViewById(R.id.logo);
-            textBank = itemView.findViewById(R.id.textView_bank_name);
+            textBank = itemView.findViewById(R.id.textView_empty);
             textViewCheckNumber = itemView.findViewById(R.id.textView_check_number);
 
         }
@@ -108,6 +131,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         }
         return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
     }
+
     private String getBankName(int themeId) {
 
         switch (themeId) {
@@ -130,5 +154,6 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         }
         return "Otro Banco";
     }
+
 
 }

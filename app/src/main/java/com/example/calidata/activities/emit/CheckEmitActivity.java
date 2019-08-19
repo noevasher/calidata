@@ -51,17 +51,6 @@ public class CheckEmitActivity extends ParentActivity {
         boolean isQR = intent.getBooleanExtra("QR", false);
         initPaging(isQR);
         initToolbar();
-        /*
-        if (isQR) {
-            //readQR();
-            viewPager.setCurrentItem(1);
-        } else {
-            viewPager.setCurrentItem(0);
-
-        }
-
-        //*/
-
     }
 
     private void initPaging(boolean isQR) {
@@ -77,6 +66,7 @@ public class CheckEmitActivity extends ParentActivity {
         viewPager.setAdapter(pagerAdapter);
     }
 
+    /*
     private void readQR() {
         try {
 
@@ -95,6 +85,7 @@ public class CheckEmitActivity extends ParentActivity {
         }
     }
 
+    /*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -118,7 +109,7 @@ public class CheckEmitActivity extends ParentActivity {
             }
         }
     }
-
+//*/
 
     private void initToolbar(){
         if(toolbar != null){
