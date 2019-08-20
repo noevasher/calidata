@@ -1,9 +1,5 @@
 package com.example.calidata.main;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -11,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -70,6 +67,12 @@ public class ParentActivity extends AppCompatActivity {
         return typedValue.data;
     }
 
+    public int getPrimarySoftColorInTheme() {
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorSecondary, typedValue, true);
+        return typedValue.data;
+    }
+
     public Drawable getLogoDrawable(int themeId) {
 
         switch (themeId) {
@@ -101,12 +104,12 @@ public class ParentActivity extends AppCompatActivity {
             setSupportActionBar(toolbar);
         }
 
-        if(hasArrow){
+        if (hasArrow) {
             setArrowToolbar(toolbar);
         }
     }
 
-    public void setArrowToolbar(Toolbar toolbar){
+    public void setArrowToolbar(Toolbar toolbar) {
         final Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_24px);
         upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
 
@@ -115,6 +118,13 @@ public class ParentActivity extends AppCompatActivity {
             finish();
         });
 
+    }
+
+    protected void hideItem(View[] view) {
+        int gone = View.GONE;
+        for (View v : view) {
+            v.setVisibility(gone);
+        }
     }
 
 }

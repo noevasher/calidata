@@ -33,7 +33,7 @@ public class FragmentSearch extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.emit_search, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
 
         // 2. set layoutManger
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

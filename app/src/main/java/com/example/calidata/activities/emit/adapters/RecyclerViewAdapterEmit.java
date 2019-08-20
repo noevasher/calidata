@@ -2,6 +2,8 @@ package com.example.calidata.activities.emit.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -13,13 +15,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calidata.R;
 import com.example.calidata.activities.emit.CheckEmitActivity;
+import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -94,6 +100,9 @@ public class RecyclerViewAdapterEmit extends RecyclerView.Adapter<RecyclerViewAd
                 }
 
 
+            });
+            holder.emitBtn.setOnClickListener(v -> {
+                openDialog();
             });
         }
     }
@@ -211,5 +220,53 @@ public class RecyclerViewAdapterEmit extends RecyclerView.Adapter<RecyclerViewAd
         }
     }
 
+    private void openDialog() {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        LayoutInflater inflater = mActivity.getLayoutInflater();
+        ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.cancel_dialog, null);
+        TextView label = view.findViewById(R.id.textView_label);
+        label.setText(mContext.getResources().getString(R.string.emit_delete_label) );
+        builder.setView(view);
+
+        AlertDialog alertDialog = builder.create();
+
+        Button yesBtn = view.findViewById(R.id.button_yes);
+        yesBtn.setBackgroundColor(((ParentActivity) mActivity).getPrimaryColorInTheme());
+        yesBtn.setOnClickListener(v -> {
+            alertDialog.dismiss();
+        });
+
+        Button noBtn = view.findViewById(R.id.button_no);
+        noBtn.setBackgroundColor(mActivity.getColor(R.color.white));
+        noBtn.setTextColor(((ParentActivity) mActivity).getPrimaryColorInTheme());
+        noBtn.setOnClickListener(v -> {
+            alertDialog.dismiss();
+
+        });
+
+
+        alertDialog.show();
+
+/*
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    //Yes button clicked
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    //No button clicked
+                    break;
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+
+
+    //*/
+
+    }
 }

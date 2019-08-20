@@ -101,7 +101,9 @@ public class MainActivity extends ParentActivity {
         ButterKnife.bind(this);
 
         View header = navigationView.getHeaderView(0);
+        header.setBackgroundColor(getPrimarySoftColorInTheme());
         TextView textName = header.findViewById(R.id.textView);
+        //textName.setText("");
         imageProfile = header.findViewById(R.id.imageView_profile);
 
         imageProfile.setOnClickListener(v -> {

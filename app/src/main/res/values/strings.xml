@@ -46,6 +46,7 @@
     <string name="help_label">Ayuda</string>
     <string name="singout_label">Salir</string>
     <string name="username_label">Nombre de Usuario</string>
+    <string name="emit_delete_label">Esta seguro de emitir el cheque:</string>
 
 
 </resources>

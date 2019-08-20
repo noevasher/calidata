@@ -10,13 +10,12 @@ import android.widget.Toast;
 import androidx.annotation.StringRes;
 
 import com.example.calidata.R;
-import com.example.calidata.login.managmentLogin.AESCrypt;
+import com.example.calidata.login.controller.LoginController;
+import com.example.calidata.login.managmentLogin.RijndaelCrypt;
 import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.register.RegisterActivity;
 import com.example.calidata.session.SessionManager;
-
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,10 +42,9 @@ public class LoginActivity extends ParentActivity {
 
         usernameEditText.setOnFocusChangeListener((view, hasFocus) -> {
             if (!hasFocus) {
-                if(usernameEditText.getText().toString().isEmpty()){
+                if (usernameEditText.getText().toString().isEmpty()) {
                     usernameEditText.setError("Campo Requerido");
-                }
-                else {
+                } else {
                     if (!isValidEmail(usernameEditText.getText().toString())) {
                         usernameEditText.setError("Email No valido");
                     }
@@ -55,10 +53,9 @@ public class LoginActivity extends ParentActivity {
         });
         passwordEditText.setOnFocusChangeListener((view, hasFocus) -> {
             if (!hasFocus) {
-                if(passwordEditText.getText().toString().isEmpty()){
+                if (passwordEditText.getText().toString().isEmpty()) {
                     passwordEditText.setError("Campo Requerido");
-                }
-                else {
+                } else {
                     if (!isValidLength(passwordEditText.getText().toString())) {
                         //passwordEditText.setError("Longitud de Contraseña debe ser mayor a 5 caracteres");
                     }
@@ -72,18 +69,31 @@ public class LoginActivity extends ParentActivity {
             String user = usernameEditText.getText().toString();
             String password = passwordEditText.getText().toString();
             try {
+                RijndaelCrypt encryptRijndael = new RijndaelCrypt(password);
+
+                String encryptRij = encryptRijndael.encrypt(password.getBytes());
+                String decryptRij = encryptRijndael.decrypt(encryptRij);
+                Log.i("TAG- encrypt", encryptRij);
+                Log.i("TAG- decrypt", decryptRij);
+
+                String jsonResponse = "{'name' : 'noe', 'password': " + encryptRij + "}";
+
+                Log.i("Response: ", jsonResponse);
+                LoginController loginController = new LoginController();
+                loginController.loadJSON();
+                /*
                 String encrypt = AESCrypt.encrypt(password);
                 Log.i("TAG- encrypt", encrypt);
                 String random = UUID.randomUUID().toString();
                 Log.i("TAG- random", random);
-
+                //*/
             } catch (Exception e) {
                 e.printStackTrace();
             }
             //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             Intent intent = new Intent(LoginActivity.this, CheckbookActivity.class);
             String word = usernameEditText.getText().toString();
-            switch (user){
+            switch (user) {
                 case "banamex":
                     intent.putExtra("bank", 1);
                     break;
@@ -105,7 +115,7 @@ public class LoginActivity extends ParentActivity {
 
         });
 
-        registerBtn.setOnClickListener(v->{
+        registerBtn.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
@@ -114,7 +124,6 @@ public class LoginActivity extends ParentActivity {
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
-
 
 
 }

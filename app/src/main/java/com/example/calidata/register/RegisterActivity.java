@@ -13,11 +13,14 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.example.calidata.main.MainActivity;
 import com.example.calidata.R;
 import com.example.calidata.main.ParentActivity;
+import com.example.calidata.models.User;
 import com.example.calidata.models.UserModel;
+import com.example.calidata.register.controller.RegisterController;
 import com.google.gson.Gson;
 
 import java.util.UUID;
@@ -62,10 +65,27 @@ public class RegisterActivity extends ParentActivity{
 
         spin.setAdapter(adapter);
 
-        registerBtn.setOnClickListener(v->{
+        if(toolbar != null){
+            toolbar.setTitle(getResources().getString(R.string.register_title));
+            final Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_24px);
+            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
+            setSupportActionBar(toolbar);
+
+            toolbar.setNavigationIcon(upArrow);
+            toolbar.setNavigationOnClickListener(view -> finish());
+        }
+
+        registerBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 
             if(ifValidForm()) {
+                User user = new User();
+                user.setBody("Noe");
+                user.setTitle("Title Noe");
+                user.setUserId(19191919);
+
+                RegisterController registerController = new RegisterController(user);
+                registerController.loadJson();
                 intent.putExtra("bank", spin.getSelectedItemPosition());
                 startActivity(intent);
                 finish();
@@ -80,24 +100,12 @@ public class RegisterActivity extends ParentActivity{
             userModel.setPassword(password);
             userModel.setToken(UUID.randomUUID().toString());
             Gson gson = new Gson();
-            //gson = new GsonBuilder().setPrettyPrinting().create();
             String json = gson.toJson(userModel);
 
             System.out.println(json);
 
         });
 
-        if(toolbar != null){
-
-            toolbar.setTitle(getResources().getString(R.string.register_title));
-            final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_24px);
-            upArrow.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
-            setSupportActionBar(toolbar);
-
-            toolbar.setNavigationIcon(upArrow);
-            toolbar.setNavigationOnClickListener(view -> finish());
-            //getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
