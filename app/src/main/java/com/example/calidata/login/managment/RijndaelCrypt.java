@@ -1,4 +1,4 @@
-package com.example.calidata.login.managmentLogin;
+package com.example.calidata.login.managment;
 
 
 import android.util.Base64;

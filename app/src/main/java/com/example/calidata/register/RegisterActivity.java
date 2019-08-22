@@ -84,7 +84,7 @@ public class RegisterActivity extends ParentActivity{
                 user.setTitle("Title Noe");
                 user.setUserId(19191919);
 
-                RegisterController registerController = new RegisterController(user);
+                RegisterController registerController = new RegisterController(user, getApplicationContext());
                 registerController.loadJson();
                 intent.putExtra("bank", spin.getSelectedItemPosition());
                 startActivity(intent);

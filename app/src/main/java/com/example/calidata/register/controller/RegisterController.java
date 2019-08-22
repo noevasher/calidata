@@ -1,5 +1,6 @@
 package com.example.calidata.register.controller;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.example.calidata.models.LoginResponse;
@@ -14,8 +15,8 @@ public class RegisterController extends ParentController {
 
     private User user;
 
-    public RegisterController(User user){
-        super();
+    public RegisterController(User user, Context context){
+        super(context);
         this.user = user;
     }
 

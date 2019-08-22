@@ -37,8 +37,10 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryD</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkD</item>
-        <item name="colorAccent">@android:color/darker_gray</item>
+        <item name="colorAccent">@color/colorAccentD</item>
+
         <!--
+        <item name="colorAccent">@android:color/darker_gray</item>
         <item name="android:itemBackground">@color/colorBackgroundMenuD</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
 -->
@@ -51,7 +53,7 @@
         <item name="colorPrimary">@color/colorPrimaryD</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkD</item>
         <item name="colorAccent">@color/colorAccentD</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@color/colorAccentD</item>
 
     </style>
 

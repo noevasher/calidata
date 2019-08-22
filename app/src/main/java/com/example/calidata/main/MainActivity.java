@@ -102,8 +102,8 @@ public class MainActivity extends ParentActivity {
 
         View header = navigationView.getHeaderView(0);
         header.setBackgroundColor(getPrimarySoftColorInTheme());
-        TextView textName = header.findViewById(R.id.textView);
-        //textName.setText("");
+        TextView textName = header.findViewById(R.id.textView_username);
+        textName.setTextColor(getColor(R.color.white));
         imageProfile = header.findViewById(R.id.imageView_profile);
 
         imageProfile.setOnClickListener(v -> {

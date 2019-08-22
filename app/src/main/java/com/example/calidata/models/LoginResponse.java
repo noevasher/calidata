@@ -4,30 +4,59 @@ import com.google.gson.annotations.SerializedName;
 
 public class LoginResponse {
 
+    @SerializedName("access_token")
+    public String accessToken;
+
+    @SerializedName("token_type")
+    public String tokenType;
+
+    @SerializedName("expires_in")
+    public Integer expiteIn;
+
+    @SerializedName("bankId")
+    public Integer bankId;
+
     @SerializedName("userId")
     public Integer userId;
-    @SerializedName("id")
-    public Integer id;
-    @SerializedName("title")
-    public String title;
 
-    @SerializedName("body")
-    public String body;
 
-    /*
-    public List<Body> data = null;
-
-    public class Body {
-
-        @SerializedName("id")
-        public Integer id;
-        @SerializedName("name")
-        public String name;
-        @SerializedName("year")
-        public Integer year;
-        @SerializedName("pantone_value")
-        public String pantoneValue;
-
+    public String getAccessToken() {
+        return accessToken;
     }
-    //*/
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
+    }
+
+    public Integer getExpiteIn() {
+        return expiteIn;
+    }
+
+    public void setExpiteIn(Integer expiteIn) {
+        this.expiteIn = expiteIn;
+    }
+
+    public Integer getBankId() {
+        return bankId;
+    }
+
+    public void setBankId(Integer bankId) {
+        this.bankId = bankId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 }

@@ -5,10 +5,19 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.example.calidata.login.LoginActivity;
+import com.example.calidata.main.CheckbookActivity;
 
 import java.util.HashMap;
 
 public class SessionManager {
+    private static SessionManager instance;
+
+    public static SessionManager getInstance(Context context){
+        if(instance == null)
+            instance = new SessionManager(context);
+        return instance;
+    }
+
     // Shared Preferences
     SharedPreferences pref;
 
@@ -30,8 +39,12 @@ public class SessionManager {
     // User name (make variable public to access from outside)
     public static final String KEY_NAME = "name";
 
+    public static final String KEY_USER_ID = "userId";
+
     // Email address (make variable public to access from outside)
     public static final String KEY_EMAIL = "email";
+    public static final String THEME_ID = "themeId";
+
 
     // Constructor
     public SessionManager(Context context){
@@ -43,12 +56,27 @@ public class SessionManager {
     /**
      * Create login session
      * */
-    public void createLoginSession(String name, String email){
+    public void createLoginSession(String email, int themeId){
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
         // Storing name in pref
-        editor.putString(KEY_NAME, name);
+        //editor.putString(KEY_NAME, name);
+
+        // Storing email in pref
+        editor.putString(KEY_EMAIL, email);
+        editor.putInt(THEME_ID, themeId);
+
+        // commit changes
+        editor.commit();
+    }
+
+    public void createLoginSession(String email, String userId){
+        // Storing login value as TRUE
+        editor.putBoolean(IS_LOGIN, true);
+
+        // Storing name in pref
+        editor.putString(KEY_USER_ID, userId);
 
         // Storing email in pref
         editor.putString(KEY_EMAIL, email);
@@ -78,6 +106,7 @@ public class SessionManager {
         }
 
     }
+
 
 
 
@@ -122,5 +151,11 @@ public class SessionManager {
     // Get Login State
     public boolean isLoggedIn(){
         return pref.getBoolean(IS_LOGIN, false);
+    }
+
+    public int getTheme(){
+        //2 is default value
+        return pref.getInt(THEME_ID, 2);
+
     }
 }

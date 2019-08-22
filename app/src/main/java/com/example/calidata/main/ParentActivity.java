@@ -1,8 +1,10 @@
 package com.example.calidata.main;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -18,11 +20,20 @@ import androidx.core.content.ContextCompat;
 
 import com.example.calidata.R;
 import com.example.calidata.management.ManagerTheme;
+import com.example.calidata.session.SessionManager;
 
 public class ParentActivity extends AppCompatActivity {
     private static final int WORD_LENGTH = 6;
-    private int themeResId;
     public ManagerTheme managerTheme;
+    public SessionManager sessionManager;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        managerTheme = ManagerTheme.getInstance();
+        sessionManager = SessionManager.getInstance(getApplicationContext());
+        setTheme(managerTheme.getThemeId());
+    }
 
     public static boolean isValidEmail(String target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
@@ -69,7 +80,7 @@ public class ParentActivity extends AppCompatActivity {
 
     public int getPrimarySoftColorInTheme() {
         TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorSecondary, typedValue, true);
+        getTheme().resolveAttribute(R.attr.colorAccent, typedValue, true);
         return typedValue.data;
     }
 

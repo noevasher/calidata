@@ -2,16 +2,17 @@ package com.example.calidata.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 
 import com.example.calidata.R;
 import com.example.calidata.login.controller.LoginController;
-import com.example.calidata.login.managmentLogin.RijndaelCrypt;
+import com.example.calidata.login.managment.RijndaelCrypt;
 import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.register.RegisterActivity;
@@ -25,7 +26,22 @@ public class LoginActivity extends ParentActivity {
     @BindView(R.id.button_register)
     public Button registerBtn;
 
-    private SessionManager session;
+    @BindView(R.id.login)
+    public Button loginButton;
+
+    @BindView(R.id.progressBar)
+    public ProgressBar progressBar;
+
+    @BindView(R.id.username)
+    public EditText usernameEditText;
+
+    @BindView(R.id.password)
+    public EditText passwordEditText;
+
+
+    private static final int DEFAULT_BANK = 1;
+    private String user;
+    private String password;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,92 +49,81 @@ public class LoginActivity extends ParentActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        session = new SessionManager(getApplicationContext());
+        //sessionManager.logoutUser();
+        Toast.makeText(this,"" + sessionManager.isLoggedIn(), Toast.LENGTH_LONG).show();
 
-        final EditText usernameEditText = findViewById(R.id.username);
-        final EditText passwordEditText = findViewById(R.id.password);
-        final Button loginButton = findViewById(R.id.login);
-        //final Button registerBtn = findViewById(R.id.button_register);
-
-        usernameEditText.setOnFocusChangeListener((view, hasFocus) -> {
-            if (!hasFocus) {
-                if (usernameEditText.getText().toString().isEmpty()) {
-                    usernameEditText.setError("Campo Requerido");
-                } else {
-                    if (!isValidEmail(usernameEditText.getText().toString())) {
-                        usernameEditText.setError("Email No valido");
+        if(!sessionManager.isLoggedIn()) {
+            usernameEditText.setOnFocusChangeListener((view, hasFocus) -> {
+                if (!hasFocus) {
+                    if (usernameEditText.getText().toString().isEmpty()) {
+                        usernameEditText.setError("Campo Requerido");
+                    } else {
+                        if (!isValidEmail(usernameEditText.getText().toString())) {
+                            usernameEditText.setError("Email No valido");
+                        }
                     }
                 }
-            }
-        });
-        passwordEditText.setOnFocusChangeListener((view, hasFocus) -> {
-            if (!hasFocus) {
-                if (passwordEditText.getText().toString().isEmpty()) {
-                    passwordEditText.setError("Campo Requerido");
-                } else {
-                    if (!isValidLength(passwordEditText.getText().toString())) {
-                        //passwordEditText.setError("Longitud de Contraseña debe ser mayor a 5 caracteres");
+            });
+            passwordEditText.setOnFocusChangeListener((view, hasFocus) -> {
+                if (!hasFocus) {
+                    if (passwordEditText.getText().toString().isEmpty()) {
+                        passwordEditText.setError("Campo Requerido");
+                    } else {
+                        if (!isValidLength(passwordEditText.getText().toString())) {
+                            //passwordEditText.setError("Longitud de Contraseña debe ser mayor a 5 caracteres");
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        passwordEditText.setOnEditorActionListener((v, actionId, event) -> false);
+            passwordEditText.setOnEditorActionListener((v, actionId, event) -> false);
 
-        loginButton.setOnClickListener(v -> {
-            String user = usernameEditText.getText().toString();
-            String password = passwordEditText.getText().toString();
-            try {
-                RijndaelCrypt encryptRijndael = new RijndaelCrypt(password);
+            loginButton.setOnClickListener(v -> {
+                user = usernameEditText.getText().toString();
+                password = passwordEditText.getText().toString();
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.getIndeterminateDrawable().setColorFilter(getColor(R.color.white), android.graphics.PorterDuff.Mode.SRC_ATOP);
 
-                String encryptRij = encryptRijndael.encrypt(password.getBytes());
-                String decryptRij = encryptRijndael.decrypt(encryptRij);
-                Log.i("TAG- encrypt", encryptRij);
-                Log.i("TAG- decrypt", decryptRij);
+                try {
+                    RijndaelCrypt encryptRijndael = new RijndaelCrypt(password);
 
-                String jsonResponse = "{'name' : 'noe', 'password': " + encryptRij + "}";
+                    String encryptRij = encryptRijndael.encrypt(password.getBytes());
 
-                Log.i("Response: ", jsonResponse);
-                LoginController loginController = new LoginController();
-                loginController.loadJSON();
-                /*
-                String encrypt = AESCrypt.encrypt(password);
-                Log.i("TAG- encrypt", encrypt);
-                String random = UUID.randomUUID().toString();
-                Log.i("TAG- random", random);
-                //*/
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            Intent intent = new Intent(LoginActivity.this, CheckbookActivity.class);
-            String word = usernameEditText.getText().toString();
-            switch (user) {
-                case "banamex":
-                    intent.putExtra("bank", 1);
-                    break;
-                case "santander":
-                    intent.putExtra("bank", 2);
-                    break;
-                case "bancomer":
-                    intent.putExtra("bank", 3);
-                    break;
-                default:
-                    intent.putExtra("bank", 2);
-                    break;
-            }
+                    LoginController loginController = new LoginController(getApplicationContext());
+                    loginController.loadJson(user, password).subscribe(response -> {
+                        sessionManager.isLoggedIn();
+                        Integer bankId = response.getBankId() == null ? DEFAULT_BANK : response.getBankId();
+                        pickBank(bankId);
+                        finish();
+                        showLoginFailed(R.string.success_login);
+                        progressBar.setVisibility(View.GONE);
+
+                    }, t -> {
+                        showLoginFailed(R.string.fail_login);
+                        //Toast.makeText(LoginActivity.this, "Error al accesar", Toast.LENGTH_LONG).show();
+                        progressBar.setVisibility(View.GONE);
+
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            });
+
+            registerBtn.setOnClickListener(v -> {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            });
+        }
+        else{
+            Intent intent = new Intent(this, CheckbookActivity.class);
+            int themeId = sessionManager.getTheme();
+            intent.putExtra("bank", themeId);
+            managerTheme.setThemeId(themeId);
             startActivity(intent);
-
-            //session.createLoginSession("ABC", "abc@gmail.com");
-
-            //sessionManager.createSession(user,user);
-
-        });
-
-        registerBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
-        });
+            finish();
+        }
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {
@@ -126,4 +131,35 @@ public class LoginActivity extends ParentActivity {
     }
 
 
+    private String generateRequest(String encryptRij) {
+        return "{'User' : 'noe', 'IdPass': " + encryptRij + "}";
+    }
+
+    private void pickBank(int bank){
+        //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        Intent intent = new Intent(LoginActivity.this, CheckbookActivity.class);
+        switch (bank) {
+            case 1:
+                intent.putExtra("bank", 1);
+                break;
+            case 2:
+                intent.putExtra("bank", 2);
+                break;
+            case 3:
+                intent.putExtra("bank", 3);
+                break;
+            default:
+                intent.putExtra("bank", 2);
+                break;
+        }
+
+        sessionManager.createLoginSession(user, bank);
+
+        startActivity(intent);
+    }
+
+    private boolean validSession(){
+        sessionManager.checkLogin();
+        return false;
+    }
 }

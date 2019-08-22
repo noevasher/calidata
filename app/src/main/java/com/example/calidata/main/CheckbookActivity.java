@@ -50,7 +50,7 @@ public class CheckbookActivity extends ParentActivity {
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
-        setTheame(intent);
+        setTheme(intent);
         String title = getResources().getString(R.string.checkbook_title);
         setToolbar(toolbar, title, false);
 
@@ -92,7 +92,7 @@ public class CheckbookActivity extends ParentActivity {
 
     }
 
-    private void setTheame(Intent intent) {
+    private void setTheme(Intent intent) {
         int positionBank = intent.getIntExtra("bank", 4);
         managerTheme = ManagerTheme.getInstance();
 
