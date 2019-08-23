@@ -1,12 +1,11 @@
 package com.example.calidata.management;
 
-import com.example.calidata.session.SessionManager;
-
 public class ManagerTheme {
     private static ManagerTheme instance = null;
     private int themeId;
+    private int firstTheme;
 
-    public ManagerTheme(){
+    public ManagerTheme() {
 
     }
 
@@ -23,5 +22,13 @@ public class ManagerTheme {
 
     public void setThemeId(int themeId) {
         this.themeId = themeId;
+    }
+
+    public void saveFirstTheme(int themeResId) {
+        this.firstTheme = themeResId;
+    }
+
+    public int getFirstTheme() {
+        return this.firstTheme;
     }
 }

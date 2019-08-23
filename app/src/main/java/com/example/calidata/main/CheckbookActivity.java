@@ -139,8 +139,7 @@ public class CheckbookActivity extends ParentActivity {
                 return true;
             case R.id.action_logout:
                 intent = new Intent(this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                logout(intent);
                 return true;
             default:
                 // If we got here, the user's action was not recognized.

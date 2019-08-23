@@ -27,11 +27,6 @@ public interface JsonPlaceHolderApi {
     @GET("posts")
     Call<List<Post>> getPosts();
 
-    /*
-    @GET("/posts/1")
-    Call<LoginResponse> authentication();
-    //*/
-
     @FormUrlEncoded
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @POST("autenticacion")

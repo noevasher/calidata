@@ -1,7 +1,10 @@
 package com.example.calidata.login;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,7 +19,6 @@ import com.example.calidata.login.managment.RijndaelCrypt;
 import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.register.RegisterActivity;
-import com.example.calidata.session.SessionManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,20 +41,33 @@ public class LoginActivity extends ParentActivity {
     public EditText passwordEditText;
 
 
-    private static final int DEFAULT_BANK = 1;
+    private static final int DEFAULT_BANK = 3;
     private String user;
     private String password;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (managerTheme.getThemeId() != 0) {
+            setTheme(managerTheme.getFirstTheme());
+        } else {
+            PackageInfo packageInfo;
+            try {
+                packageInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_META_DATA);
+                int themeResId = packageInfo.applicationInfo.theme;
+                //String theme = getResources().getResourceEntryName(themeResId);
+                managerTheme.saveFirstTheme(themeResId);
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.e("Error", "error al obtener tema de aplicacion: " + e.getMessage());
+            }
+
+        }
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        //sessionManager.logoutUser();
-        Toast.makeText(this,"" + sessionManager.isLoggedIn(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "" + sessionManager.isLoggedIn(), Toast.LENGTH_LONG).show();
 
-        if(!sessionManager.isLoggedIn()) {
+        if (!sessionManager.isLoggedIn()) {
             usernameEditText.setOnFocusChangeListener((view, hasFocus) -> {
                 if (!hasFocus) {
                     if (usernameEditText.getText().toString().isEmpty()) {
@@ -115,8 +130,7 @@ public class LoginActivity extends ParentActivity {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
             });
-        }
-        else{
+        } else {
             Intent intent = new Intent(this, CheckbookActivity.class);
             int themeId = sessionManager.getTheme();
             intent.putExtra("bank", themeId);
@@ -135,7 +149,7 @@ public class LoginActivity extends ParentActivity {
         return "{'User' : 'noe', 'IdPass': " + encryptRij + "}";
     }
 
-    private void pickBank(int bank){
+    private void pickBank(int bank) {
         //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         Intent intent = new Intent(LoginActivity.this, CheckbookActivity.class);
         switch (bank) {
@@ -153,12 +167,13 @@ public class LoginActivity extends ParentActivity {
                 break;
         }
 
+
         sessionManager.createLoginSession(user, bank);
 
         startActivity(intent);
     }
 
-    private boolean validSession(){
+    private boolean validSession() {
         sessionManager.checkLogin();
         return false;
     }

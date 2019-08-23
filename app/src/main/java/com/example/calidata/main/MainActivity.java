@@ -1,6 +1,5 @@
 package com.example.calidata.main;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -31,10 +30,10 @@ import com.google.android.material.navigation.NavigationView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends ParentActivity {
+
     public static final int PICK_IMAGE = 1;
 
     @BindView(R.id.toolbar)
@@ -69,25 +68,25 @@ public class MainActivity extends ParentActivity {
 
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE) {
-            Log.i("DATA" ,"data: " + data);
-            imageProfile.setImageURI(data.getData());
-            //imageProfile.setImageBitmap();
+            Log.i("DATA", "data: " + data);
+            if (data != null && data.getData() != null) {
+                imageProfile.setImageURI(data.getData());
+            }
         }
     }
 
     private int primaryColor;
 
-    private void pickFromGallery(){
+    private void pickFromGallery() {
         //Create an Intent with action as ACTION_PICK
-        Intent intent=new Intent(Intent.ACTION_PICK);
+        Intent intent = new Intent(Intent.ACTION_PICK);
         // Sets the type as image/*. This ensures only components of type image are selected
         intent.setType("image/*");
         //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
         String[] mimeTypes = {"image/jpeg", "image/png"};
-        intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         // Launching the Intent
         startActivityForResult(intent, PICK_IMAGE);
     }
@@ -108,21 +107,6 @@ public class MainActivity extends ParentActivity {
 
         imageProfile.setOnClickListener(v -> {
             pickFromGallery();
-            /*
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
-
-            /*
-            Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            pickIntent.setType("image/*");
-
-            Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
-
-            startActivityForResult(chooserIntent, PICK_IMAGE);
-            //*/
         });
 
         imageViewActive.setVisibility(View.GONE);

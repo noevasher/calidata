@@ -1,6 +1,7 @@
 package com.example.calidata.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -136,6 +137,12 @@ public class ParentActivity extends AppCompatActivity {
         for (View v : view) {
             v.setVisibility(gone);
         }
+    }
+
+    protected void logout(Intent intent){
+        sessionManager.logoutUser();
+        startActivity(intent);
+        finish();
     }
 
 }

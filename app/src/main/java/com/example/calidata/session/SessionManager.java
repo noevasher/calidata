@@ -3,7 +3,9 @@ package com.example.calidata.session;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 
+import com.example.calidata.R;
 import com.example.calidata.login.LoginActivity;
 import com.example.calidata.main.CheckbookActivity;
 
@@ -44,6 +46,7 @@ public class SessionManager {
     // Email address (make variable public to access from outside)
     public static final String KEY_EMAIL = "email";
     public static final String THEME_ID = "themeId";
+    public static final String FIRST_THEME_ID = "themeId";
 
 
     // Constructor
@@ -158,4 +161,5 @@ public class SessionManager {
         return pref.getInt(THEME_ID, 2);
 
     }
+
 }

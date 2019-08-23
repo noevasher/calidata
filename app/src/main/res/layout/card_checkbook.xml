@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="TextView"
-            android:textColor="@color/white"
+            android:textColor="@color/black_label"
             android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@+id/logo"
             app:layout_constraintTop_toTopOf="@+id/logo" />
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="**** **** **** 0896"
-            android:textColor="@color/white"
+            android:textColor="@color/black_label"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/logo"
             app:layout_constraintStart_toStartOf="@+id/textView_empty"
