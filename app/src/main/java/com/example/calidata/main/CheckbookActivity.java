@@ -2,36 +2,53 @@ package com.example.calidata.main;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calidata.R;
+import com.example.calidata.activities.active.CheckActiveActivity;
+import com.example.calidata.activities.cancel.CheckCancelActivity;
+import com.example.calidata.activities.emit.CheckEmitActivity;
+import com.example.calidata.activities.query.CheckQueryActivity;
 import com.example.calidata.login.LoginActivity;
 import com.example.calidata.main.adapters.ItemClickSupport;
 import com.example.calidata.main.adapters.RecyclerViewAdapterCheckbook;
 import com.example.calidata.management.ManagerTheme;
+import com.example.calidata.utilities.HelpActivity;
 import com.example.calidata.utilities.SettingsActivity;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CheckbookActivity extends ParentActivity {
+
+    @BindView(R.id.drawer)
+    public DrawerLayout drawerLayout;
+
+    @BindView(R.id.nav_view)
+    public NavigationView navigationView;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -43,6 +60,13 @@ public class CheckbookActivity extends ParentActivity {
 
     private ArrayList<String> checkbooks;
 
+    public CircleImageView imageProfile;
+
+    public ImageView imageViewQuery;
+    public ImageView imageViewEmit;
+    public ImageView imageViewCancel;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +77,8 @@ public class CheckbookActivity extends ParentActivity {
         setTheme(intent);
         String title = getResources().getString(R.string.checkbook_title);
         setToolbar(toolbar, title, false);
+
+        initNavBar();
 
         checkbooks = new ArrayList<>();
 
@@ -85,10 +111,80 @@ public class CheckbookActivity extends ParentActivity {
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener(
                 (recyclerView1, position, v) -> {
                     Toast.makeText(CheckbookActivity.this, "position: " + adapter.getItem(position), Toast.LENGTH_LONG).show();
+                    openActions();
+                    /*
                     Intent intent1 = new Intent(CheckbookActivity.this, MainActivity.class);
                     startActivity(intent1);
+                    //*/
                 }
         );
+
+    }
+
+    private void initNavBar() {
+        View header = navigationView.getHeaderView(0);
+        header.setBackgroundColor(getPrimarySoftColorInTheme());
+        TextView textName = header.findViewById(R.id.textView_username);
+        textName.setTextColor(getColor(R.color.white));
+        imageProfile = header.findViewById(R.id.imageView_profile);
+
+        imageProfile.setOnClickListener(v -> {
+            pickFromGallery();
+        });
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.openDrwawer, R.string.openDrwawer) {
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
+            drawerLayout.closeDrawers();
+            Intent intent;
+            switch (menuItem.getItemId()) {
+                /*
+                case R.id.nav_query:
+                    intent = new Intent(this, CheckQueryActivity.class);
+                    startActivity(intent);
+                    return true;
+                case R.id.nav_emit:
+                    intent = new Intent(this, CheckEmitActivity.class);
+                    startActivity(intent);
+                    return true;
+                case R.id.nav_cancel:
+                    intent = new Intent(this, CheckCancelActivity.class);
+                    startActivity(intent);
+                    return true;
+                    //*/
+                case R.id.nav_settings:
+                    intent = new Intent(this, SettingsActivity.class);
+                    startActivity(intent);
+                    return true;
+                case R.id.nav_help:
+                    intent = new Intent(this, HelpActivity.class);
+                    startActivity(intent);
+                    return true;
+                case R.id.nav_close:
+                    intent = new Intent(this, LoginActivity.class);
+                    sessionManager.logoutUser();
+                    startActivity(intent);
+                    finish();
+                    return true;
+                default:
+                    return false;
+            }
+        });
 
     }
 
@@ -125,7 +221,7 @@ public class CheckbookActivity extends ParentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        //getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
@@ -184,6 +280,53 @@ public class CheckbookActivity extends ParentActivity {
 
     }
 
+    public void openActions() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.activity_main, null);
+        builder.setView(view);
+        Toolbar actionToolbar = view.findViewById(R.id.toolbar);
+
+        String title = getString(R.string.main_title);
+        setToolbar(actionToolbar, title, false);
+
+        setImagesListeners(view);
+
+        AlertDialog alertDialog = builder.create();
+
+        //*/
+
+        alertDialog.show();
+
+    }
+
+    private void setImagesListeners(View view) {
+        imageViewQuery = view.findViewById(R.id.imageView_query);
+        imageViewEmit = view.findViewById(R.id.imageView_emit);
+        imageViewCancel = view.findViewById(R.id.imageView_cancel);
+
+        imageViewQuery.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
+        imageViewEmit.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
+        imageViewCancel.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
+        imageViewQuery.setOnClickListener(v -> {
+            Intent intent = new Intent(this, CheckQueryActivity.class);
+            startActivity(intent);
+        });
+
+
+        imageViewEmit.setOnClickListener(v -> {
+            //Intent intent = new Intent(this, CheckEmitActivity.class);
+            //startActivity(intent);
+            openDialog();
+        });
+
+        imageViewCancel.setOnClickListener(v -> {
+            Intent intent = new Intent(this, CheckCancelActivity.class);
+            startActivity(intent);
+        });
+
+
+    }
     private void readQR() {
         try {
 
@@ -211,7 +354,7 @@ public class CheckbookActivity extends ParentActivity {
                 String format = data.getStringExtra("SCAN_RESULT_FORMAT");
                 String num = data.getStringExtra("NUM");
 
-                if(num != null)
+                if (num != null)
                     checkbooks.add(num);
                 else
                     checkbooks.add(contents);
@@ -230,4 +373,17 @@ public class CheckbookActivity extends ParentActivity {
             }
         }
     }
+/*
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_IMAGE) {
+            Log.i("DATA", "data: " + data);
+            if (data != null && data.getData() != null) {
+                imageProfile.setImageURI(data.getData());
+            }
+        }
+    }
+
+ //*/
+
 }

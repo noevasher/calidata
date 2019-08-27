@@ -10,6 +10,16 @@ public class User {
     @SerializedName("userId")
     public Integer userId;
 
+    public Long creationDate;
+
+    public Long getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Long creationDate) {
+        this.creationDate = creationDate;
+    }
+
     public String getTitle() {
         return title;
     }

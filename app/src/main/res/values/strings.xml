@@ -49,6 +49,10 @@
     <string name="emit_delete_label">Esta seguro de emitir el cheque:</string>
     <string name="fail_login">Error al Autenticarse</string>
     <string name="success_login">Login exitoso</string>
+    <string name="change_password_label">Cambiar Password</string>
+    <string name="report_label">Reportar Problema</string>
+    <string name="change_username_label">Cambiar Nombre de Usuario</string>
+    <string name="save">Guardar</string>
 
 
 </resources>

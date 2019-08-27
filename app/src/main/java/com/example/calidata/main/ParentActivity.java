@@ -20,6 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.example.calidata.R;
+import com.example.calidata.login.LoginActivity;
 import com.example.calidata.management.ManagerTheme;
 import com.example.calidata.session.SessionManager;
 
@@ -27,6 +28,7 @@ public class ParentActivity extends AppCompatActivity {
     private static final int WORD_LENGTH = 6;
     public ManagerTheme managerTheme;
     public SessionManager sessionManager;
+    public static final int PICK_IMAGE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +145,38 @@ public class ParentActivity extends AppCompatActivity {
         sessionManager.logoutUser();
         startActivity(intent);
         finish();
+    }
+
+    public void pickFromGallery() {
+        //Create an Intent with action as ACTION_PICK
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        // Sets the type as image/*. This ensures only components of type image are selected
+        intent.setType("image/*");
+        //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
+        String[] mimeTypes = {"image/jpeg", "image/png"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        // Launching the Intent
+        startActivityForResult(intent, PICK_IMAGE);
+    }
+
+    protected void pickBankAndOpenCheckbook(int bank, String user) {
+        Intent intent = new Intent(this, CheckbookActivity.class);
+        switch (bank) {
+            case 1:
+                intent.putExtra("bank", 1);
+                break;
+            case 2:
+                intent.putExtra("bank", 2);
+                break;
+            case 3:
+                intent.putExtra("bank", 3);
+                break;
+            default:
+                intent.putExtra("bank", 2);
+                break;
+        }
+        sessionManager.createLoginSession(user, bank);
+        startActivity(intent);
     }
 
 }

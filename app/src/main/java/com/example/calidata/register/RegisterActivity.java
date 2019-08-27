@@ -15,22 +15,26 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
-import com.example.calidata.main.MainActivity;
+import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
+import com.example.calidata.login.LoginActivity;
+import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.models.User;
 import com.example.calidata.models.UserModel;
 import com.example.calidata.register.controller.RegisterController;
 import com.google.gson.Gson;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RegisterActivity extends ParentActivity{
+public class RegisterActivity extends ParentActivity {
 
-    String[] bank = { "Selecciona Entidad", "Banamex", "Santander", "Bancomer", "Otro"};
+    String[] bank = {"Selecciona Entidad", "Banamex", "Santander", "Bancomer", "Otro"};
     private boolean spinActive = false;
 
     @BindView(R.id.toolbar)
@@ -60,12 +64,12 @@ public class RegisterActivity extends ParentActivity{
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
 
-        ArrayAdapter adapter = new ArrayAdapter(this,R.layout.labels_bank,bank);
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.labels_bank, bank);
         adapter.setDropDownViewResource(R.layout.labels_bank);
 
         spin.setAdapter(adapter);
 
-        if(toolbar != null){
+        if (toolbar != null) {
             toolbar.setTitle(getResources().getString(R.string.register_title));
             final Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_24px);
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
@@ -75,41 +79,56 @@ public class RegisterActivity extends ParentActivity{
             toolbar.setNavigationOnClickListener(view -> finish());
         }
 
-        registerBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        registerBtn.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                String name = nameText.getText().toString();
+                String email = emailText.getText().toString();
+                String password = passText.getText().toString();
 
-            if(ifValidForm()) {
-                User user = new User();
-                user.setBody("Noe");
-                user.setTitle("Title Noe");
-                user.setUserId(19191919);
+                if (ifValidForm()) {
+                    Date currentTime = Calendar.getInstance().getTime();
 
+                    User user = new User();
+                    user.setBody("Noe");
+                    user.setTitle("Title Noe");
+                    user.setUserId(19191919);
+                    user.setCreationDate(currentTime.getTime());
+
+                /*
                 RegisterController registerController = new RegisterController(user, getApplicationContext());
-                registerController.loadJson();
-                intent.putExtra("bank", spin.getSelectedItemPosition());
-                startActivity(intent);
-                finish();
+                registerController.loadJson().subscribe(response -> {
+                    //intent.putExtra("bank", spin.getSelectedItemPosition());
+                    sessionManager.createLoginSession(email, spin.getSelectedItemPosition());
+                    pickBankAndOpenCheckbook(spin.getSelectedItemPosition(), email);
+                    LoginActivity.getInstance().finish();
+                    finish();
+                });
+                //*/
+                    sessionManager.createLoginSession(email, spin.getSelectedItemPosition());
+                    pickBankAndOpenCheckbook(spin.getSelectedItemPosition(), email);
+                    LoginActivity.getInstance().finish();
+                    finish();
+
+                }
+
+                UserModel userModel = new UserModel();
+                userModel.setName(name);
+                userModel.setEmail(email);
+                userModel.setPassword(password);
+                userModel.setToken(UUID.randomUUID().toString());
+                Gson gson = new Gson();
+                String json = gson.toJson(userModel);
+
+                System.out.println(json);
+
             }
-            String name  = nameText.getText().toString();
-            String email  = emailText.getText().toString();
-            String password = passText.getText().toString();
-
-            UserModel userModel = new UserModel();
-            userModel.setName(name);
-            userModel.setEmail(email);
-            userModel.setPassword(password);
-            userModel.setToken(UUID.randomUUID().toString());
-            Gson gson = new Gson();
-            String json = gson.toJson(userModel);
-
-            System.out.println(json);
-
         });
 
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(i > 0){
+                if (i > 0) {
                     spinActive = true;
                 }
             }
@@ -134,37 +153,37 @@ public class RegisterActivity extends ParentActivity{
                 && comparePassword(passText, confirmPassText);
     }
 
-    private boolean isValidSpinner(Spinner spinner){
+    private boolean isValidSpinner(Spinner spinner) {
         return spinner.getSelectedItemPosition() == 0;
     }
 
-    private void validEmptyFields(){
+    private void validEmptyFields() {
         nameText.setOnFocusChangeListener((view, focus) -> {
-            if(!focus){
+            if (!focus) {
                 displayEmptyField(nameText);
             }
         });
         emailText.setOnFocusChangeListener((view, focus) -> {
-            if(!focus){
+            if (!focus) {
                 displayEmptyField(emailText);
             }
         });
 
         passText.setOnFocusChangeListener((view, focus) -> {
-            if(!focus){
+            if (!focus) {
                 displayEmptyField(passText);
-                if(!isValidLength(passText.getText().toString())){
+                if (!isValidLength(passText.getText().toString())) {
                     passText.setError("Contraseña debe de tener 6 o más caracteres");
                 }
             }
         });
         confirmPassText.setOnFocusChangeListener((view, focus) -> {
-            if(!focus){
+            if (!focus) {
                 displayEmptyField(confirmPassText);
 
-                if(!isValidLength(confirmPassText.getText().toString())){
+                if (!isValidLength(confirmPassText.getText().toString())) {
                     confirmPassText.setError("Contraseña debe de tener 6 o más caracteres");
-                }else {
+                } else {
                     comparePassword(passText, confirmPassText);
                 }
             }

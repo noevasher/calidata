@@ -21,7 +21,6 @@
         <activity android:name=".activities.emit.CheckEmitActivity" />
         <activity android:name=".activities.query.filter.FilterActivity" />
         <activity android:name=".activities.query.CheckQueryActivity" />
-        <activity android:name=".main.MainActivity" />
         <activity android:name=".register.RegisterActivity" />
         <activity android:name=".login.LoginActivity">
             <intent-filter>

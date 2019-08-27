@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 
+import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
 import com.example.calidata.login.controller.LoginController;
 import com.example.calidata.login.managment.RijndaelCrypt;
@@ -41,13 +42,15 @@ public class LoginActivity extends ParentActivity {
     public EditText passwordEditText;
 
 
-    private static final int DEFAULT_BANK = 3;
+    private static final int DEFAULT_BANK = 2;
     private String user;
     private String password;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loginActivity = this;
+
         if (managerTheme.getThemeId() != 0) {
             setTheme(managerTheme.getFirstTheme());
         } else {
@@ -92,44 +95,49 @@ public class LoginActivity extends ParentActivity {
             });
 
             passwordEditText.setOnEditorActionListener((v, actionId, event) -> false);
+            loginButton.setOnClickListener(new OnSingleClickListener() {
+                @Override
+                public void onSingleClick(View v) {
+                    user = usernameEditText.getText().toString();
+                    password = passwordEditText.getText().toString();
+                    progressBar.setVisibility(View.VISIBLE);
+                    progressBar.getIndeterminateDrawable().setColorFilter(getColor(R.color.white), android.graphics.PorterDuff.Mode.SRC_ATOP);
 
-            loginButton.setOnClickListener(v -> {
-                user = usernameEditText.getText().toString();
-                password = passwordEditText.getText().toString();
-                progressBar.setVisibility(View.VISIBLE);
-                progressBar.getIndeterminateDrawable().setColorFilter(getColor(R.color.white), android.graphics.PorterDuff.Mode.SRC_ATOP);
+                    try {
+                        RijndaelCrypt encryptRijndael = new RijndaelCrypt(password);
 
-                try {
-                    RijndaelCrypt encryptRijndael = new RijndaelCrypt(password);
+                        String encryptRij = encryptRijndael.encrypt(password.getBytes());
 
-                    String encryptRij = encryptRijndael.encrypt(password.getBytes());
+                        LoginController loginController = new LoginController(getApplicationContext());
+                        loginController.loadJson(user, password).subscribe(response -> {
+                            sessionManager.isLoggedIn();
+                            Integer bankId = response.getBankId() == null ? DEFAULT_BANK : response.getBankId();
+                            pickBankAndOpenCheckbook(bankId, user);
+                            finish();
+                            showLoginFailed(R.string.success_login);
+                            progressBar.setVisibility(View.GONE);
 
-                    LoginController loginController = new LoginController(getApplicationContext());
-                    loginController.loadJson(user, password).subscribe(response -> {
-                        sessionManager.isLoggedIn();
-                        Integer bankId = response.getBankId() == null ? DEFAULT_BANK : response.getBankId();
-                        pickBank(bankId);
-                        finish();
-                        showLoginFailed(R.string.success_login);
-                        progressBar.setVisibility(View.GONE);
+                        }, t -> {
+                            showLoginFailed(R.string.fail_login);
+                            //Toast.makeText(LoginActivity.this, "Error al accesar", Toast.LENGTH_LONG).show();
+                            progressBar.setVisibility(View.GONE);
 
-                    }, t -> {
-                        showLoginFailed(R.string.fail_login);
-                        //Toast.makeText(LoginActivity.this, "Error al accesar", Toast.LENGTH_LONG).show();
-                        progressBar.setVisibility(View.GONE);
+                        });
 
-                    });
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-
             });
 
-            registerBtn.setOnClickListener(v -> {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
+            registerBtn.setOnClickListener(new OnSingleClickListener() {
+                @Override
+                public void onSingleClick(View v) {
+                    Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                    startActivity(intent);
+                }
             });
+
         } else {
             Intent intent = new Intent(this, CheckbookActivity.class);
             int themeId = sessionManager.getTheme();
@@ -138,6 +146,12 @@ public class LoginActivity extends ParentActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    static LoginActivity loginActivity;
+
+    public static LoginActivity getInstance(){
+        return loginActivity;
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {
@@ -149,29 +163,7 @@ public class LoginActivity extends ParentActivity {
         return "{'User' : 'noe', 'IdPass': " + encryptRij + "}";
     }
 
-    private void pickBank(int bank) {
-        //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        Intent intent = new Intent(LoginActivity.this, CheckbookActivity.class);
-        switch (bank) {
-            case 1:
-                intent.putExtra("bank", 1);
-                break;
-            case 2:
-                intent.putExtra("bank", 2);
-                break;
-            case 3:
-                intent.putExtra("bank", 3);
-                break;
-            default:
-                intent.putExtra("bank", 2);
-                break;
-        }
 
-
-        sessionManager.createLoginSession(user, bank);
-
-        startActivity(intent);
-    }
 
     private boolean validSession() {
         sessionManager.checkLogin();
