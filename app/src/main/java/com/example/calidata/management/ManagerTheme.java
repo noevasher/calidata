@@ -3,6 +3,7 @@ package com.example.calidata.management;
 public class ManagerTheme {
     private static ManagerTheme instance = null;
     private int themeId;
+    private String bankName;
     private int firstTheme;
 
     public ManagerTheme() {
@@ -30,5 +31,13 @@ public class ManagerTheme {
 
     public int getFirstTheme() {
         return this.firstTheme;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
     }
 }

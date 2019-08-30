@@ -46,6 +46,8 @@ public class SessionManager {
     // Email address (make variable public to access from outside)
     public static final String KEY_EMAIL = "email";
     public static final String THEME_ID = "themeId";
+    public static final String KEY_BANK_NAME = "bankName";
+
     public static final String FIRST_THEME_ID = "themeId";
 
 
@@ -80,6 +82,20 @@ public class SessionManager {
 
         // Storing name in pref
         editor.putString(KEY_USER_ID, userId);
+
+        // Storing email in pref
+        editor.putString(KEY_EMAIL, email);
+
+        // commit changes
+        editor.commit();
+    }
+
+    public void createLoginSessionBank(String email, String bankName){
+        // Storing login value as TRUE
+        editor.putBoolean(IS_LOGIN, true);
+
+        // Storing name in pref
+        editor.putString(KEY_BANK_NAME, bankName);
 
         // Storing email in pref
         editor.putString(KEY_EMAIL, email);

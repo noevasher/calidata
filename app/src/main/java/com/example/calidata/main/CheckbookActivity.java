@@ -2,7 +2,6 @@ package com.example.calidata.main;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -23,13 +21,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
-import com.example.calidata.activities.active.CheckActiveActivity;
-import com.example.calidata.activities.cancel.CheckCancelActivity;
-import com.example.calidata.activities.emit.CheckEmitActivity;
-import com.example.calidata.activities.query.CheckQueryActivity;
 import com.example.calidata.login.LoginActivity;
-import com.example.calidata.main.adapters.ItemClickSupport;
 import com.example.calidata.main.adapters.RecyclerViewAdapterCheckbook;
 import com.example.calidata.management.ManagerTheme;
 import com.example.calidata.utilities.HelpActivity;
@@ -74,7 +68,8 @@ public class CheckbookActivity extends ParentActivity {
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
-        setTheme(intent);
+        //setTheme(intent);
+        setThemeByName(intent);
         String title = getResources().getString(R.string.checkbook_title);
         setToolbar(toolbar, title, false);
 
@@ -95,29 +90,27 @@ public class CheckbookActivity extends ParentActivity {
         adapter = new RecyclerViewAdapterCheckbook(this, checkbooks);
 
         recyclerView.setAdapter(adapter);
-        addCheckbookBtn.setOnClickListener(v -> {
-            /*
-            Toast.makeText(this, "Add new checkbook", Toast.LENGTH_LONG).show();
-            Intent intent1 = new Intent(this, CheckActiveActivity.class);
-            startActivity(intent1);
-            //*/
-            openDialog();
 
+        addCheckbookBtn.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                openDialog();
+            }
         });
+
         addCheckbookBtn.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
 
         addCheckbookBtn.bringToFront();
 
+        /*
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener(
                 (recyclerView1, position, v) -> {
                     Toast.makeText(CheckbookActivity.this, "position: " + adapter.getItem(position), Toast.LENGTH_LONG).show();
                     openActions();
-                    /*
-                    Intent intent1 = new Intent(CheckbookActivity.this, MainActivity.class);
-                    startActivity(intent1);
-                    //*/
+
                 }
         );
+        //*/
 
     }
 
@@ -128,8 +121,11 @@ public class CheckbookActivity extends ParentActivity {
         textName.setTextColor(getColor(R.color.white));
         imageProfile = header.findViewById(R.id.imageView_profile);
 
-        imageProfile.setOnClickListener(v -> {
-            pickFromGallery();
+        imageProfile.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                pickFromGallery();
+            }
         });
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
@@ -216,6 +212,42 @@ public class CheckbookActivity extends ParentActivity {
         }
     }
 
+    private void setThemeByName(Intent intent) {
+        String bankName = intent.getStringExtra("bankName");
+        managerTheme = ManagerTheme.getInstance();
+        if(bankName != null) {
+            managerTheme.setBankName(bankName);
+            switch (bankName) {
+                case "santander":
+                    setTheme(R.style.AppThemeSantander);
+                    managerTheme.setThemeId(R.style.AppThemeSantander);
+
+                    break;
+                case "hsbc":
+                case "scotiabank":
+                case "banorte":
+                case "banamex":
+                    setTheme(R.style.AppThemeBanamex);
+                    managerTheme.setThemeId(R.style.AppThemeBanamex);
+                    break;
+                case "bancomer":
+                    setTheme(R.style.AppThemeBancomer);
+                    managerTheme.setThemeId(R.style.AppThemeBancomer);
+                    break;
+                case "banxico":
+                case "inbursa":
+                case "compartamos":
+                case "bancoppel":
+                default:
+                    setTheme(R.style.AppThemeOther);
+                    managerTheme.setThemeId(R.style.AppThemeOther);
+                    break;
+            }
+        }else{
+            Log.e("Error", "bankName is null");
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -257,76 +289,31 @@ public class CheckbookActivity extends ParentActivity {
         label.setText(getString(R.string.active_checkbook_label));
         Button scanBtn = view.findViewById(R.id.button_yes);
         scanBtn.setBackgroundColor(getPrimaryColorInTheme());
-        scanBtn.setOnClickListener(v -> {
-            //Intent intent = new Intent(v.getContext(), CheckEmitActivity.class);
-            //intent.putExtra("QR", true);
-            //startActivity(intent);
-            readQR();
-            alertDialog.dismiss();
+        scanBtn.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                readQR();
+                alertDialog.dismiss();
+            }
         });
 
         Button searchBtn = view.findViewById(R.id.button_no);
         searchBtn.setText(getString(R.string.insert_data));
         searchBtn.setBackgroundColor(getPrimaryColorInTheme());
-        searchBtn.setOnClickListener(v -> {
-            Intent i = new Intent(this, CheckbookAddActivity.class);
-            startActivityForResult(i, 0);
-            alertDialog.dismiss();
-
+        searchBtn.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                Intent i = new Intent(v.getContext(), CheckbookAddActivity.class);
+                startActivityForResult(i, 0);
+                alertDialog.dismiss();
+            }
         });
-        //*/
 
         alertDialog.show();
 
     }
 
-    public void openActions() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.activity_main, null);
-        builder.setView(view);
-        Toolbar actionToolbar = view.findViewById(R.id.toolbar);
 
-        String title = getString(R.string.main_title);
-        setToolbar(actionToolbar, title, false);
-
-        setImagesListeners(view);
-
-        AlertDialog alertDialog = builder.create();
-
-        //*/
-
-        alertDialog.show();
-
-    }
-
-    private void setImagesListeners(View view) {
-        imageViewQuery = view.findViewById(R.id.imageView_query);
-        imageViewEmit = view.findViewById(R.id.imageView_emit);
-        imageViewCancel = view.findViewById(R.id.imageView_cancel);
-
-        imageViewQuery.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
-        imageViewEmit.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
-        imageViewCancel.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
-        imageViewQuery.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CheckQueryActivity.class);
-            startActivity(intent);
-        });
-
-
-        imageViewEmit.setOnClickListener(v -> {
-            //Intent intent = new Intent(this, CheckEmitActivity.class);
-            //startActivity(intent);
-            openDialog();
-        });
-
-        imageViewCancel.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CheckCancelActivity.class);
-            startActivity(intent);
-        });
-
-
-    }
     private void readQR() {
         try {
 
@@ -353,6 +340,13 @@ public class CheckbookActivity extends ParentActivity {
                 String contents = data.getStringExtra("SCAN_RESULT");
                 String format = data.getStringExtra("SCAN_RESULT_FORMAT");
                 String num = data.getStringExtra("NUM");
+                Bundle bundle = data.getExtras();
+
+                //SCAN_RESULT=ntI1Rct8JNC1HfTgKMnO3hRIfdckeVeybG1ACMmRJzruA8v1vzq2TW3dvgk5/58E2VFOfoceqnC4x8ckorpeTg==
+                //SCAN_RESULT_BYTE_SEGMENTS_0=[B@1548ca6, SCAN_RESULT_BYTES=[B@23ea6e7
+                //SCAN_RESULT_FORMAT=QR_CODE
+                // SCAN_RESULT_ERROR_CORRECTION_LEVEL=M
+
 
                 if (num != null)
                     checkbooks.add(num);
@@ -370,6 +364,12 @@ public class CheckbookActivity extends ParentActivity {
             if (resultCode == RESULT_CANCELED) {
                 //handle cancel
                 Log.i("TAG-QR", "CANCELADO");
+            }
+        }
+        if (requestCode == PICK_IMAGE) {
+            Log.i("DATA", "data: " + data);
+            if (data != null && data.getData() != null) {
+                imageProfile.setImageURI(data.getData());
             }
         }
     }

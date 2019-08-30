@@ -1,9 +1,10 @@
 package com.example.calidata.register;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,25 +19,28 @@ import androidx.core.content.ContextCompat;
 import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
 import com.example.calidata.login.LoginActivity;
-import com.example.calidata.main.CheckbookActivity;
+import com.example.calidata.login.managment.AESCrypt;
+import com.example.calidata.login.managment.RijndaelCrypt;
 import com.example.calidata.main.ParentActivity;
+import com.example.calidata.models.Bank;
 import com.example.calidata.models.User;
-import com.example.calidata.models.UserModel;
 import com.example.calidata.register.controller.RegisterController;
 import com.google.gson.Gson;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RegisterActivity extends ParentActivity {
 
-    String[] bank = {"Selecciona Entidad", "Banamex", "Santander", "Bancomer", "Otro"};
+    //String[] bank = {"Selecciona Entidad", "Banamex", "Santander", "Bancomer", "Otro"};
+    ArrayList<String> bankNames = new ArrayList<>();
     private boolean spinActive = false;
-
+    private HashMap<String, Object> bankIds = new HashMap<>();
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
@@ -58,15 +62,18 @@ public class RegisterActivity extends ParentActivity {
     @BindView(R.id.spinner)
     public Spinner spin;
 
+    private RegisterController registerController;
+
+    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
 
-        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.labels_bank, bank);
+        bankNames.add("Selecciona Entidad");
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.labels_bank, bankNames);
         adapter.setDropDownViewResource(R.layout.labels_bank);
-
         spin.setAdapter(adapter);
 
         if (toolbar != null) {
@@ -78,49 +85,57 @@ public class RegisterActivity extends ParentActivity {
             toolbar.setNavigationIcon(upArrow);
             toolbar.setNavigationOnClickListener(view -> finish());
         }
+        registerController = new RegisterController(getApplicationContext());
+        registerController.getBanks().subscribe(response -> {
+            for (Bank bank : response) {
+                Log.i("TAG", bank.getIdBank() + "--> " + bank.getNameBank());
+                bankNames.add(bank.getNameBank());
+                bankIds.put(bank.getNameBank(), bank.getIdBank());
+            }
+            adapter.notifyDataSetChanged();
+
+        });
 
         registerBtn.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
-                String name = nameText.getText().toString();
                 String email = emailText.getText().toString();
                 String password = passText.getText().toString();
+                String name = nameText.getText().toString();
+                String bankNameSpin = (String) spin.getItemAtPosition(spin.getSelectedItemPosition());
+                int bankId = getIdBank(bankNameSpin);
 
-                if (ifValidForm()) {
-                    Date currentTime = Calendar.getInstance().getTime();
+                RijndaelCrypt encryptRijndael = new RijndaelCrypt(password);
+                //Yjcaqh0G8L9WsWrlW7K9Jg==
+                //String encryptRij = encryptRijndael.encrypt(password.getBytes());
+                //encryptRij = encryptRij.replace("\n", "").replace("\r", "");
+                try {
+                    String encryptPassword = AESCrypt.encrypt(password);
+                    encryptPassword = encryptPassword.replace("\n", "").replace("\r", "");
 
-                    User user = new User();
-                    user.setBody("Noe");
-                    user.setTitle("Title Noe");
-                    user.setUserId(19191919);
-                    user.setCreationDate(currentTime.getTime());
+                    if (ifValidForm()) {
 
-                /*
-                RegisterController registerController = new RegisterController(user, getApplicationContext());
-                registerController.loadJson().subscribe(response -> {
-                    //intent.putExtra("bank", spin.getSelectedItemPosition());
-                    sessionManager.createLoginSession(email, spin.getSelectedItemPosition());
-                    pickBankAndOpenCheckbook(spin.getSelectedItemPosition(), email);
-                    LoginActivity.getInstance().finish();
-                    finish();
-                });
-                //*/
-                    sessionManager.createLoginSession(email, spin.getSelectedItemPosition());
-                    pickBankAndOpenCheckbook(spin.getSelectedItemPosition(), email);
-                    LoginActivity.getInstance().finish();
-                    finish();
 
+                        //User newUser = new User(name, email, encryptRij, bankId);
+                        User newUser = new User(name, email, encryptPassword, bankId);
+
+                        Gson gson = new Gson();
+                        String json = gson.toJson(newUser);
+
+                        System.out.println(json);
+                        registerController.registerUserByBody(newUser).subscribe(response -> {
+                            //registerController_.registerUserByJson(json).subscribe(response -> {
+                            pickBankAndOpenCheckbookByName(bankNameSpin, email);
+                            LoginActivity.getInstance().finish();
+                            finish();
+                        }, t -> {
+                            Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
-                UserModel userModel = new UserModel();
-                userModel.setName(name);
-                userModel.setEmail(email);
-                userModel.setPassword(password);
-                userModel.setToken(UUID.randomUUID().toString());
-                Gson gson = new Gson();
-                String json = gson.toJson(userModel);
-
-                System.out.println(json);
 
             }
         });
@@ -135,7 +150,7 @@ public class RegisterActivity extends ParentActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                Toast.makeText(getApplicationContext(), "Selecciona una entidad", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.select_bank_label), Toast.LENGTH_LONG).show();
             }
         });
         validEmptyFields();
@@ -188,5 +203,18 @@ public class RegisterActivity extends ParentActivity {
                 }
             }
         });
+    }
+
+    private int getIdBank(String value) {
+        long i = 0;
+        for (Iterator<Map.Entry<String, Object>> entries = bankIds.entrySet().iterator(); entries.hasNext(); ) {
+            Map.Entry<String, Object> entry = entries.next();
+            String name = entry.getKey();
+            int id = (int) entry.getValue();
+            if (name.equals(value))
+                return id;
+        }
+
+        return 0;
     }
 }

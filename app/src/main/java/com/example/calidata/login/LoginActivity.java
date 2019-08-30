@@ -1,5 +1,6 @@
 package com.example.calidata.login;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -16,14 +17,18 @@ import androidx.annotation.StringRes;
 import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
 import com.example.calidata.login.controller.LoginController;
+import com.example.calidata.login.managment.AESCrypt;
 import com.example.calidata.login.managment.RijndaelCrypt;
 import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentActivity;
+import com.example.calidata.models.Bank;
 import com.example.calidata.register.RegisterActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
+@SuppressLint("CheckResult")
 public class LoginActivity extends ParentActivity {
 
     @BindView(R.id.button_register)
@@ -53,6 +58,7 @@ public class LoginActivity extends ParentActivity {
 
         if (managerTheme.getThemeId() != 0) {
             setTheme(managerTheme.getFirstTheme());
+
         } else {
             PackageInfo packageInfo;
             try {
@@ -67,8 +73,6 @@ public class LoginActivity extends ParentActivity {
         }
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-
-        Toast.makeText(this, "" + sessionManager.isLoggedIn(), Toast.LENGTH_LONG).show();
 
         if (!sessionManager.isLoggedIn()) {
             usernameEditText.setOnFocusChangeListener((view, hasFocus) -> {
@@ -104,18 +108,27 @@ public class LoginActivity extends ParentActivity {
                     progressBar.getIndeterminateDrawable().setColorFilter(getColor(R.color.white), android.graphics.PorterDuff.Mode.SRC_ATOP);
 
                     try {
-                        RijndaelCrypt encryptRijndael = new RijndaelCrypt(password);
-
-                        String encryptRij = encryptRijndael.encrypt(password.getBytes());
+                        //RijndaelCrypt encryptRijndael = new RijndaelCrypt(password);
+                        //String encryptRij = encryptRijndael.encrypt(password.getBytes());
+                        //encryptRij = encryptRij.replace("\n", "").replace("\r", "");
+                        String encryptPassword = AESCrypt.encrypt(password);
+                        encryptPassword = encryptPassword.replace("\n", "").replace("\r", "");
 
                         LoginController loginController = new LoginController(getApplicationContext());
-                        loginController.loadJson(user, password).subscribe(response -> {
+                        loginController.authentication(user, encryptPassword).subscribe(response -> {
                             sessionManager.isLoggedIn();
                             Integer bankId = response.getBankId() == null ? DEFAULT_BANK : response.getBankId();
-                            pickBankAndOpenCheckbook(bankId, user);
-                            finish();
-                            showLoginFailed(R.string.success_login);
-                            progressBar.setVisibility(View.GONE);
+                            loginController.getBanks().subscribe(list -> {
+                               for(Bank bank: list){
+                                   if (bank.getIdBank() == bankId) {
+                                       pickBankAndOpenCheckbookByName(bank.getNameBank(), user);
+                                       finish();
+                                       showLoginFailed(R.string.success_login);
+                                       progressBar.setVisibility(View.GONE);
+                                   }
+                               }
+                            });
+
 
                         }, t -> {
                             showLoginFailed(R.string.fail_login);
@@ -142,7 +155,7 @@ public class LoginActivity extends ParentActivity {
             Intent intent = new Intent(this, CheckbookActivity.class);
             int themeId = sessionManager.getTheme();
             intent.putExtra("bank", themeId);
-            managerTheme.setThemeId(themeId);
+            managerTheme. setThemeId(themeId);
             startActivity(intent);
             finish();
         }

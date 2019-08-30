@@ -8,10 +8,12 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
@@ -24,13 +26,15 @@ public class RijndaelCrypt {
     private static String TRANSFORMATION = "AES/CBC/PKCS7Padding";
     private static String ALGORITHM = "AES";
     private static String DIGEST = "MD5";
+    private static byte[] IV = "ThisIsUrPassword".getBytes();
+
 
     private static Cipher _cipher;
     private static SecretKey _password;
     private static IvParameterSpec _IVParamSpec;
 
     //16-byte private key
-    private static byte[] IV = "ThisIsUrPassword".getBytes();
+
 
     public RijndaelCrypt(String password) {
 
@@ -115,6 +119,40 @@ public class RijndaelCrypt {
             return null;
         }
 
+    }
+
+    public static byte[] encrypt(String toEncrypt, String key) throws Exception {
+        // create a binary key from the argument key (seed)
+        SecureRandom sr = new SecureRandom(key.getBytes());
+        KeyGenerator kg = KeyGenerator.getInstance("Rijndael");
+        kg.init(sr);
+        SecretKey sk = kg.generateKey();
+
+        // create an instance of cipher
+        Cipher cipher = Cipher.getInstance("Rijndael");
+
+        // initialize the cipher with the key
+        cipher.init(Cipher.ENCRYPT_MODE, sk);
+
+        // enctypt!
+        byte[] encrypted = cipher.doFinal(toEncrypt.getBytes());
+
+        return encrypted;
+    }
+
+    public static String decrypt(byte[] toDecrypt, String key) throws Exception {
+        // create a binary key from the argument key (seed)
+        SecureRandom sr = new SecureRandom(key.getBytes());
+        KeyGenerator kg = KeyGenerator.getInstance("Rijndael");
+        kg.init(sr);
+        SecretKey sk = kg.generateKey();
+
+        // do the decryption with that key
+        Cipher cipher = Cipher.getInstance("Rijndael");
+        cipher.init(Cipher.DECRYPT_MODE, sk);
+        byte[] decrypted = cipher.doFinal(toDecrypt);
+
+        return new String(decrypted);
     }
 
 }

@@ -1,46 +1,77 @@
 package com.example.calidata.models;
 
+
 import com.google.gson.annotations.SerializedName;
 
 public class User {
-    @SerializedName("title")
-    public String title;
-    @SerializedName("body")
-    public String body;
-    @SerializedName("userId")
-    public Integer userId;
+    private String userId;
 
-    public Long creationDate;
+    public String userName;
 
-    public Long getCreationDate() {
-        return creationDate;
+    public String email;
+
+    public Integer bankId;
+
+    public String password;
+
+    @SerializedName("exito")
+    public boolean isSuccess;
+
+    @SerializedName("mensaje")
+    public String message;
+
+    public User(String userName, String email, String password, Integer bankId) {
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.bankId = bankId;
     }
 
-    public void setCreationDate(Long creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Integer getBankId() {
+        return bankId;
+    }
+
+    public void setBankId(Integer bankId) {
+        this.bankId = bankId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

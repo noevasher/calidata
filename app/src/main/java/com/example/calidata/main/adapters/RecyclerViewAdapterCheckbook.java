@@ -1,19 +1,32 @@
 package com.example.calidata.main.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
+import com.example.calidata.activities.cancel.CheckCancelActivity;
+import com.example.calidata.activities.query.CheckQueryActivity;
+import com.example.calidata.main.CheckbookActivity;
+import com.example.calidata.main.CheckbookAddActivity;
 import com.example.calidata.management.ManagerTheme;
+import com.google.zxing.common.StringUtils;
 
 import java.util.List;
 
@@ -26,6 +39,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     private LayoutInflater mInflater;
     private Context mContext;
     private int themeId;
+    private String bankName;
 
     // data is passed into the constructor
     public RecyclerViewAdapterCheckbook(Context context, List<String> data) {
@@ -34,6 +48,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         this.mContext = context;
         ManagerTheme managerTheme = ManagerTheme.getInstance();
         themeId = managerTheme.getThemeId();
+        bankName = managerTheme.getBankName();
 
     }
 
@@ -60,10 +75,22 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
         } else {
             String number = mData.get(position);
-            Drawable logoDrawable = getLogoDrawable(themeId);
+            //Drawable logoDrawable = getLogoDrawable(themeId);
+            Drawable logoDrawable = getLogoDrawableByBankName(bankName);
+
             holder.logo.setImageDrawable(logoDrawable);
-            holder.textBank.setText(getBankName(themeId));
+            //holder.textBank.setText(getBankName(themeId));
+            String output = bankName.substring(0, 1).toUpperCase() + bankName.substring(1);
+
+            holder.textBank.setText(output);
             holder.textViewCheckNumber.setText(number);
+            holder.itemView.setOnClickListener(new OnSingleClickListener() {
+                @Override
+                public void onSingleClick(View v) {
+                    Log.i("AAAA", "click in item card");
+                    openActions();
+                }
+            });
         }
     }
 
@@ -132,6 +159,33 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
     }
 
+    private Drawable getLogoDrawableByBankName(String bankName) {
+
+        switch (bankName) {
+            case "santander":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_santander_logo);
+            case "banamex":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_citibanamex_logo);
+            case "hsbc":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_hsbc_logo);
+            case "bancomer":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_bancomer_logo);
+            case "banxico":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_banxico_logo);
+            case "scotiabank":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_scotiabank_logo);
+            case "banorte":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_banorte_logo);
+            case "inbursa":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_inbursa_logo);
+            case "compartamos":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_compartamos_logo);
+            default:
+                break;
+        }
+        return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
+    }
+
     private String getBankName(int themeId) {
 
         switch (themeId) {
@@ -155,5 +209,114 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         return "Otro Banco";
     }
 
+    public void openActions() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        LayoutInflater inflater = ((CheckbookActivity) mContext).getLayoutInflater();
+        ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.activity_main, null);
+        builder.setView(view);
+        Toolbar actionToolbar = view.findViewById(R.id.toolbar);
+
+        String title = mContext.getString(R.string.main_title);
+        ((CheckbookActivity) mContext).setToolbar(actionToolbar, title, false);
+
+        setImagesListeners(view);
+
+        AlertDialog alertDialog = builder.create();
+
+        //*/
+
+        alertDialog.show();
+
+    }
+
+
+    private void setImagesListeners(View view) {
+        ImageView imageViewQuery = view.findViewById(R.id.imageView_query);
+        ImageView imageViewEmit = view.findViewById(R.id.imageView_emit);
+        ImageView imageViewCancel = view.findViewById(R.id.imageView_cancel);
+
+        imageViewQuery.setColorFilter(((CheckbookActivity) mContext).getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
+        imageViewEmit.setColorFilter(((CheckbookActivity) mContext).getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
+        imageViewCancel.setColorFilter(((CheckbookActivity) mContext).getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
+
+        imageViewQuery.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                Intent intent = new Intent(mContext, CheckQueryActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
+
+        imageViewEmit.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                openDialog();
+            }
+        });
+
+        imageViewCancel.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                Intent intent = new Intent(mContext, CheckCancelActivity.class);
+                mContext.startActivity(intent);
+
+            }
+        });
+
+    }
+
+    public void openDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        LayoutInflater inflater = ((CheckbookActivity) mContext).getLayoutInflater();
+        ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.emit_dialog, null);
+        builder.setView(view);
+
+        AlertDialog alertDialog = builder.create();
+
+        TextView label = view.findViewById(R.id.textView_label);
+        label.setText(((CheckbookActivity) mContext).getString(R.string.active_checkbook_label));
+        Button scanBtn = view.findViewById(R.id.button_yes);
+        scanBtn.setBackgroundColor(((CheckbookActivity) mContext).getPrimaryColorInTheme());
+        scanBtn.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                readQR();
+                alertDialog.dismiss();
+            }
+        });
+
+        Button searchBtn = view.findViewById(R.id.button_no);
+        searchBtn.setText(mContext.getString(R.string.insert_data));
+        searchBtn.setBackgroundColor(((CheckbookActivity) mContext).getPrimaryColorInTheme());
+        searchBtn.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                Intent i = new Intent(v.getContext(), CheckbookAddActivity.class);
+                ((CheckbookActivity) mContext).startActivityForResult(i, 0);
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
+
+    }
+
+    private void readQR() {
+        try {
+
+            Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+            intent.putExtra("SCAN_MODE", "QR_CODE_MODE"); // "PRODUCT_MODE for bar codes
+            intent.putExtra("SCAN_MODE", "BAR_CODE_MODE"); // "PRODUCT_MODE for bar codes
+
+            ((CheckbookActivity) mContext).startActivityForResult(intent, 0);
+
+        } catch (Exception e) {
+
+            Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
+            Intent marketIntent = new Intent(Intent.ACTION_VIEW, marketUri);
+            ((CheckbookActivity) mContext).startActivity(marketIntent);
+
+        }
+    }
 
 }

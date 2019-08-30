@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -35,6 +37,7 @@ public class ParentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         managerTheme = ManagerTheme.getInstance();
         sessionManager = SessionManager.getInstance(getApplicationContext());
+        //initCountdown(10000);
         setTheme(managerTheme.getThemeId());
     }
 
@@ -159,8 +162,10 @@ public class ParentActivity extends AppCompatActivity {
         startActivityForResult(intent, PICK_IMAGE);
     }
 
+    /*
     protected void pickBankAndOpenCheckbook(int bank, String user) {
         Intent intent = new Intent(this, CheckbookActivity.class);
+
         switch (bank) {
             case 1:
                 intent.putExtra("bank", 1);
@@ -177,6 +182,32 @@ public class ParentActivity extends AppCompatActivity {
         }
         sessionManager.createLoginSession(user, bank);
         startActivity(intent);
+    }
+
+//*/
+    protected void pickBankAndOpenCheckbookByName(String bankName, String user) {
+        Intent intent = new Intent(this, CheckbookActivity.class);
+        bankName = bankName.toLowerCase();
+        intent.putExtra("bankName", bankName);
+        sessionManager.createLoginSession(user, bankName);
+        startActivity(intent);
+    }
+
+    protected void initCountdown(long time){
+        CountDownTimer timer = new CountDownTimer(time, 1000) {
+            public void onTick(long millisUntilFinished) {
+                //Toast.makeText(ParentActivity.this, "tiempo pasado: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
+
+            }
+            public void onFinish() {
+                Toast.makeText(ParentActivity.this, "tiempo culminado", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(ParentActivity.this, LoginActivity.class);
+                this.cancel();
+                logout(intent);
+
+            }
+        };
+        timer.start();
     }
 
 }
