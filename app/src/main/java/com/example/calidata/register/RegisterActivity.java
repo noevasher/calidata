@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -62,12 +63,19 @@ public class RegisterActivity extends ParentActivity {
     @BindView(R.id.spinner)
     public Spinner spin;
 
+    @BindView(R.id.progressBar)
+    public ProgressBar progressBar;
+
     private RegisterController registerController;
 
     @SuppressLint("CheckResult")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (managerTheme.getThemeId() != 0) {
+            setTheme(managerTheme.getFirstTheme());
+
+        }
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
 
@@ -94,31 +102,28 @@ public class RegisterActivity extends ParentActivity {
             }
             adapter.notifyDataSetChanged();
 
+        }, t->{
+            Log.e("Error", "priblema al cargar bancos");
         });
 
         registerBtn.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
+                progressBar.getIndeterminateDrawable().setColorFilter(getColor(R.color.white), android.graphics.PorterDuff.Mode.SRC_ATOP);
+                progressBar.setVisibility(View.VISIBLE);
+
                 String email = emailText.getText().toString();
                 String password = passText.getText().toString();
                 String name = nameText.getText().toString();
                 String bankNameSpin = (String) spin.getItemAtPosition(spin.getSelectedItemPosition());
                 int bankId = getIdBank(bankNameSpin);
 
-                RijndaelCrypt encryptRijndael = new RijndaelCrypt(password);
-                //Yjcaqh0G8L9WsWrlW7K9Jg==
-                //String encryptRij = encryptRijndael.encrypt(password.getBytes());
-                //encryptRij = encryptRij.replace("\n", "").replace("\r", "");
                 try {
                     String encryptPassword = AESCrypt.encrypt(password);
                     encryptPassword = encryptPassword.replace("\n", "").replace("\r", "");
 
                     if (ifValidForm()) {
-
-
-                        //User newUser = new User(name, email, encryptRij, bankId);
                         User newUser = new User(name, email, encryptPassword, bankId);
-
                         Gson gson = new Gson();
                         String json = gson.toJson(newUser);
 
@@ -126,14 +131,19 @@ public class RegisterActivity extends ParentActivity {
                         registerController.registerUserByBody(newUser).subscribe(response -> {
                             //registerController_.registerUserByJson(json).subscribe(response -> {
                             pickBankAndOpenCheckbookByName(bankNameSpin, email);
+                            progressBar.setVisibility(View.GONE);
                             LoginActivity.getInstance().finish();
                             finish();
                         }, t -> {
                             Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                            progressBar.setVisibility(View.GONE);
+
                         });
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    progressBar.setVisibility(View.GONE);
+
                 }
 
 

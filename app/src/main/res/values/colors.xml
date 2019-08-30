@@ -17,6 +17,15 @@
     <color name="colorAccentD">#EF5350</color>
     <color name="colorBackgroundMenuD">#B71C1C</color>
 
+    <color name="colorPrimaryE">#AB47BC</color>
+    <color name="colorPrimaryDarkE">#F44336</color>
+    <color name="colorAccentE">#EC407A</color>
+
+    <color name="colorPrimaryF">#283593</color>
+    <color name="colorPrimaryDarkF">#B0BEC5</color>
+    <color name="colorAccentF">#1565C0</color>
+
+
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>

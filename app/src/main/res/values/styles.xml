@@ -48,6 +48,21 @@
 
     </style>
 
+    <style name="AppThemeBanbajio" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryE</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkE</item>
+        <item name="colorAccent">@color/colorAccentE</item>
+
+        <!--
+        <item name="colorAccent">@android:color/darker_gray</item>
+        <item name="android:itemBackground">@color/colorBackgroundMenuD</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+-->
+        <item name="android:statusBarColor">@android:color/darker_gray</item>
+
+    </style>
+
     <style name="AppThemeBanamex" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryD</item>

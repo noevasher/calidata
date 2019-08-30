@@ -178,4 +178,10 @@ public class SessionManager {
 
     }
 
+    public String getBankName(){
+        //2 is default value
+        return pref.getString(KEY_BANK_NAME, null);
+
+    }
+
 }

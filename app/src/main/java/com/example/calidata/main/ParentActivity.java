@@ -90,30 +90,6 @@ public class ParentActivity extends AppCompatActivity {
         return typedValue.data;
     }
 
-    public Drawable getLogoDrawable(int themeId) {
-
-        switch (themeId) {
-            case R.style.AppThemeBanamex:
-                Log.i("TAG", "tema banamex");
-                return ContextCompat.getDrawable(this, R.drawable.ic_citibanamex_logo);
-            case R.style.AppThemeSantander:
-                Log.i("TAG", "tema Santander");
-                return ContextCompat.getDrawable(this, R.drawable.ic_santander_logo);
-
-            case R.style.AppThemeBancomer:
-                Log.i("TAG", "tema Bancomer");
-                return ContextCompat.getDrawable(this, R.drawable.ic_bancomer_logo);
-
-            case R.style.AppTheme:
-                Log.i("TAG", "tema default");
-                break;
-            default:
-                break;
-        }
-        return ContextCompat.getDrawable(this, R.drawable.ic_default_logo);
-    }
-
-
     public void setToolbar(Toolbar toolbar, String title, boolean hasArrow) {
         if (toolbar != null) {
             toolbar.setTitle(title);
@@ -146,7 +122,7 @@ public class ParentActivity extends AppCompatActivity {
 
     protected void logout(Intent intent){
         sessionManager.logoutUser();
-        startActivity(intent);
+        setTheme(managerTheme.getFirstTheme());
         finish();
     }
 
@@ -189,7 +165,8 @@ public class ParentActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CheckbookActivity.class);
         bankName = bankName.toLowerCase();
         intent.putExtra("bankName", bankName);
-        sessionManager.createLoginSession(user, bankName);
+        //sessionManager.createLoginSession(user, bankName);
+        sessionManager.createLoginSessionBank(user, bankName);
         startActivity(intent);
     }
 
@@ -209,5 +186,55 @@ public class ParentActivity extends AppCompatActivity {
         };
         timer.start();
     }
+
+    public Drawable getLogoDrawableByBankName(String bankName) {
+
+        switch (bankName) {
+            case "santander":
+                return ContextCompat.getDrawable(this, R.drawable.ic_santander_logo);
+            case "banamex":
+                return ContextCompat.getDrawable(this, R.drawable.ic_citibanamex_logo);
+            case "hsbc":
+                return ContextCompat.getDrawable(this, R.drawable.ic_hsbc_logo);
+            case "bancomer":
+                return ContextCompat.getDrawable(this, R.drawable.ic_bancomer_logo);
+            case "banbajio":
+                return ContextCompat.getDrawable(this, R.drawable.ic_banbajio_logo);
+            case "scotiabank":
+                return ContextCompat.getDrawable(this, R.drawable.ic_scotiabank_logo);
+            case "banorte":
+                return ContextCompat.getDrawable(this, R.drawable.ic_banorte_logo);
+            case "inbursa":
+                return ContextCompat.getDrawable(this, R.drawable.ic_inbursa_logo);
+            case "compartamos":
+                return ContextCompat.getDrawable(this, R.drawable.ic_compartamos_logo);
+            default:
+                return ContextCompat.getDrawable(this, R.drawable.ic_default_logo);
+        }
+    }
+
+    public String getBankName(int themeId) {
+
+        switch (themeId) {
+            case R.style.AppThemeBanamex:
+                Log.i("TAG", "tema banamex");
+                return "Banamex";
+            case R.style.AppThemeSantander:
+                Log.i("TAG", "tema Santander");
+                return "Santander";
+
+            case R.style.AppThemeBancomer:
+                Log.i("TAG", "tema Bancomer");
+                return "Bancomer";
+
+            case R.style.AppTheme:
+                Log.i("TAG", "tema default");
+                break;
+            default:
+                break;
+        }
+        return "Otro Banco";
+    }
+
 
 }

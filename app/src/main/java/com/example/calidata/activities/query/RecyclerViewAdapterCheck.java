@@ -33,6 +33,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
     private ManagerTheme managerTheme;
     private int themeId;
     private int cardLayout;
+    private String bankName;
 
     // data is passed into the constructor
     public RecyclerViewAdapterCheck(Context context, List<String> data, int cardCancel) {
@@ -41,6 +42,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         this.mContext = context;
         managerTheme = ManagerTheme.getInstance();
         themeId = managerTheme.getThemeId();
+        bankName = managerTheme.getBankName();
         cardLayout = cardCancel;
     }
 
@@ -75,9 +77,9 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             String animal = mData.get(position);
 
             holder.myTextView.setText(animal);
-            Drawable logoDrawable = getLogoDrawable(themeId);
+            Drawable logoDrawable = ((ParentActivity)(mContext)).getLogoDrawableByBankName(bankName);
             holder.logo.setImageDrawable(logoDrawable);
-            holder.textBank.setText(getBankName(themeId));
+            holder.textBank.setText(bankName.toUpperCase());
             holder.separator.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
             if (holder.cancelBtn != null) {
                 holder.cancelBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
@@ -148,54 +150,6 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
     public interface ItemClickListener {
         void onItemClick(View view, int position);
     }
-
-
-    private Drawable getLogoDrawable(int themeId) {
-
-        switch (themeId) {
-            case R.style.AppThemeBanamex:
-                Log.i("TAG", "tema banamex");
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_citibanamex_logo);
-            case R.style.AppThemeSantander:
-                Log.i("TAG", "tema Santander");
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_santander_logo);
-
-            case R.style.AppThemeBancomer:
-                Log.i("TAG", "tema Bancomer");
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_bancomer_logo);
-
-            case R.style.AppTheme:
-                Log.i("TAG", "tema default");
-                break;
-            default:
-                break;
-        }
-        return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
-    }
-
-    private String getBankName(int themeId) {
-
-        switch (themeId) {
-            case R.style.AppThemeBanamex:
-                Log.i("TAG", "tema banamex");
-                return "Banamex";
-            case R.style.AppThemeSantander:
-                Log.i("TAG", "tema Santander");
-                return "Santander";
-
-            case R.style.AppThemeBancomer:
-                Log.i("TAG", "tema Bancomer");
-                return "Bancomer";
-
-            case R.style.AppTheme:
-                Log.i("TAG", "tema default");
-                break;
-            default:
-                break;
-        }
-        return "Otro Banco";
-    }
-
 
     private void openDialog(String data) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);

@@ -25,6 +25,7 @@ import com.example.calidata.activities.cancel.CheckCancelActivity;
 import com.example.calidata.activities.query.CheckQueryActivity;
 import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.CheckbookAddActivity;
+import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
 import com.google.zxing.common.StringUtils;
 
@@ -76,7 +77,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         } else {
             String number = mData.get(position);
             //Drawable logoDrawable = getLogoDrawable(themeId);
-            Drawable logoDrawable = getLogoDrawableByBankName(bankName);
+            Drawable logoDrawable = ((ParentActivity)(mContext)).getLogoDrawableByBankName(bankName);
 
             holder.logo.setImageDrawable(logoDrawable);
             //holder.textBank.setText(getBankName(themeId));
@@ -136,29 +137,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     }
 
 
-    private Drawable getLogoDrawable(int themeId) {
-
-        switch (themeId) {
-            case R.style.AppThemeBanamex:
-                Log.i("TAG", "tema banamex");
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_citibanamex_logo);
-            case R.style.AppThemeSantander:
-                Log.i("TAG", "tema Santander");
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_santander_logo);
-
-            case R.style.AppThemeBancomer:
-                Log.i("TAG", "tema Bancomer");
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_bancomer_logo);
-
-            case R.style.AppTheme:
-                Log.i("TAG", "tema default");
-                break;
-            default:
-                break;
-        }
-        return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
-    }
-
+/*
     private Drawable getLogoDrawableByBankName(String bankName) {
 
         switch (bankName) {
@@ -170,8 +149,8 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
                 return ContextCompat.getDrawable(mContext, R.drawable.ic_hsbc_logo);
             case "bancomer":
                 return ContextCompat.getDrawable(mContext, R.drawable.ic_bancomer_logo);
-            case "banxico":
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_banxico_logo);
+            case "banbajio":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_banbajio_logo);
             case "scotiabank":
                 return ContextCompat.getDrawable(mContext, R.drawable.ic_scotiabank_logo);
             case "banorte":
@@ -185,29 +164,8 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         }
         return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
     }
+//*/
 
-    private String getBankName(int themeId) {
-
-        switch (themeId) {
-            case R.style.AppThemeBanamex:
-                Log.i("TAG", "tema banamex");
-                return "Banamex";
-            case R.style.AppThemeSantander:
-                Log.i("TAG", "tema Santander");
-                return "Santander";
-
-            case R.style.AppThemeBancomer:
-                Log.i("TAG", "tema Bancomer");
-                return "Bancomer";
-
-            case R.style.AppTheme:
-                Log.i("TAG", "tema default");
-                break;
-            default:
-                break;
-        }
-        return "Otro Banco";
-    }
 
     public void openActions() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);

@@ -108,12 +108,8 @@ public class LoginActivity extends ParentActivity {
                     progressBar.getIndeterminateDrawable().setColorFilter(getColor(R.color.white), android.graphics.PorterDuff.Mode.SRC_ATOP);
 
                     try {
-                        //RijndaelCrypt encryptRijndael = new RijndaelCrypt(password);
-                        //String encryptRij = encryptRijndael.encrypt(password.getBytes());
-                        //encryptRij = encryptRij.replace("\n", "").replace("\r", "");
                         String encryptPassword = AESCrypt.encrypt(password);
                         encryptPassword = encryptPassword.replace("\n", "").replace("\r", "");
-
                         LoginController loginController = new LoginController(getApplicationContext());
                         loginController.authentication(user, encryptPassword).subscribe(response -> {
                             sessionManager.isLoggedIn();
@@ -131,8 +127,7 @@ public class LoginActivity extends ParentActivity {
 
 
                         }, t -> {
-                            showLoginFailed(R.string.fail_login);
-                            //Toast.makeText(LoginActivity.this, "Error al accesar", Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
 
                         });
@@ -154,8 +149,10 @@ public class LoginActivity extends ParentActivity {
         } else {
             Intent intent = new Intent(this, CheckbookActivity.class);
             int themeId = sessionManager.getTheme();
-            intent.putExtra("bank", themeId);
+            String bankName = sessionManager.getBankName();
+            intent.putExtra("bank", bankName);
             managerTheme. setThemeId(themeId);
+            managerTheme. setBankName(bankName);
             startActivity(intent);
             finish();
         }

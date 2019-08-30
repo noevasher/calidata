@@ -56,20 +56,16 @@ public class CheckbookActivity extends ParentActivity {
 
     public CircleImageView imageProfile;
 
-    public ImageView imageViewQuery;
-    public ImageView imageViewEmit;
-    public ImageView imageViewCancel;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        //setTheme(intent);
+        setThemeByName(intent);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkbook);
         ButterKnife.bind(this);
 
-        Intent intent = getIntent();
-        //setTheme(intent);
-        setThemeByName(intent);
         String title = getResources().getString(R.string.checkbook_title);
         setToolbar(toolbar, title, false);
 
@@ -173,9 +169,7 @@ public class CheckbookActivity extends ParentActivity {
                     return true;
                 case R.id.nav_close:
                     intent = new Intent(this, LoginActivity.class);
-                    sessionManager.logoutUser();
-                    startActivity(intent);
-                    finish();
+                    logout(intent);
                     return true;
                 default:
                     return false;
@@ -215,13 +209,13 @@ public class CheckbookActivity extends ParentActivity {
     private void setThemeByName(Intent intent) {
         String bankName = intent.getStringExtra("bankName");
         managerTheme = ManagerTheme.getInstance();
-        if(bankName != null) {
+
+        if (bankName != null) {
             managerTheme.setBankName(bankName);
             switch (bankName) {
                 case "santander":
                     setTheme(R.style.AppThemeSantander);
                     managerTheme.setThemeId(R.style.AppThemeSantander);
-
                     break;
                 case "hsbc":
                 case "scotiabank":
@@ -234,7 +228,10 @@ public class CheckbookActivity extends ParentActivity {
                     setTheme(R.style.AppThemeBancomer);
                     managerTheme.setThemeId(R.style.AppThemeBancomer);
                     break;
-                case "banxico":
+                case "banbajio":
+                    setTheme(R.style.AppThemeBanbajio);
+                    managerTheme.setThemeId(R.style.AppThemeBanbajio);
+                    break;
                 case "inbursa":
                 case "compartamos":
                 case "bancoppel":
@@ -243,8 +240,13 @@ public class CheckbookActivity extends ParentActivity {
                     managerTheme.setThemeId(R.style.AppThemeOther);
                     break;
             }
-        }else{
+        } else {
             Log.e("Error", "bankName is null");
+            String bank = managerTheme.getBankName();
+            if (bank != null) {
+                intent.putExtra("bankName", bank);
+                setThemeByName(intent);
+            }
         }
     }
 

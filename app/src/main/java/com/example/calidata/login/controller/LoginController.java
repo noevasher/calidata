@@ -32,7 +32,7 @@ public class LoginController extends ParentController {
                     if (response.code() == 200) {
                         LoginResponse data = response.body();
                         emitter.onSuccess(data);
-                    } else {
+                    }else {
                         Throwable throwable = new Exception(response.message());
                         emitter.onError(throwable);
                     }
