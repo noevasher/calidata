@@ -48,7 +48,7 @@ public class CheckbookController extends ParentController {
         //*/
     }
 
-    public Single<User> getUserInformation(Integer userId) {
+    public Single<User> getUserInformation(Double userId) {
         return Single.create(emitter -> {
             Call<User> call = restClient.getUserInformation(userId);
             //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);

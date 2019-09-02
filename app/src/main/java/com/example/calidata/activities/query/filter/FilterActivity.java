@@ -1,6 +1,7 @@
 package com.example.calidata.activities.query.filter;
 
 import android.app.DatePickerDialog;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -27,7 +28,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class FilterActivity extends ParentActivity implements AdapterView.OnItemSelectedListener {
-    private final static int MAX = 500000;
+    private final static int MAX = 1000000;
     private static final String CERO = "0";
     private static final String BARRA = "/";
 
@@ -53,6 +54,8 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
     @BindView(R.id.textView_date_end)
     public TextView endText;
 
+    private String startTextDate;
+    private String endTextDate;
 
     //Calendario para obtener fecha & hora
     public final Calendar c = Calendar.getInstance();
@@ -61,9 +64,11 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
     final int mes = c.get(Calendar.MONTH);
     final int dia = c.get(Calendar.DAY_OF_MONTH);
     final int anio = c.get(Calendar.YEAR);
+    private SeekBarRangedView rangebar;
+    private ColorStateList colorText;
 
     @OnClick(R.id.constraintLayout_date_start)
-    public void getStartDate(){
+    public void getStartDate() {
         //Estos valores deben ir en ese orden, de lo contrario no mostrara la fecha actual
 /**
  *También puede cargar los valores que usted desee
@@ -72,14 +77,14 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
             //Esta variable lo que realiza es aumentar en uno el mes ya que comienza desde 0 = enero
             final int mesActual = month + 1;
             //Formateo el día obtenido: antepone el 0 si son menores de 10
-            String diaFormateado = (dayOfMonth < 10)? CERO + String.valueOf(dayOfMonth):String.valueOf(dayOfMonth);
+            String diaFormateado = (dayOfMonth < 10) ? CERO + String.valueOf(dayOfMonth) : String.valueOf(dayOfMonth);
             //Formateo el mes obtenido: antepone el 0 si son menores de 10
-            String mesFormateado = (mesActual < 10)? CERO + String.valueOf(mesActual):String.valueOf(mesActual);
+            String mesFormateado = (mesActual < 10) ? CERO + String.valueOf(mesActual) : String.valueOf(mesActual);
             //Muestro la fecha con el formato deseado
             dateText.setText(diaFormateado + BARRA + mesFormateado + BARRA + year);
+            dateText.setTextColor(getPrimaryColorInTheme());
 
-
-        },anio, mes, dia);
+        }, anio, mes, dia);
         //Muestro el widget
         recogerFecha.show();
     }
@@ -90,14 +95,14 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
             //Esta variable lo que realiza es aumentar en uno el mes ya que comienza desde 0 = enero
             final int mesActual = month + 1;
             //Formateo el día obtenido: antepone el 0 si son menores de 10
-            String diaFormateado = (dayOfMonth < 10)? CERO + String.valueOf(dayOfMonth):String.valueOf(dayOfMonth);
+            String diaFormateado = (dayOfMonth < 10) ? CERO + String.valueOf(dayOfMonth) : String.valueOf(dayOfMonth);
             //Formateo el mes obtenido: antepone el 0 si son menores de 10
-            String mesFormateado = (mesActual < 10)? CERO + String.valueOf(mesActual):String.valueOf(mesActual);
+            String mesFormateado = (mesActual < 10) ? CERO + String.valueOf(mesActual) : String.valueOf(mesActual);
             //Muestro la fecha con el formato deseado
             endText.setText(diaFormateado + BARRA + mesFormateado + BARRA + year);
+            endText.setTextColor(getPrimaryColorInTheme());
 
-
-        },anio, mes, dia);
+        }, anio, mes, dia);
         //Muestro el widget
         recogerFecha.show();
     }
@@ -112,11 +117,14 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
 
         ButterKnife.bind(this);
 
+        startTextDate = dateText.getText().toString();
+        endTextDate = endText.getText().toString();
+        colorText = dateText.getTextColors();
         String title = getResources().getString(R.string.filter_title);
         setToolbar(toolbar, title, true);
 
-        SeekBarRangedView rangebar = findViewById(R.id.rangebar1);
-        initSeekBar(rangebar);
+        rangebar = findViewById(R.id.rangebar1);
+        initSeekBar();
         applyBtn.setBackgroundColor(getPrimaryColorInTheme());
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -127,7 +135,7 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
 
     }
 
-    private void initSeekBar(SeekBarRangedView rangebar) {
+    private void initSeekBar() {
         String min = "min: 0";
         String max = "max: " + MAX;
         minText.setText(min);
@@ -137,7 +145,6 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
         rangebar.setProgressColor(getPrimaryColorInTheme());
         rangebar.setMaxValue(MAX);
         rangebar.setMinValue(0);
-
         rangebar.setOnSeekBarRangedChangeListener(new SeekBarRangedView.OnSeekBarRangedChangeListener() {
             @Override
             public void onChanged(SeekBarRangedView view, float minValue, float maxValue) {
@@ -174,6 +181,14 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_reset) {
             Log.i("TAG", "reset filters");
+            spinner.setSelection(0);
+            endText.setText(endTextDate);
+            dateText.setText(startTextDate);
+            dateText.setTextColor(colorText);
+            endText.setTextColor(colorText);
+
+            rangebar.setSelectedMaxValue(MAX);
+            rangebar.setSelectedMinValue(0);
             return true;
         }
         return super.onOptionsItemSelected(item);
