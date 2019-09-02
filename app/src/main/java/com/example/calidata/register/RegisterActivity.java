@@ -21,7 +21,6 @@ import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
 import com.example.calidata.login.LoginActivity;
 import com.example.calidata.login.managment.AESCrypt;
-import com.example.calidata.login.managment.RijndaelCrypt;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.models.Bank;
 import com.example.calidata.models.User;
@@ -102,16 +101,13 @@ public class RegisterActivity extends ParentActivity {
             }
             adapter.notifyDataSetChanged();
 
-        }, t->{
+        }, t -> {
             Log.e("Error", "priblema al cargar bancos");
         });
 
         registerBtn.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
-                progressBar.getIndeterminateDrawable().setColorFilter(getColor(R.color.white), android.graphics.PorterDuff.Mode.SRC_ATOP);
-                progressBar.setVisibility(View.VISIBLE);
-
                 String email = emailText.getText().toString();
                 String password = passText.getText().toString();
                 String name = nameText.getText().toString();
@@ -123,6 +119,9 @@ public class RegisterActivity extends ParentActivity {
                     encryptPassword = encryptPassword.replace("\n", "").replace("\r", "");
 
                     if (ifValidForm()) {
+                        progressBar.getIndeterminateDrawable().setColorFilter(getColor(R.color.white), android.graphics.PorterDuff.Mode.SRC_ATOP);
+                        progressBar.setVisibility(View.VISIBLE);
+
                         User newUser = new User(name, email, encryptPassword, bankId);
 
                         Gson gson = new Gson();
@@ -178,6 +177,7 @@ public class RegisterActivity extends ParentActivity {
 
         return !isEmptyField(nameText) && !isEmptyField(emailText) && !isEmptyField(passText)
                 && !isEmptyField(confirmPassText) && !isValidSpinner(spin)
+                && isValidEmail(emailText.getText().toString())
                 && comparePassword(passText, confirmPassText);
     }
 
@@ -194,6 +194,10 @@ public class RegisterActivity extends ParentActivity {
         emailText.setOnFocusChangeListener((view, focus) -> {
             if (!focus) {
                 displayEmptyField(emailText);
+                if (!isValidEmail(emailText.getText().toString())) {
+                    emailText.setError(getString(R.string.invalid_email));
+                }
+
             }
         });
 
@@ -201,7 +205,7 @@ public class RegisterActivity extends ParentActivity {
             if (!focus) {
                 displayEmptyField(passText);
                 if (!isValidLength(passText.getText().toString())) {
-                    passText.setError("Contraseña debe de tener 6 o más caracteres");
+                    passText.setError(getString(R.string.invalid_password));
                 }
             }
         });

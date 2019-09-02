@@ -136,7 +136,7 @@ public class CheckbookActivity extends ParentActivity {
             });
             //*/
 
-           for(int i=0; i<5; i++){
+           for(int i=0; i<checkbooksNum; i++){
                CheckbookModel checkbookModel = new CheckbookModel();
                checkbookModel.setCheckbookId("checkbookId: " + i);
                String randomId = UUID.randomUUID().toString();

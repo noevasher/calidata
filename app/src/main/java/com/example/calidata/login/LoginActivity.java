@@ -30,6 +30,8 @@ import butterknife.ButterKnife;
 @SuppressLint("CheckResult")
 public class LoginActivity extends ParentActivity {
 
+    public static LoginActivity loginActivity;
+
     @BindView(R.id.button_register)
     public Button registerBtn;
 
@@ -80,7 +82,7 @@ public class LoginActivity extends ParentActivity {
                         usernameEditText.setError("Campo Requerido");
                     } else {
                         if (!isValidEmail(usernameEditText.getText().toString())) {
-                            usernameEditText.setError("Email No valido");
+                            usernameEditText.setError(getString(R.string.invalid_email));
                         }
                     }
                 }
@@ -91,7 +93,7 @@ public class LoginActivity extends ParentActivity {
                         passwordEditText.setError("Campo Requerido");
                     } else {
                         if (!isValidLength(passwordEditText.getText().toString())) {
-                            //passwordEditText.setError("Longitud de Contraseña debe ser mayor a 5 caracteres");
+                            //passwordEditText.setError(getString(R.string.invalid_password));
                         }
                     }
                 }
@@ -103,39 +105,41 @@ public class LoginActivity extends ParentActivity {
                 public void onSingleClick(View v) {
                     user = usernameEditText.getText().toString();
                     password = passwordEditText.getText().toString();
-                    progressBar.setVisibility(View.VISIBLE);
-                    progressBar.getIndeterminateDrawable().setColorFilter(getColor(R.color.white), android.graphics.PorterDuff.Mode.SRC_ATOP);
 
-                    try {
-                        String encryptPassword = AESCrypt.encrypt(password);
-                        encryptPassword = encryptPassword
-                                .replace("\n", "")
-                                .replace("\r", "");
-                        LoginController loginController = new LoginController(getApplicationContext());
-                        loginController.authentication(user, encryptPassword).subscribe(response -> {
-                            sessionManager.isLoggedIn();
-                            Integer bankId = response.getBankId() == null ? DEFAULT_BANK : response.getBankId();
-                            loginController.getBanks().subscribe(list -> {
-                                for (Bank bank : list) {
-                                    if (bank.getIdBank() == bankId) {
-                                        Double userId = response.getUserId();
-                                        pickBankAndOpenCheckbookByName(bank.getNameBank(), user, userId);
-                                        finish();
-                                        showLoginFailed(R.string.success_login);
-                                        progressBar.setVisibility(View.GONE);
+                    if (isValidForm()) {
+                        progressBar.setVisibility(View.VISIBLE);
+                        progressBar.getIndeterminateDrawable().setColorFilter(getColor(R.color.white), android.graphics.PorterDuff.Mode.SRC_ATOP);
+                        try {
+                            String encryptPassword = AESCrypt.encrypt(password);
+                            encryptPassword = encryptPassword
+                                    .replace("\n", "")
+                                    .replace("\r", "");
+                            LoginController loginController = new LoginController(getApplicationContext());
+                            loginController.authentication(user, encryptPassword).subscribe(response -> {
+                                sessionManager.isLoggedIn();
+                                Integer bankId = response.getBankId() == null ? DEFAULT_BANK : response.getBankId();
+                                loginController.getBanks().subscribe(list -> {
+                                    for (Bank bank : list) {
+                                        if (bank.getIdBank() == bankId) {
+                                            Double userId = response.getUserId();
+                                            pickBankAndOpenCheckbookByName(bank.getNameBank(), user, userId);
+                                            finish();
+                                            showLoginFailed(R.string.success_login);
+                                            progressBar.setVisibility(View.GONE);
+                                        }
                                     }
-                                }
+                                });
+
+
+                            }, t -> {
+                                Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                                progressBar.setVisibility(View.GONE);
+
                             });
 
-
-                        }, t -> {
-                            Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-                            progressBar.setVisibility(View.GONE);
-
-                        });
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             });
@@ -160,7 +164,14 @@ public class LoginActivity extends ParentActivity {
         }
     }
 
-    static LoginActivity loginActivity;
+    private boolean isValidForm() {
+        displayEmptyField(usernameEditText);
+        displayEmptyField(passwordEditText);
+
+        return !isEmptyField(usernameEditText) && !isEmptyField(passwordEditText)
+                && isValidEmail(usernameEditText.getText().toString());
+    }
+
 
     public static LoginActivity getInstance() {
         return loginActivity;
