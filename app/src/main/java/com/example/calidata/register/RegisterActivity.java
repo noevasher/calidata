@@ -124,13 +124,16 @@ public class RegisterActivity extends ParentActivity {
 
                     if (ifValidForm()) {
                         User newUser = new User(name, email, encryptPassword, bankId);
+
                         Gson gson = new Gson();
                         String json = gson.toJson(newUser);
 
                         System.out.println(json);
                         registerController.registerUserByBody(newUser).subscribe(response -> {
                             //registerController_.registerUserByJson(json).subscribe(response -> {
-                            pickBankAndOpenCheckbookByName(bankNameSpin, email);
+                            Double userId = (Double) response.getData().get("userId");
+                            String username = newUser.getUserName();
+                            pickBankAndOpenCheckbookByName(bankNameSpin, email, userId, username);
                             progressBar.setVisibility(View.GONE);
                             LoginActivity.getInstance().finish();
                             finish();

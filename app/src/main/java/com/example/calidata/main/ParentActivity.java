@@ -2,17 +2,21 @@ package com.example.calidata.main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -161,12 +165,21 @@ public class ParentActivity extends AppCompatActivity {
     }
 
 //*/
-    protected void pickBankAndOpenCheckbookByName(String bankName, String user) {
+    protected void pickBankAndOpenCheckbookByName(String bankName, String user, Double userId, String username) {
         Intent intent = new Intent(this, CheckbookActivity.class);
         bankName = bankName.toLowerCase();
         intent.putExtra("bankName", bankName);
         //sessionManager.createLoginSession(user, bankName);
-        sessionManager.createLoginSessionBank(user, bankName);
+        sessionManager.createLoginSessionBank(user, bankName, userId, username);
+        startActivity(intent);
+    }
+
+    protected void pickBankAndOpenCheckbookByName(String bankName, String user, Double userId) {
+        Intent intent = new Intent(this, CheckbookActivity.class);
+        bankName = bankName.toLowerCase();
+        intent.putExtra("bankName", bankName);
+        //sessionManager.createLoginSession(user, bankName);
+        sessionManager.createLoginSessionBank(user, bankName, userId);
         startActivity(intent);
     }
 
@@ -213,28 +226,57 @@ public class ParentActivity extends AppCompatActivity {
         }
     }
 
-    public String getBankName(int themeId) {
 
-        switch (themeId) {
-            case R.style.AppThemeBanamex:
-                Log.i("TAG", "tema banamex");
-                return "Banamex";
-            case R.style.AppThemeSantander:
-                Log.i("TAG", "tema Santander");
-                return "Santander";
+    protected void setThemeByName(Intent intent) {
+        String bankName = intent.getStringExtra("bankName");
+        managerTheme = ManagerTheme.getInstance();
 
-            case R.style.AppThemeBancomer:
-                Log.i("TAG", "tema Bancomer");
-                return "Bancomer";
-
-            case R.style.AppTheme:
-                Log.i("TAG", "tema default");
-                break;
-            default:
-                break;
+        if (bankName != null) {
+            managerTheme.setBankName(bankName);
+            switch (bankName) {
+                case "santander":
+                    setTheme(R.style.AppThemeSantander);
+                    managerTheme.setThemeId(R.style.AppThemeSantander);
+                    break;
+                case "hsbc":
+                case "scotiabank":
+                case "banorte":
+                case "banamex":
+                    setTheme(R.style.AppThemeBanamex);
+                    managerTheme.setThemeId(R.style.AppThemeBanamex);
+                    break;
+                case "bancomer":
+                    setTheme(R.style.AppThemeBancomer);
+                    managerTheme.setThemeId(R.style.AppThemeBancomer);
+                    break;
+                case "banbajio":
+                    setTheme(R.style.AppThemeBanbajio);
+                    managerTheme.setThemeId(R.style.AppThemeBanbajio);
+                    break;
+                case "inbursa":
+                case "compartamos":
+                case "bancoppel":
+                default:
+                    setTheme(R.style.AppThemeOther);
+                    managerTheme.setThemeId(R.style.AppThemeOther);
+                    break;
+            }
+        } else {
+            Log.e("Error", "bankName is null");
+            String bank = managerTheme.getBankName();
+            if (bank != null) {
+                intent.putExtra("bankName", bank);
+                setThemeByName(intent);
+            }
         }
-        return "Otro Banco";
     }
 
+    protected void putImage(String image64, ImageView imageView){
+        if( image64 != null) {
+            byte[] decodedString = Base64.decode(image64, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            imageView.setImageBitmap(decodedByte);
+        }
+    }
 
 }

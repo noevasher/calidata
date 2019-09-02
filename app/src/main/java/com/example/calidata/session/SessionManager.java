@@ -47,6 +47,8 @@ public class SessionManager {
     public static final String KEY_EMAIL = "email";
     public static final String THEME_ID = "themeId";
     public static final String KEY_BANK_NAME = "bankName";
+    public static final String KEY_USERNAME = "username";
+    public static final String KEY_IMAGE64 = "imageUser";
 
     public static final String FIRST_THEME_ID = "themeId";
 
@@ -90,7 +92,7 @@ public class SessionManager {
         editor.commit();
     }
 
-    public void createLoginSessionBank(String email, String bankName){
+    public void createLoginSessionBank(String email, String bankName, Double userId, String username){
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
@@ -99,6 +101,26 @@ public class SessionManager {
 
         // Storing email in pref
         editor.putString(KEY_EMAIL, email);
+
+        editor.putLong(KEY_USER_ID, userId.longValue());
+        editor.putString(KEY_USERNAME, username);
+
+
+        // commit changes
+        editor.commit();
+    }
+    public void createLoginSessionBank(String email, String bankName, Double userId){
+        // Storing login value as TRUE
+        editor.putBoolean(IS_LOGIN, true);
+
+        // Storing name in pref
+        editor.putString(KEY_BANK_NAME, bankName);
+
+        // Storing email in pref
+        editor.putString(KEY_EMAIL, email);
+
+        editor.putLong(KEY_USER_ID, userId.longValue());
+
 
         // commit changes
         editor.commit();
@@ -184,4 +206,32 @@ public class SessionManager {
 
     }
 
+    public String getKeyUsername(){
+        //2 is default value
+        return pref.getString(KEY_USERNAME, null);
+
+    }
+
+    public Double getUserId(){
+        Long id = pref.getLong(KEY_USER_ID, 0);
+        return id.doubleValue();
+
+    }
+
+    public void saveProfileImage(String image64){
+        editor.putString(KEY_IMAGE64, image64);
+        // commit changes
+        editor.commit();
+    }
+
+    public String getKeyImage64(){
+        return pref.getString(KEY_IMAGE64, null);
+    }
+
+
+    public void saveProfileName(String username) {
+        editor.putString(KEY_USERNAME, username);
+        // commit changes
+        editor.commit();
+    }
 }

@@ -17,7 +17,7 @@ public class LoginResponse {
     public Integer bankId;
 
     @SerializedName("userId")
-    public Integer userId;
+    public Double userId;
 
 
     public String getAccessToken() {
@@ -52,11 +52,11 @@ public class LoginResponse {
         this.bankId = bankId;
     }
 
-    public Integer getUserId() {
+    public Double getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Double userId) {
         this.userId = userId;
     }
 }

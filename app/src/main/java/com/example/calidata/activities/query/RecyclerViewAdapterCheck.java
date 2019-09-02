@@ -19,6 +19,8 @@ import com.example.calidata.R;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.util.List;
 
 public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewAdapterCheck.ViewHolder> {
@@ -75,11 +77,12 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             }
         } else {
             String animal = mData.get(position);
+            final char[] delimiters = { ' ', '_' };
 
             holder.myTextView.setText(animal);
             Drawable logoDrawable = ((ParentActivity)(mContext)).getLogoDrawableByBankName(bankName);
             holder.logo.setImageDrawable(logoDrawable);
-            holder.textBank.setText(bankName.toUpperCase());
+            holder.textBank.setText(WordUtils.capitalizeFully(bankName, delimiters));
             holder.separator.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
             if (holder.cancelBtn != null) {
                 holder.cancelBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());

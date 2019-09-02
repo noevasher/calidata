@@ -4,12 +4,17 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,7 +24,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
+import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
 import com.example.calidata.main.ParentActivity;
 
@@ -27,6 +34,9 @@ import java.io.ByteArrayOutputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 
 public class SettingsActivity extends ParentActivity {
 
@@ -60,6 +70,8 @@ public class SettingsActivity extends ParentActivity {
     @BindView(R.id.constraintLayout_issue)
     public ConstraintLayout issuePanel;
 
+    public static Observable<String> imageObs;
+    public static Observable<String> usernameObs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +81,8 @@ public class SettingsActivity extends ParentActivity {
         ButterKnife.bind(this);
         setToolbar(toolbar, "Settings", true);
 
-        //constraintImage.setBackgroundColor(getPrimarySoftColorInTheme());
-        scrollview.setBackgroundColor(getPrimarySoftColorInTheme());
+        constraintImage.setBackgroundColor(getPrimarySoftColorInTheme());
+        //scrollview.setBackgroundColor(getPrimarySoftColorInTheme());
 
         String userName = sessionManager.getUserDetails().get("name");
         String email = sessionManager.getUserDetails().get("email");
@@ -78,29 +90,66 @@ public class SettingsActivity extends ParentActivity {
         userNameText.setText("Noe Vasquez Herrera");
         emailText.setText(email);
 
+        if(sessionManager.getKeyImage64() != null){
+            putImage(sessionManager.getKeyImage64(), imageProfile);
+
+        }
+
+        if (sessionManager.getKeyUsername() != null){
+            userNameText.setText(sessionManager.getKeyUsername());
+        }
+
+        imageObs = Observable.create(emitter -> {
+            String image64 = sessionManager.getKeyImage64();
+            if (image64 != null) {
+                putImage(image64, imageProfile);
+                emitter.onNext(image64);
+            }
+            emitter.onComplete();
+        });
+        usernameObs = Observable.create(emitter -> {
+            String username = sessionManager.getKeyUsername();
+            if (username != null){
+                userNameText.setText(username);
+                emitter.onNext(username);
+            }
+            emitter.onComplete();
+        });
         addImage.setColorFilter(getColor(R.color.white), PorterDuff.Mode.SRC_IN);
         editUserName.setColorFilter(getColor(R.color.white), PorterDuff.Mode.SRC_IN);
 
-        addImage.setOnClickListener(v -> {
-            pickFromGallery();
+        //addImage.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
+        //editUserName.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
+
+        addImage.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                pickFromGallery();
+            }
         });
 
-        imageProfile.setOnClickListener(v -> {
-            pickFromGallery();
+        imageProfile.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                pickFromGallery();
+            }
         });
 
         editUserName.setOnClickListener(v -> {
-            openDialog();
+            changeUsername();
         });
 
 
-        changePasswordPanel.setOnClickListener(v -> {
-            openDialogPassword();
+        changePasswordPanel.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                openDialogPassword();
+            }
         });
 
     }
 
-    private void openDialog() {
+    private void changeUsername() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -133,6 +182,7 @@ public class SettingsActivity extends ParentActivity {
                     saveBtn.setBackgroundColor(SettingsActivity.this.getPrimaryColorInTheme());
                     saveBtn.setOnClickListener(v -> {
                         userNameText.setText(text);
+                        sessionManager.saveProfileName(text);
                         alertDialog.dismiss();
                     });
                 }
@@ -199,6 +249,7 @@ public class SettingsActivity extends ParentActivity {
                 imageProfile.buildDrawingCache();
                 Bitmap bmap = imageProfile.getDrawingCache();
                 String encodedImageData = getEncoded64ImageStringFromBitmap(bmap);
+                sessionManager.saveProfileImage(encodedImageData);
                 Log.i("BASE", encodedImageData);
             }
         }

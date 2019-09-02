@@ -3,6 +3,7 @@ package com.example.calidata.main;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
@@ -24,17 +26,30 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
 import com.example.calidata.login.LoginActivity;
+import com.example.calidata.login.managment.RSA;
 import com.example.calidata.main.adapters.RecyclerViewAdapterCheckbook;
-import com.example.calidata.management.ManagerTheme;
+import com.example.calidata.main.controllers.CheckbookController;
+import com.example.calidata.models.CheckbookModel;
 import com.example.calidata.utilities.HelpActivity;
 import com.example.calidata.utilities.SettingsActivity;
 import com.google.android.material.navigation.NavigationView;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
+
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class CheckbookActivity extends ParentActivity {
 
@@ -55,8 +70,9 @@ public class CheckbookActivity extends ParentActivity {
     private ArrayList<String> checkbooks;
 
     public CircleImageView imageProfile;
-
-
+    private CheckbookController controller;
+    private Double userId;
+    private TextView textName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
@@ -65,9 +81,10 @@ public class CheckbookActivity extends ParentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkbook);
         ButterKnife.bind(this);
-
+        controller = new CheckbookController(this);
         String title = getResources().getString(R.string.checkbook_title);
         setToolbar(toolbar, title, false);
+        userId = sessionManager.getUserId();
 
         initNavBar();
 
@@ -97,25 +114,45 @@ public class CheckbookActivity extends ParentActivity {
         addCheckbookBtn.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
 
         addCheckbookBtn.bringToFront();
+        //readCheckBooks();
 
-        /*
-        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(
-                (recyclerView1, position, v) -> {
-                    Toast.makeText(CheckbookActivity.this, "position: " + adapter.getItem(position), Toast.LENGTH_LONG).show();
-                    openActions();
+    }
 
+    private void readCheckBooks() {
+        if (userId != 0) {
+            controller.getCheckbooks(userId).subscribe(response -> {
+                for (CheckbookModel checkbookModel : response) {
+                    checkbooks.add(checkbookModel.getCheckId());
                 }
-        );
-        //*/
 
+            });
+        }
     }
 
     private void initNavBar() {
         View header = navigationView.getHeaderView(0);
         header.setBackgroundColor(getPrimarySoftColorInTheme());
-        TextView textName = header.findViewById(R.id.textView_username);
+        textName = header.findViewById(R.id.textView_username);
         textName.setTextColor(getColor(R.color.white));
         imageProfile = header.findViewById(R.id.imageView_profile);
+
+
+        if (sessionManager.getKeyUsername() != null) {
+            textName.setText(sessionManager.getKeyUsername());
+        }
+        if (sessionManager.getKeyImage64() != null) {
+            putImage(sessionManager.getKeyImage64(), imageProfile);
+
+        }
+        //llamar servicio de informacion de usuario
+        /*
+        controller.getUserInformation(userId).subscribe(response ->{
+            textName.setText(response.getUserName());
+            String image64 = response.getImage64();
+            putImage(image64, imageProfile);
+        });
+        //*/
+
 
         imageProfile.setOnClickListener(new OnSingleClickListener() {
             @Override
@@ -176,78 +213,6 @@ public class CheckbookActivity extends ParentActivity {
             }
         });
 
-    }
-
-    private void setTheme(Intent intent) {
-        int positionBank = intent.getIntExtra("bank", 4);
-        managerTheme = ManagerTheme.getInstance();
-
-        switch (positionBank) {
-            case 0:
-                setTheme(R.style.AppTheme);
-                managerTheme.setThemeId(R.style.AppTheme);
-                break;
-            case 1:
-                setTheme(R.style.AppThemeBanamex);
-                managerTheme.setThemeId(R.style.AppThemeBanamex);
-                break;
-            case 2:
-                setTheme(R.style.AppThemeSantander);
-                managerTheme.setThemeId(R.style.AppThemeSantander);
-                break;
-            case 3:
-                setTheme(R.style.AppThemeBancomer);
-                managerTheme.setThemeId(R.style.AppThemeBancomer);
-                break;
-            case 4:
-                setTheme(R.style.AppThemeOther);
-                managerTheme.setThemeId(R.style.AppThemeOther);
-                break;
-        }
-    }
-
-    private void setThemeByName(Intent intent) {
-        String bankName = intent.getStringExtra("bankName");
-        managerTheme = ManagerTheme.getInstance();
-
-        if (bankName != null) {
-            managerTheme.setBankName(bankName);
-            switch (bankName) {
-                case "santander":
-                    setTheme(R.style.AppThemeSantander);
-                    managerTheme.setThemeId(R.style.AppThemeSantander);
-                    break;
-                case "hsbc":
-                case "scotiabank":
-                case "banorte":
-                case "banamex":
-                    setTheme(R.style.AppThemeBanamex);
-                    managerTheme.setThemeId(R.style.AppThemeBanamex);
-                    break;
-                case "bancomer":
-                    setTheme(R.style.AppThemeBancomer);
-                    managerTheme.setThemeId(R.style.AppThemeBancomer);
-                    break;
-                case "banbajio":
-                    setTheme(R.style.AppThemeBanbajio);
-                    managerTheme.setThemeId(R.style.AppThemeBanbajio);
-                    break;
-                case "inbursa":
-                case "compartamos":
-                case "bancoppel":
-                default:
-                    setTheme(R.style.AppThemeOther);
-                    managerTheme.setThemeId(R.style.AppThemeOther);
-                    break;
-            }
-        } else {
-            Log.e("Error", "bankName is null");
-            String bank = managerTheme.getBankName();
-            if (bank != null) {
-                intent.putExtra("bankName", bank);
-                setThemeByName(intent);
-            }
-        }
     }
 
 
@@ -334,6 +299,7 @@ public class CheckbookActivity extends ParentActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -343,6 +309,37 @@ public class CheckbookActivity extends ParentActivity {
                 String format = data.getStringExtra("SCAN_RESULT_FORMAT");
                 String num = data.getStringExtra("NUM");
                 Bundle bundle = data.getExtras();
+
+                /////////////////////////////////////////
+                try {
+                    RSA rsa = new RSA();
+
+                    System.out.println("contents: " + "686f6c61206d69206e6f6d627265206573206e6f65");
+                    String result = hex2String("686f6c61206d69206e6f6d627265206573206e6f65");
+                    System.out.println("Result String: " + result);
+
+                    //result = rsa.encrypt("15279355-FF18-4264-ADC7-000BE28B0C15-52-00-014");
+
+                    System.out.println("encriptacion: " + result);
+                    System.out.println("Desencriptacion: " + rsa.decrypt("u\u0093T\u0013í_\u0098ö\u0012;Æj\u0080L*Q!§\u0087\u000B1M^\u000ERØ\u0093mÄ^è&¾\u007F{g\u0018$Ó>ô,\u0004°?*Î[ñmå«\u008Fc$hGÉ\u0098¥¢\u0017Äq\u0080áÆñ\u0080ü9\u0017mþÚy\u009Ez2åü;/|ÙµÀ;·8¸ÿ$\u001B\u001E\u009B\u0081&µç¾+\u0001\u008F\u000BQ¹\u0004ná\u0092\u0092PR,ó\u001AøO\u001D\u0005¸£a\u008C\u0007Õ´"));
+                    rsa.decrypt(contents);
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (NoSuchPaddingException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                } catch (IllegalBlockSizeException e) {
+                    e.printStackTrace();
+                } catch (BadPaddingException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (DecoderException e) {
+                    e.printStackTrace();
+                }
+
+                ///////////////////////////////////////////
 
                 //SCAN_RESULT=ntI1Rct8JNC1HfTgKMnO3hRIfdckeVeybG1ACMmRJzruA8v1vzq2TW3dvgk5/58E2VFOfoceqnC4x8ckorpeTg==
                 //SCAN_RESULT_BYTE_SEGMENTS_0=[B@1548ca6, SCAN_RESULT_BYTES=[B@23ea6e7
@@ -375,17 +372,29 @@ public class CheckbookActivity extends ParentActivity {
             }
         }
     }
-/*
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PICK_IMAGE) {
-            Log.i("DATA", "data: " + data);
-            if (data != null && data.getData() != null) {
-                imageProfile.setImageURI(data.getData());
-            }
-        }
+
+    private String hex2String(String hexString) throws DecoderException, UnsupportedEncodingException {
+        byte[] bytes = Hex.decodeHex(hexString.toCharArray());
+        return new String(bytes, "UTF-8");
     }
 
- //*/
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(SettingsActivity.imageObs!= null) {
+            SettingsActivity.imageObs.subscribe(response -> {
+                if (response != null) {
+                    putImage(response, imageProfile);
+                }
+            });
+        }
+        if(SettingsActivity.usernameObs != null) {
+            SettingsActivity.usernameObs.subscribe(response -> {
+                if (response != null) {
+                    textName.setText(response);
+                }
+            });
+        }
 
+    }
 }

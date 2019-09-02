@@ -3,8 +3,10 @@ package com.example.calidata.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.HashMap;
+
 public class User {
-    private String userId;
+    private Double userId;
 
     public String userName;
 
@@ -20,6 +22,11 @@ public class User {
     @SerializedName("mensaje")
     public String message;
 
+    @SerializedName("data")
+    public HashMap<String, Object> data;
+
+    public String image64;
+
     public User(String userName, String email, String password, Integer bankId) {
         this.userName = userName;
         this.email = email;
@@ -27,11 +34,11 @@ public class User {
         this.bankId = bankId;
     }
 
-    public String getUserId() {
+    public Double getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Double userId) {
         this.userId = userId;
     }
 
@@ -73,5 +80,21 @@ public class User {
 
     public String getMessage() {
         return message;
+    }
+
+    public String getImage64() {
+        return image64;
+    }
+
+    public void setImage64(String image64) {
+        this.image64 = image64;
+    }
+
+    public HashMap<String, Object> getData() {
+        return data;
+    }
+
+    public void setData(HashMap<String, Object> data) {
+        this.data = data;
     }
 }

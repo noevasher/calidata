@@ -3,6 +3,7 @@ package com.example.calidata.retrofit;
 import android.content.Intent;
 
 import com.example.calidata.models.Bank;
+import com.example.calidata.models.CheckbookModel;
 import com.example.calidata.models.LoginRequest;
 import com.example.calidata.models.LoginResponse;
 import com.example.calidata.models.User;
@@ -43,6 +44,34 @@ public interface JsonPlaceHolderApi {
     @POST("account/register")
     @Headers("Content-Type: application/json")
     Call<User> registerUser(@Body User user);
+
+    @GET("checkbooks/{id}")
+    Call<List<CheckbookModel>> getCheckbookByUserId(@Path("id") Double userId);
+
+    @GET("user/info")
+    Call<User> getUserInformation(@Path("id") Double userId);
+
+    @POST("cheque/ActivarCheckId")
+    @Headers("Content-Type: application/json")
+    Call<CheckbookModel> activeCheckId(@Body User user);
+
+    @POST("cheque/CancelaCheckId")
+    @Headers("Content-Type: application/json")
+    Call<CheckbookModel> cancelCheckId(@Body User user);
+
+    @POST("cheque/LiberaCheque")
+    @Headers("Content-Type: application/json")
+    Call<CheckbookModel> freeCheck(@Body User user);
+
+    @POST("cheque/ConsultarEstatusCheckId")
+    @Headers("Content-Type: application/json")
+    Call<CheckbookModel> getStatusCheckId(@Body User user);
+
+
+
+
+
+
 
 
     /*

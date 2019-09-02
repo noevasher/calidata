@@ -18,7 +18,6 @@ import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
 import com.example.calidata.login.controller.LoginController;
 import com.example.calidata.login.managment.AESCrypt;
-import com.example.calidata.login.managment.RijndaelCrypt;
 import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.models.Bank;
@@ -109,20 +108,23 @@ public class LoginActivity extends ParentActivity {
 
                     try {
                         String encryptPassword = AESCrypt.encrypt(password);
-                        encryptPassword = encryptPassword.replace("\n", "").replace("\r", "");
+                        encryptPassword = encryptPassword
+                                .replace("\n", "")
+                                .replace("\r", "");
                         LoginController loginController = new LoginController(getApplicationContext());
                         loginController.authentication(user, encryptPassword).subscribe(response -> {
                             sessionManager.isLoggedIn();
                             Integer bankId = response.getBankId() == null ? DEFAULT_BANK : response.getBankId();
                             loginController.getBanks().subscribe(list -> {
-                               for(Bank bank: list){
-                                   if (bank.getIdBank() == bankId) {
-                                       pickBankAndOpenCheckbookByName(bank.getNameBank(), user);
-                                       finish();
-                                       showLoginFailed(R.string.success_login);
-                                       progressBar.setVisibility(View.GONE);
-                                   }
-                               }
+                                for (Bank bank : list) {
+                                    if (bank.getIdBank() == bankId) {
+                                        Double userId = response.getUserId();
+                                        pickBankAndOpenCheckbookByName(bank.getNameBank(), user, userId);
+                                        finish();
+                                        showLoginFailed(R.string.success_login);
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+                                }
                             });
 
 
@@ -151,8 +153,8 @@ public class LoginActivity extends ParentActivity {
             int themeId = sessionManager.getTheme();
             String bankName = sessionManager.getBankName();
             intent.putExtra("bank", bankName);
-            managerTheme. setThemeId(themeId);
-            managerTheme. setBankName(bankName);
+            managerTheme.setThemeId(themeId);
+            managerTheme.setBankName(bankName);
             startActivity(intent);
             finish();
         }
@@ -160,7 +162,7 @@ public class LoginActivity extends ParentActivity {
 
     static LoginActivity loginActivity;
 
-    public static LoginActivity getInstance(){
+    public static LoginActivity getInstance() {
         return loginActivity;
     }
 
@@ -172,7 +174,6 @@ public class LoginActivity extends ParentActivity {
     private String generateRequest(String encryptRij) {
         return "{'User' : 'noe', 'IdPass': " + encryptRij + "}";
     }
-
 
 
     private boolean validSession() {
