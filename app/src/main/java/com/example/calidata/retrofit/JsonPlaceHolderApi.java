@@ -69,11 +69,6 @@ public interface JsonPlaceHolderApi {
 
 
 
-
-
-
-
-
     /*
     @Headers("Static-Al:123 ")
     @POST("posts")

@@ -41,6 +41,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -68,6 +69,7 @@ public class CheckbookActivity extends ParentActivity {
     RecyclerViewAdapterCheckbook adapter;
 
     private ArrayList<String> checkbooks;
+    private ArrayList<CheckbookModel> checkbooksList;
 
     public CircleImageView imageProfile;
     private CheckbookController controller;
@@ -89,18 +91,22 @@ public class CheckbookActivity extends ParentActivity {
         initNavBar();
 
         checkbooks = new ArrayList<>();
-
+/*
         checkbooks.add("**** **** **** **** 1800");
         checkbooks.add("**** **** **** **** 1856");
         checkbooks.add("**** **** **** **** 7800");
         checkbooks.add("**** **** **** **** 9900");
 //*/
 
+        checkbooksList = new ArrayList<>();
+
+
         // set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new RecyclerViewAdapterCheckbook(this, checkbooks);
+        //adapter = new RecyclerViewAdapterCheckbook(this, checkbooks);
+        adapter = new RecyclerViewAdapterCheckbook(this, checkbooksList, true);
 
         recyclerView.setAdapter(adapter);
 
@@ -114,19 +120,44 @@ public class CheckbookActivity extends ParentActivity {
         addCheckbookBtn.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
 
         addCheckbookBtn.bringToFront();
-        //readCheckBooks();
+        readCheckBooks();
 
     }
 
     private void readCheckBooks() {
+        int checkbooksNum = 0;
         if (userId != 0) {
+            /*
             controller.getCheckbooks(userId).subscribe(response -> {
                 for (CheckbookModel checkbookModel : response) {
                     checkbooks.add(checkbookModel.getCheckId());
                 }
 
             });
+            //*/
+
+           for(int i=0; i<5; i++){
+               CheckbookModel checkbookModel = new CheckbookModel();
+               checkbookModel.setCheckbookId("checkbookId: " + i);
+               String randomId = UUID.randomUUID().toString();
+               String hidden = hideCheckId(randomId);
+               checkbookModel.setCheckId(hidden + "_" + i);
+               checkbookModel.setTypeDoc("00");
+               checkbooksList.add(checkbookModel);
+           }
+           adapter.notifyDataSetChanged();
         }
+    }
+
+    private String hideCheckId(String checkId){
+        int size = checkId.length();
+        String hidden = "";
+        String startSubString = checkId.substring(0, size - 4);
+        String endSubString = checkId.substring(size - 4, size);
+        for(int i = 0; i < size - 4; i++){
+            hidden +=  "*";
+        }
+        return hidden + endSubString;
     }
 
     private void initNavBar() {

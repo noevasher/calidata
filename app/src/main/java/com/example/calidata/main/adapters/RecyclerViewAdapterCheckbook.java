@@ -27,6 +27,7 @@ import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.CheckbookAddActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
+import com.example.calidata.models.CheckbookModel;
 import com.google.zxing.common.StringUtils;
 
 import java.util.List;
@@ -36,7 +37,8 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     private static final int VIEW_TYPE_EMPTY = 0;
     private static final int VIEW_TYPE_DATA = 1;
 
-    private List<String> mData;
+    //private List<String> mData;
+    private List<CheckbookModel> mData;
     private LayoutInflater mInflater;
     private Context mContext;
     private int themeId;
@@ -44,6 +46,17 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
     // data is passed into the constructor
     public RecyclerViewAdapterCheckbook(Context context, List<String> data) {
+        this.mInflater = LayoutInflater.from(context);
+        //this.mData = data;
+        this.mContext = context;
+        ManagerTheme managerTheme = ManagerTheme.getInstance();
+        themeId = managerTheme.getThemeId();
+        bankName = managerTheme.getBankName();
+
+    }
+
+
+    public RecyclerViewAdapterCheckbook(Context context, List<CheckbookModel> data, boolean t) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
         this.mContext = context;
@@ -75,7 +88,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         if (viewType == VIEW_TYPE_EMPTY) {
 
         } else {
-            String number = mData.get(position);
+            String number = mData.get(position).getCheckId();
             //Drawable logoDrawable = getLogoDrawable(themeId);
             Drawable logoDrawable = ((ParentActivity)(mContext)).getLogoDrawableByBankName(bankName);
 
@@ -132,7 +145,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     }
 
     // convenience method for getting data at click position
-    public String getItem(int id) {
+    public CheckbookModel getItem(int id) {
         return mData.get(id);
     }
 
@@ -171,16 +184,28 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = ((CheckbookActivity) mContext).getLayoutInflater();
         ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.activity_main, null);
+        ConstraintLayout viewToolbar = view.findViewById(R.id.constraintLayout_toolbar);
+        TextView titleText = view.findViewById(R.id.textView_title_toolbar);
+        ImageView closeWindow = view.findViewById(R.id.imageView_close);
+
         builder.setView(view);
         Toolbar actionToolbar = view.findViewById(R.id.toolbar);
 
         String title = mContext.getString(R.string.main_title);
-        ((CheckbookActivity) mContext).setToolbar(actionToolbar, title, false);
+        //((CheckbookActivity) mContext).setToolbar(actionToolbar, title, false);
+        titleText.setText(title);
+        viewToolbar.setBackgroundColor(((CheckbookActivity) mContext).getPrimaryColorInTheme());
+
 
         setImagesListeners(view);
 
         AlertDialog alertDialog = builder.create();
-
+        closeWindow.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
         //*/
 
         alertDialog.show();
