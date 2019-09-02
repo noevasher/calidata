@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -31,6 +32,7 @@ import com.example.calidata.R;
 import com.example.calidata.main.ParentActivity;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,7 +64,7 @@ public class SettingsActivity extends ParentActivity {
     public ImageView editUserName;
 
     @BindView(R.id.imageView_profile)
-    public ImageView imageProfile;
+    public de.hdodenhof.circleimageview.CircleImageView imageProfile;
 
     @BindView(R.id.constraintLayout7_change_password)
     public ConstraintLayout changePasswordPanel;
@@ -244,14 +246,20 @@ public class SettingsActivity extends ParentActivity {
         if (requestCode == PICK_IMAGE) {
             Log.i("DATA", "data: " + data);
             if (data != null && data.getData() != null) {
-                imageProfile.setImageURI(data.getData());
-                imageProfile.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                imageProfile.buildDrawingCache();
-                Bitmap bmap = imageProfile.getDrawingCache();
-                String encodedImageData = getEncoded64ImageStringFromBitmap(bmap);
-                sessionManager.saveProfileImage(encodedImageData);
-                Log.i("BASE", encodedImageData);
-            }
+                try {
+                    imageProfile.setImageURI(data.getData());
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+                    imageProfile.buildDrawingCache();
+                    //Bitmap bmap = imageProfile.getDrawingCache();
+                    String encodedImageData = getEncoded64ImageStringFromBitmap(bitmap);
+                    sessionManager.saveProfileImage(encodedImageData);
+                    //imageProfile.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    //Log.i("BASE", encodedImageData);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                }
         }
     }
 

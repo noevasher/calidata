@@ -157,7 +157,9 @@ public class CheckbookActivity extends ParentActivity {
         imageProfile.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
-                pickFromGallery();
+                //pickFromGallery();
+                Intent intent = new Intent(CheckbookActivity.this, ImageViewActivity.class);
+                startActivity(intent);
             }
         });
 

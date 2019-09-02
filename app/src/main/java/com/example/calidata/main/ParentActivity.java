@@ -138,6 +138,7 @@ public class ParentActivity extends AppCompatActivity {
         //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
         String[] mimeTypes = {"image/jpeg", "image/png"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+
         // Launching the Intent
         startActivityForResult(intent, PICK_IMAGE);
     }

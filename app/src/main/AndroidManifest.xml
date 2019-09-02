@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.calidata">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -12,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".utilities.HelpActivity"></activity>
+        <activity android:name=".main.ImageViewActivity"     android:theme="@style/Theme.AppCompat.Translucent">
+            ></activity>
+        <activity android:name=".utilities.HelpActivity" />
         <activity android:name=".utilities.SettingsActivity" />
         <activity android:name=".main.CheckbookAddActivity" />
         <activity android:name=".activities.cancel.CheckCancelActivity" />
