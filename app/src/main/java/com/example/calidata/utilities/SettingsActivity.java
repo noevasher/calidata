@@ -31,6 +31,7 @@ import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
 import com.example.calidata.main.ParentActivity;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -247,20 +248,41 @@ public class SettingsActivity extends ParentActivity {
             Log.i("DATA", "data: " + data);
             if (data != null && data.getData() != null) {
                 try {
+
                     imageProfile.setImageURI(data.getData());
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+                    bitmap = compressImage(bitmap);
                     imageProfile.buildDrawingCache();
-                    //Bitmap bmap = imageProfile.getDrawingCache();
                     String encodedImageData = getEncoded64ImageStringFromBitmap(bitmap);
                     sessionManager.saveProfileImage(encodedImageData);
-                    //imageProfile.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    //Log.i("BASE", encodedImageData);
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 }
         }
+    }
+
+    private Bitmap compressImage(Bitmap original) {
+        int ONE_MB = 1024;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Bitmap resized = Bitmap.createScaledBitmap(original,(int)(original.getWidth()*0.8), (int)(original.getHeight()*0.8), true);
+
+        resized.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        int realSize = baos.toByteArray().length;
+        System.out.println("realSize: " + realSize);
+
+        while (realSize / ONE_MB > ONE_MB) {
+            baos.reset();
+            resized = Bitmap.createScaledBitmap(resized,(int)(resized.getWidth()*0.8), (int)(resized.getHeight()*0.8), true);
+            resized.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+            realSize = baos.toByteArray().length;
+            System.out.println("realSize: " + realSize);
+
+        }
+
+        return resized;
     }
 
     private String convertToBase64(String imagePath) {

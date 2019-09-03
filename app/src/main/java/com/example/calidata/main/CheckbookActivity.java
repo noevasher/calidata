@@ -125,7 +125,7 @@ public class CheckbookActivity extends ParentActivity {
     }
 
     private void readCheckBooks() {
-        int checkbooksNum = 0;
+        int checkbooksNum = 3;
         if (userId != 0) {
             /*
             controller.getCheckbooks(userId).subscribe(response -> {
