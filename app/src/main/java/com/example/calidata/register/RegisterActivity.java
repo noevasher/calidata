@@ -136,6 +136,7 @@ public class RegisterActivity extends ParentActivity {
                             progressBar.setVisibility(View.GONE);
                             LoginActivity.getInstance().finish();
                             finish();
+                            initCountdown();
                         }, t -> {
                             Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);

@@ -4,10 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -25,21 +21,17 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 
 import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
 import com.example.calidata.main.ParentActivity;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 
 public class SettingsActivity extends ParentActivity {
 
@@ -93,12 +85,12 @@ public class SettingsActivity extends ParentActivity {
         userNameText.setText("Noe Vasquez Herrera");
         emailText.setText(email);
 
-        if(sessionManager.getKeyImage64() != null){
+        if (sessionManager.getKeyImage64() != null) {
             putImage(sessionManager.getKeyImage64(), imageProfile);
 
         }
 
-        if (sessionManager.getKeyUsername() != null){
+        if (sessionManager.getKeyUsername() != null) {
             userNameText.setText(sessionManager.getKeyUsername());
         }
 
@@ -112,7 +104,7 @@ public class SettingsActivity extends ParentActivity {
         });
         usernameObs = Observable.create(emitter -> {
             String username = sessionManager.getKeyUsername();
-            if (username != null){
+            if (username != null) {
                 userNameText.setText(username);
                 emitter.onNext(username);
             }
@@ -259,14 +251,14 @@ public class SettingsActivity extends ParentActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                }
+            }
         }
     }
 
     private Bitmap compressImage(Bitmap original) {
         int ONE_MB = 1024;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Bitmap resized = Bitmap.createScaledBitmap(original,(int)(original.getWidth()*0.8), (int)(original.getHeight()*0.8), true);
+        Bitmap resized = Bitmap.createScaledBitmap(original, (int) (original.getWidth() * 0.8), (int) (original.getHeight() * 0.8), true);
 
         resized.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         int realSize = baos.toByteArray().length;
@@ -274,7 +266,7 @@ public class SettingsActivity extends ParentActivity {
 
         while (realSize / ONE_MB > ONE_MB) {
             baos.reset();
-            resized = Bitmap.createScaledBitmap(resized,(int)(resized.getWidth()*0.8), (int)(resized.getHeight()*0.8), true);
+            resized = Bitmap.createScaledBitmap(resized, (int) (resized.getWidth() * 0.8), (int) (resized.getHeight() * 0.8), true);
             resized.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 
             realSize = baos.toByteArray().length;

@@ -35,13 +35,14 @@ public class ParentActivity extends AppCompatActivity {
     public ManagerTheme managerTheme;
     public SessionManager sessionManager;
     public static final int PICK_IMAGE = 1;
+    private CountDownTimer timer;
 
+    private static long TIME_EXPIRED = 3600000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         managerTheme = ManagerTheme.getInstance();
         sessionManager = SessionManager.getInstance(getApplicationContext());
-        //initCountdown(10000);
         setTheme(managerTheme.getThemeId());
     }
 
@@ -124,7 +125,7 @@ public class ParentActivity extends AppCompatActivity {
         }
     }
 
-    protected void logout(Intent intent){
+    protected void logout(){
         sessionManager.logoutUser();
         setTheme(managerTheme.getFirstTheme());
         finish();
@@ -184,21 +185,25 @@ public class ParentActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    protected void initCountdown(long time){
-        CountDownTimer timer = new CountDownTimer(time, 1000) {
-            public void onTick(long millisUntilFinished) {
-                //Toast.makeText(ParentActivity.this, "tiempo pasado: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
+    protected void initCountdown(){
+        if(timer == null) {
+            timer = new CountDownTimer(TIME_EXPIRED, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    if(millisUntilFinished / 1000 <= 60) {
+                        Toast.makeText(ParentActivity.this, "tiempo pasado: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
+                    }
+                }
 
-            }
-            public void onFinish() {
-                Toast.makeText(ParentActivity.this, "tiempo culminado", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(ParentActivity.this, LoginActivity.class);
-                this.cancel();
-                logout(intent);
-
-            }
-        };
-        timer.start();
+                public void onFinish() {
+                    Toast.makeText(ParentActivity.this, "tiempo culminado", Toast.LENGTH_LONG).show();
+                    this.cancel();
+                    logout();
+                    finish();
+                    timer = null;
+                }
+            };
+            timer.start();
+        }
     }
 
     public Drawable getLogoDrawableByBankName(String bankName) {

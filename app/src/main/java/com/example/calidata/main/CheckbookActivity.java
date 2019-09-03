@@ -238,8 +238,7 @@ public class CheckbookActivity extends ParentActivity {
                     startActivity(intent);
                     return true;
                 case R.id.nav_close:
-                    intent = new Intent(this, LoginActivity.class);
-                    logout(intent);
+                    logout();
                     return true;
                 default:
                     return false;
@@ -266,8 +265,7 @@ public class CheckbookActivity extends ParentActivity {
                 startActivity(intent);
                 return true;
             case R.id.action_logout:
-                intent = new Intent(this, LoginActivity.class);
-                logout(intent);
+                logout();
                 return true;
             default:
                 // If we got here, the user's action was not recognized.

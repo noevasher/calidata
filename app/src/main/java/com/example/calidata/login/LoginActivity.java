@@ -126,6 +126,7 @@ public class LoginActivity extends ParentActivity {
                                             finish();
                                             showLoginFailed(R.string.success_login);
                                             progressBar.setVisibility(View.GONE);
+                                            initCountdown();
                                         }
                                     }
                                 });
