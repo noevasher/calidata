@@ -30,6 +30,9 @@ import com.example.calidata.login.LoginActivity;
 import com.example.calidata.management.ManagerTheme;
 import com.example.calidata.session.SessionManager;
 
+import java.nio.ByteBuffer;
+import java.util.UUID;
+
 public class ParentActivity extends AppCompatActivity {
     private static final int WORD_LENGTH = 6;
     public ManagerTheme managerTheme;
@@ -128,6 +131,10 @@ public class ParentActivity extends AppCompatActivity {
     protected void logout(){
         sessionManager.logoutUser();
         setTheme(managerTheme.getFirstTheme());
+        if(timer != null) {
+            timer.cancel();
+            timer = null;
+        }
         finish();
     }
 
@@ -189,13 +196,14 @@ public class ParentActivity extends AppCompatActivity {
         if(timer == null) {
             timer = new CountDownTimer(TIME_EXPIRED, 1000) {
                 public void onTick(long millisUntilFinished) {
-                    if(millisUntilFinished / 1000 <= 60) {
-                        Toast.makeText(ParentActivity.this, "tiempo pasado: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
+                    int mod = 60;
+                    if(millisUntilFinished / 1000 % mod == 0) {
+                        Toast.makeText(ParentActivity.this, "tu sesión terminará en: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
                     }
                 }
 
                 public void onFinish() {
-                    Toast.makeText(ParentActivity.this, "tiempo culminado", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ParentActivity.this, "Sesión Terminada", Toast.LENGTH_LONG).show();
                     this.cancel();
                     logout();
                     finish();
@@ -285,4 +293,10 @@ public class ParentActivity extends AppCompatActivity {
         }
     }
 
+
+    public static String shortUUID() {
+        UUID uuid = UUID.randomUUID();
+        long l = ByteBuffer.wrap(uuid.toString().getBytes()).getLong();
+        return Long.toString(l, 5);
+    }
 }

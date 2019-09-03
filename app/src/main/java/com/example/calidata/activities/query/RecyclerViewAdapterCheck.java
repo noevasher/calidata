@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.calidata.R;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
+import com.example.calidata.models.CheckModel;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -28,7 +29,8 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
     private static final int VIEW_TYPE_EMPTY = 0;
     private static final int VIEW_TYPE_DATA = 1;
 
-    private List<String> mData;
+    //private List<String> mData;
+    private List<CheckModel> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
     private Context mContext;
@@ -38,7 +40,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
     private String bankName;
 
     // data is passed into the constructor
-    public RecyclerViewAdapterCheck(Context context, List<String> data, int cardCancel) {
+    public RecyclerViewAdapterCheck(Context context, List<CheckModel> data, int cardCancel) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
         this.mContext = context;
@@ -76,10 +78,21 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
 
             }
         } else {
-            String animal = mData.get(position);
+            CheckModel model = mData.get(position);
             final char[] delimiters = { ' ', '_' };
 
-            holder.myTextView.setText(animal);
+            String status = model.getStatus();
+            String date = model.getDate();
+            String name = model.getCheckId();
+            String description = model.getDescription();
+            String quantity = "" + model.getQuantity();
+
+            holder.myTextView.setText(name);
+            holder.statusText.setText(status);
+            holder.dateText.setText(date);
+            holder.descriptionText.setText(description);
+            holder.quantityText.setText(quantity);
+
             Drawable logoDrawable = ((ParentActivity)(mContext)).getLogoDrawableByBankName(bankName);
             holder.logo.setImageDrawable(logoDrawable);
             holder.textBank.setText(WordUtils.capitalizeFully(bankName, delimiters));
@@ -88,7 +101,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
                 holder.cancelBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
                 holder.cancelBtn.setTextColor(ContextCompat.getColor(mContext, R.color.white));
                 holder.cancelBtn.setOnClickListener(v -> {
-                    openDialog(animal);
+                    openDialog(name);
                 });
             }
         }
@@ -121,6 +134,10 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         TextView textBank;
         Button cancelBtn;
         TextView emptyText;
+        TextView dateText;
+        TextView statusText;
+        TextView descriptionText;
+        TextView quantityText;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -130,6 +147,10 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             textBank = itemView.findViewById(R.id.textView_bank);
             cancelBtn = itemView.findViewById(R.id.button_cancel);
             emptyText = itemView.findViewById(R.id.textView_empty);
+            dateText = itemView.findViewById(R.id.textView_date);
+            statusText = itemView.findViewById(R.id.textView_status);
+            descriptionText = itemView.findViewById(R.id.textView_description);
+            quantityText = itemView.findViewById(R.id.textView_quantity);
             itemView.setOnClickListener(this);
         }
 
@@ -140,7 +161,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
     }
 
     // convenience method for getting data at click position
-    String getItem(int id) {
+    public CheckModel getItem(int id) {
         return mData.get(id);
     }
 

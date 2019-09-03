@@ -13,6 +13,8 @@ import com.example.calidata.R;
 import com.example.calidata.activities.query.RecyclerViewAdapterCheck;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
+import com.example.calidata.models.CheckModel;
+import com.example.calidata.models.CheckbookModel;
 
 import java.util.ArrayList;
 
@@ -42,16 +44,23 @@ public class CheckCancelActivity extends ParentActivity {
         String title = getString(R.string.cancel_check_title);
         setToolbar(toolbar, title, true);
 
-        ArrayList<String> animalNames = new ArrayList<>();
+        ArrayList<CheckModel> checks = new ArrayList<>();
 
-        animalNames.add("Horse");
-        animalNames.add("Sheep");
-        animalNames.add("Goat");
 
+        for(int i = 0; i < 5; i++) {
+            CheckModel check = new CheckModel();
+            check.setCheckId(shortUUID());
+            check.setCheckModelId(shortUUID());
+            check.setDescription("check --> " + i);
+            check.setQuantity((double) (200 * (i+1)));
+            check.setDate(i+10 + "/05/2019");
+            check.setStatus("cancelado");
+            checks.add(check);
+        }
 //*/
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new RecyclerViewAdapterCheck(this, animalNames, R.layout.card_cancel);
+        adapter = new RecyclerViewAdapterCheck(this, checks, R.layout.card_cancel);
         recyclerView.setAdapter(adapter);
 
 

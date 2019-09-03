@@ -11,6 +11,11 @@ public class CheckModel {
     public String description;
 
 
+    public CheckModel(){
+
+    }
+
+
     public String getCheckModelId() {
         return checkModelId;
     }

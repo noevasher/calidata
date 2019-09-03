@@ -22,8 +22,11 @@ import com.example.calidata.R;
 import com.example.calidata.activities.query.filter.FilterActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
+import com.example.calidata.models.CheckModel;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,6 +59,40 @@ public class CheckQueryActivity extends ParentActivity {
         setToolbar(toolbar, getResources().getString(R.string.query_check_title), true);
         //setArrowToolbar(too);
         // data to populate the RecyclerView with
+
+        ArrayList<CheckModel> checks = new ArrayList<>();
+        for(int i = 0; i < 5; i++) {
+            CheckModel check = new CheckModel();
+            check.setCheckId(shortUUID());
+            check.setCheckModelId(shortUUID());
+            check.setDescription("check --> " + i);
+            check.setQuantity((double) (100 * (i+1)));
+            check.setDate(i+10 + "/05/2019");
+            check.setStatus("activo");
+            checks.add(check);
+        }
+        for(int i = 0; i < 5; i++) {
+            CheckModel check = new CheckModel();
+            check.setCheckId(shortUUID());
+            check.setCheckModelId(shortUUID());
+            check.setDescription("check --> " + i);
+            check.setQuantity((double) (200 * (i+1)));
+            check.setDate(i+10 + "/05/2019");
+            check.setStatus("pagado");
+            checks.add(check);
+        }
+
+        for(int i = 0; i < 5; i++) {
+            CheckModel check = new CheckModel();
+            check.setCheckId(shortUUID());
+            check.setCheckModelId(shortUUID());
+            check.setDescription("check --> " + i);
+            check.setQuantity((double) (200 * (i+1)));
+            check.setDate(i+10 + "/05/2019");
+            check.setStatus("cancelado");
+            checks.add(check);
+        }
+        /*
         ArrayList<String> animalNames = new ArrayList<>();
 
         animalNames.add("Horse");
@@ -69,7 +106,7 @@ public class CheckQueryActivity extends ParentActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new RecyclerViewAdapterCheck(this, animalNames, R.layout.card_check);
+        adapter = new RecyclerViewAdapterCheck(this, checks, R.layout.card_check);
         recyclerView.setAdapter(adapter);
 
         printConstraintSearch();
@@ -88,6 +125,7 @@ public class CheckQueryActivity extends ParentActivity {
         });
         //*/
     }
+
 
     private void printConstraintSearch(){
         managerTheme = ManagerTheme.getInstance();
