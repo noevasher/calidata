@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.HashMap;
 
 public class User {
+    private static User instance = null;
     private Double userId;
 
     public String userName;
@@ -26,11 +27,46 @@ public class User {
     public HashMap<String, Object> data;
 
     public String image64;
+    public String accessToken;
 
-    public User(String userName, String email, String password, Integer bankId) {
+    public String tokenType;
+
+
+    public static User getInstance(){
+        if(instance == null){
+            return new User();
+        }
+        return instance;
+    }
+
+    public static User getInstance(String userName, String email, String password, Integer bankId){
+        if(instance == null){
+            return new User(userName, email, password, bankId);
+        }
+        return instance;
+    }
+
+    public static User getInstance(Double userId, String email, Integer bankId){
+        if(instance == null){
+            return new User(userId, email, bankId);
+        }
+        return instance;
+    }
+
+    private User() {
+
+    }
+
+    private User(String userName, String email, String password, Integer bankId) {
         this.userName = userName;
         this.email = email;
         this.password = password;
+        this.bankId = bankId;
+    }
+
+    private User(Double userId, String email, Integer bankId) {
+        this.userId = userId;
+        this.email = email;
         this.bankId = bankId;
     }
 
@@ -96,5 +132,21 @@ public class User {
 
     public void setData(HashMap<String, Object> data) {
         this.data = data;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
     }
 }

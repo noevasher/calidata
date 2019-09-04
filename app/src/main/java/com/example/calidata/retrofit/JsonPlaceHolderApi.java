@@ -40,6 +40,9 @@ public interface JsonPlaceHolderApi {
     @POST("autenticacion")
     Call<LoginResponse> authentication(@Header("Usuario") String user, @Header("IdPass")String password, @Field("grant_type") String type);
 
+    @Headers("Content-Type: application/json")
+    @POST("cheque/AgregarChequera")
+    Call<CheckbookModel> addCheckBook(@Header("Authorization") String token, @Body HashMap<String, Object> body);
 
     @POST("account/register")
     @Headers("Content-Type: application/json")

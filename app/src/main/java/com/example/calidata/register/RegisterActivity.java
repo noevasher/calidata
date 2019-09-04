@@ -122,7 +122,7 @@ public class RegisterActivity extends ParentActivity {
                         progressBar.getIndeterminateDrawable().setColorFilter(getColor(R.color.white), android.graphics.PorterDuff.Mode.SRC_ATOP);
                         progressBar.setVisibility(View.VISIBLE);
 
-                        User newUser = new User(name, email, encryptPassword, bankId);
+                        User newUser = User.getInstance(name, email, encryptPassword, bankId);
 
                         Gson gson = new Gson();
                         String json = gson.toJson(newUser);

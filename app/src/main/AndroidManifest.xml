@@ -18,7 +18,7 @@
         <activity android:name=".utilities.SettingsActivity" />
         <activity android:name=".main.CheckbookAddActivity" />
         <activity android:name=".activities.cancel.CheckCancelActivity" />
-        <activity android:name=".main.CheckbookActivity" />
+        <activity android:name=".main.CheckbookActivity" android:configChanges="orientation|screenSize"/>
         <activity android:name=".activities.active.CheckActiveActivity" />
         <activity android:name=".activities.emit.CheckEmitActivity" />
         <activity android:name=".activities.query.filter.FilterActivity" />

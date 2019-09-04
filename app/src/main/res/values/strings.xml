@@ -54,6 +54,8 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_email">Formato de email invalido</string>
     <string name="invalid_password">Password debe tener 6 o más caracteres</string>
+    <string name="required_field_label">Campo Obligatorio</string>
+    <string name="match_password_title">La contraseña debe de coincidir</string>
 
 
 </resources>

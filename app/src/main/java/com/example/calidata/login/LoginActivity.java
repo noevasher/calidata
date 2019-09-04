@@ -21,6 +21,7 @@ import com.example.calidata.login.managment.AESCrypt;
 import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.models.Bank;
+import com.example.calidata.models.User;
 import com.example.calidata.register.RegisterActivity;
 
 import butterknife.BindView;
@@ -122,6 +123,9 @@ public class LoginActivity extends ParentActivity {
                                     for (Bank bank : list) {
                                         if (bank.getIdBank() == bankId) {
                                             Double userId = response.getUserId();
+                                            setExpireTime(response.getExpiteIn());
+                                            User newUser = User.getInstance(response.getUserId(), user, bankId);
+                                            newUser.setAccessToken(response.getAccessToken());
                                             pickBankAndOpenCheckbookByName(bank.getNameBank(), user, userId);
                                             finish();
                                             showLoginFailed(R.string.success_login);

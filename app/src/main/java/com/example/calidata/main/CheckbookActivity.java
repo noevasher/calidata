@@ -1,6 +1,7 @@
 package com.example.calidata.main;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -25,11 +27,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
-import com.example.calidata.login.LoginActivity;
-import com.example.calidata.login.managment.RSA;
 import com.example.calidata.main.adapters.RecyclerViewAdapterCheckbook;
 import com.example.calidata.main.controllers.CheckbookController;
 import com.example.calidata.models.CheckbookModel;
+import com.example.calidata.models.User;
 import com.example.calidata.utilities.HelpActivity;
 import com.example.calidata.utilities.SettingsActivity;
 import com.google.android.material.navigation.NavigationView;
@@ -38,14 +39,8 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.UUID;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,15 +61,20 @@ public class CheckbookActivity extends ParentActivity {
     @BindView(R.id.floatingActionButton)
     public ImageView addCheckbookBtn;
 
+    @BindView(R.id.progressBar)
+    public ProgressBar progressBar;
+
     RecyclerViewAdapterCheckbook adapter;
 
-    private ArrayList<String> checkbooks;
+    //private ArrayList<String> checkbooks;
     private ArrayList<CheckbookModel> checkbooksList;
 
     public CircleImageView imageProfile;
     private CheckbookController controller;
     private Double userId;
     private TextView textName;
+    private RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
@@ -89,9 +89,9 @@ public class CheckbookActivity extends ParentActivity {
         userId = sessionManager.getUserId();
 
         initNavBar();
-
-        checkbooks = new ArrayList<>();
 /*
+        checkbooks = new ArrayList<>();
+
         checkbooks.add("**** **** **** **** 1800");
         checkbooks.add("**** **** **** **** 1856");
         checkbooks.add("**** **** **** **** 7800");
@@ -102,30 +102,33 @@ public class CheckbookActivity extends ParentActivity {
 
 
         // set up the RecyclerView
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        recyclerView = findViewById(R.id.recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         //adapter = new RecyclerViewAdapterCheckbook(this, checkbooks);
-        adapter = new RecyclerViewAdapterCheckbook(this, checkbooksList, true);
+        adapter = new RecyclerViewAdapterCheckbook(this, checkbooksList);
 
         recyclerView.setAdapter(adapter);
 
         addCheckbookBtn.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
-                openDialog();
+                //openDialog();
+                progressBar.setVisibility(View.VISIBLE);
+                readQR();
             }
         });
 
         addCheckbookBtn.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
 
         addCheckbookBtn.bringToFront();
+        progressBar.bringToFront();
         readCheckBooks();
 
     }
 
     private void readCheckBooks() {
-        int checkbooksNum = 3;
+        int checkbooksNum = 0;
         if (userId != 0) {
             /*
             controller.getCheckbooks(userId).subscribe(response -> {
@@ -136,26 +139,26 @@ public class CheckbookActivity extends ParentActivity {
             });
             //*/
 
-           for(int i=0; i<checkbooksNum; i++){
-               CheckbookModel checkbookModel = new CheckbookModel();
-               checkbookModel.setCheckbookId("checkbookId: " + i);
-               String randomId = UUID.randomUUID().toString();
-               String hidden = hideCheckId(randomId);
-               checkbookModel.setCheckId(hidden + "_" + i);
-               checkbookModel.setTypeDoc("00");
-               checkbooksList.add(checkbookModel);
-           }
-           adapter.notifyDataSetChanged();
+            for (int i = 0; i < checkbooksNum; i++) {
+                CheckbookModel checkbookModel = new CheckbookModel();
+                checkbookModel.setCheckbookId("checkbookId: " + i);
+                String randomId = UUID.randomUUID().toString();
+                String hidden = hideCheckId(randomId);
+                checkbookModel.setCheckId(hidden + "_" + i);
+                checkbookModel.setTypeDoc("00");
+                checkbooksList.add(checkbookModel);
+            }
+            //adapter.notifyDataSetChanged();
         }
     }
 
-    private String hideCheckId(String checkId){
+    private String hideCheckId(String checkId) {
         int size = checkId.length();
         String hidden = "";
         String startSubString = checkId.substring(0, size - 4);
         String endSubString = checkId.substring(size - 4, size);
-        for(int i = 0; i < size - 4; i++){
-            hidden +=  "*";
+        for (int i = 0; i < size - 4; i++) {
+            hidden += "*";
         }
         return hidden + endSubString;
     }
@@ -337,59 +340,40 @@ public class CheckbookActivity extends ParentActivity {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 String contents = data.getStringExtra("SCAN_RESULT");
-                String format = data.getStringExtra("SCAN_RESULT_FORMAT");
-                String num = data.getStringExtra("NUM");
-                Bundle bundle = data.getExtras();
 
-                /////////////////////////////////////////
-                try {
-                    RSA rsa = new RSA();
 
-                    System.out.println("contents: " + "686f6c61206d69206e6f6d627265206573206e6f65");
-                    String result = hex2String("686f6c61206d69206e6f6d627265206573206e6f65");
-                    System.out.println("Result String: " + result);
+                if (contents != null) {
+                    String token = "bearer A9qzBO9lLSazlXwcoYqLamn0bLa0rI35OX2YY4RYQp3Y-B2MHAeQwSMkmj5hr1PQAQpRRaJJXtSXiv9zi-u4LB-OqWwPpLutzmeFWhk_Dv2uB83-CvFgXvTAgsQXyCFq1Han89O5aKzK4WWkCzi71O8GF8-FZ5ZUMiCU2IFpDXcFe28Y2tcNNq0U_l3E-ia4BebN174qOGYIUb0NHKfrPtaJMeCbWsG9-ZKDQBxcxv6cLvg4JZcWi-1lw2AoWzxqQ9iT4Rvj1PjNCsnJTTjozQ";
 
-                    //result = rsa.encrypt("15279355-FF18-4264-ADC7-000BE28B0C15-52-00-014");
+                    controller.addCheckbook(token, "aaaaaa").subscribe(response -> {
+                        //if(response.getData() != null && response.getData().isEmpty()){
+                        CheckbookModel checkbookModel = new CheckbookModel();
+                        checkbookModel.setTypeDoc("00");
+                        checkbookModel.setCheckId(shortUUID());
+                        checkbookModel.setCheckbookId(shortUUID());
+                        checkbooksList.add(checkbookModel);
 
-                    System.out.println("encriptacion: " + result);
-                    System.out.println("Desencriptacion: " + rsa.decrypt("u\u0093T\u0013í_\u0098ö\u0012;Æj\u0080L*Q!§\u0087\u000B1M^\u000ERØ\u0093mÄ^è&¾\u007F{g\u0018$Ó>ô,\u0004°?*Î[ñmå«\u008Fc$hGÉ\u0098¥¢\u0017Äq\u0080áÆñ\u0080ü9\u0017mþÚy\u009Ez2åü;/|ÙµÀ;·8¸ÿ$\u001B\u001E\u009B\u0081&µç¾+\u0001\u008F\u000BQ¹\u0004ná\u0092\u0092PR,ó\u001AøO\u001D\u0005¸£a\u008C\u0007Õ´"));
-                    rsa.decrypt(contents);
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (NoSuchPaddingException e) {
-                    e.printStackTrace();
-                } catch (InvalidKeyException e) {
-                    e.printStackTrace();
-                } catch (IllegalBlockSizeException e) {
-                    e.printStackTrace();
-                } catch (BadPaddingException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                } catch (DecoderException e) {
-                    e.printStackTrace();
+                        adapter.notifyItemInserted(checkbooksList.size());
+
+                        recyclerView.postDelayed(() -> {
+                            recyclerView.scrollToPosition(checkbooksList.size() - 1);
+                        }, 500);
+                        progressBar.setVisibility(View.GONE);
+
+
+                        //}
+
+                    }, t -> {
+                        Log.e("", t.getMessage());
+                    });
+
                 }
 
-                ///////////////////////////////////////////
+                //*/
 
-                //SCAN_RESULT=ntI1Rct8JNC1HfTgKMnO3hRIfdckeVeybG1ACMmRJzruA8v1vzq2TW3dvgk5/58E2VFOfoceqnC4x8ckorpeTg==
-                //SCAN_RESULT_BYTE_SEGMENTS_0=[B@1548ca6, SCAN_RESULT_BYTES=[B@23ea6e7
-                //SCAN_RESULT_FORMAT=QR_CODE
-                // SCAN_RESULT_ERROR_CORRECTION_LEVEL=M
+                User user = User.getInstance();
 
-
-                if (num != null)
-                    checkbooks.add(num);
-                else
-                    checkbooks.add(contents);
-                adapter.notifyDataSetChanged();
-                //TextView textView = fragmentQR.getView().findViewById(R.id.textView_content);
-                //textView.setText(contents + "\n" + format);
-
-                //Log.i("TAG-QR contents: ", contents);
-                //Log.i("TAG-QR format: ", format);
-                //Log.i("TAG-QR data sqcheme", data.getData().getScheme());
-
+                //*/
             }
             if (resultCode == RESULT_CANCELED) {
                 //handle cancel
@@ -402,6 +386,7 @@ public class CheckbookActivity extends ParentActivity {
                 imageProfile.setImageURI(data.getData());
             }
         }
+        progressBar.setVisibility(View.GONE);
     }
 
     private String hex2String(String hexString) throws DecoderException, UnsupportedEncodingException {
@@ -410,16 +395,24 @@ public class CheckbookActivity extends ParentActivity {
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (adapter.getItemCount() > 0) {
+            System.out.println(adapter.getItemCount());
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        if(SettingsActivity.imageObs!= null) {
+        if (SettingsActivity.imageObs != null) {
             SettingsActivity.imageObs.subscribe(response -> {
                 if (response != null) {
                     putImage(response, imageProfile);
                 }
             });
         }
-        if(SettingsActivity.usernameObs != null) {
+        if (SettingsActivity.usernameObs != null) {
             SettingsActivity.usernameObs.subscribe(response -> {
                 if (response != null) {
                     textName.setText(response);

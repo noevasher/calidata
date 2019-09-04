@@ -1,7 +1,11 @@
 package com.example.calidata.models;
 
-public class CheckbookModel {
+import com.google.gson.annotations.SerializedName;
 
+import java.util.HashMap;
+
+public class CheckbookModel {
+    public HashMap<String, Object> data;
     private String checkbookId;
     private String checkId;
     private String typeDoc;
@@ -32,5 +36,13 @@ public class CheckbookModel {
 
     public void setTypeDoc(String typeDoc) {
         this.typeDoc = typeDoc;
+    }
+
+    public HashMap<String, Object> getData() {
+        return data;
+    }
+
+    public void setData(HashMap<String, Object> data) {
+        this.data = data;
     }
 }

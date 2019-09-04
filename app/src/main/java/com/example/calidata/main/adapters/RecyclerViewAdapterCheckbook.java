@@ -16,7 +16,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calidata.OnSingleClickListener;
@@ -28,8 +27,8 @@ import com.example.calidata.main.CheckbookAddActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
 import com.example.calidata.models.CheckbookModel;
-import com.google.zxing.common.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerViewAdapterCheckbook.ViewHolder> {
@@ -38,27 +37,16 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     private static final int VIEW_TYPE_DATA = 1;
 
     //private List<String> mData;
-    private List<CheckbookModel> mData;
+    private static List<CheckbookModel> mData;
+    //private List<CheckbookModel> mData;
     private LayoutInflater mInflater;
     private Context mContext;
     private int themeId;
     private String bankName;
 
-    // data is passed into the constructor
-    public RecyclerViewAdapterCheckbook(Context context, List<String> data) {
+    public RecyclerViewAdapterCheckbook(Context context, List<CheckbookModel> data) {
         this.mInflater = LayoutInflater.from(context);
-        //this.mData = data;
-        this.mContext = context;
-        ManagerTheme managerTheme = ManagerTheme.getInstance();
-        themeId = managerTheme.getThemeId();
-        bankName = managerTheme.getBankName();
-
-    }
-
-
-    public RecyclerViewAdapterCheckbook(Context context, List<CheckbookModel> data, boolean t) {
-        this.mInflater = LayoutInflater.from(context);
-        this.mData = data;
+        mData = data;
         this.mContext = context;
         ManagerTheme managerTheme = ManagerTheme.getInstance();
         themeId = managerTheme.getThemeId();
@@ -90,7 +78,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         } else {
             String number = mData.get(position).getCheckId();
             //Drawable logoDrawable = getLogoDrawable(themeId);
-            Drawable logoDrawable = ((ParentActivity)(mContext)).getLogoDrawableByBankName(bankName);
+            Drawable logoDrawable = ((ParentActivity) (mContext)).getLogoDrawableByBankName(bankName);
 
             holder.logo.setImageDrawable(logoDrawable);
             //holder.textBank.setText(getBankName(themeId));
@@ -122,10 +110,14 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         if (mData.size() == 0) {
             return VIEW_TYPE_EMPTY;
         } else {
-            Object item = mData.get(position);
+            //Object item = mData.get(position);
             return VIEW_TYPE_DATA;
 
         }
+    }
+
+    public void setList(ArrayList<CheckbookModel> checkbooksList) {
+        this.mData = checkbooksList;
     }
 
 
@@ -148,36 +140,6 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     public CheckbookModel getItem(int id) {
         return mData.get(id);
     }
-
-
-/*
-    private Drawable getLogoDrawableByBankName(String bankName) {
-
-        switch (bankName) {
-            case "santander":
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_santander_logo);
-            case "banamex":
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_citibanamex_logo);
-            case "hsbc":
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_hsbc_logo);
-            case "bancomer":
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_bancomer_logo);
-            case "banbajio":
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_banbajio_logo);
-            case "scotiabank":
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_scotiabank_logo);
-            case "banorte":
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_banorte_logo);
-            case "inbursa":
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_inbursa_logo);
-            case "compartamos":
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_compartamos_logo);
-            default:
-                break;
-        }
-        return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
-    }
-//*/
 
 
     public void openActions() {

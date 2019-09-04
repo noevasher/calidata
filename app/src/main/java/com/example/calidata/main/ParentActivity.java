@@ -1,6 +1,5 @@
 package com.example.calidata.main;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,11 +25,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.example.calidata.R;
-import com.example.calidata.login.LoginActivity;
 import com.example.calidata.management.ManagerTheme;
 import com.example.calidata.session.SessionManager;
 
-import java.nio.ByteBuffer;
 import java.util.UUID;
 
 public class ParentActivity extends AppCompatActivity {
@@ -38,9 +35,11 @@ public class ParentActivity extends AppCompatActivity {
     public ManagerTheme managerTheme;
     public SessionManager sessionManager;
     public static final int PICK_IMAGE = 1;
-    private CountDownTimer timer;
+    private static CountDownTimer timer;
+    private String token;
+    //private static long TIME_EXPIRED = 3600000;
+    private Integer TIME_EXPIRED;
 
-    private static long TIME_EXPIRED = 3600000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,29 +56,28 @@ public class ParentActivity extends AppCompatActivity {
         return target.length() >= WORD_LENGTH;
     }
 
-    public static void displayEmptyField(Spinner spinner) {
+    protected void displayEmptyField(Spinner spinner) {
         if (spinner.getSelectedItemPosition() == 0) {
             TextView errorText = (TextView) spinner.getSelectedView();
-            errorText.setError("anything here, just to add the icon");
-            errorText.setTextColor(Color.RED);//just to highlight that this is an error
-            errorText.setText("Selecciona una entidad");//changes the selected item text to this
+            errorText.setTextColor(Color.RED);
+            errorText.setText(getString(R.string.select_bank_label));
         }
     }
 
-    public static void displayEmptyField(EditText editText) {
+    protected void displayEmptyField(EditText editText) {
         if (editText.getText().toString().isEmpty())
-            editText.setError("Campo Obligatorio");
+            editText.setError(getString(R.string.required_field_label));
         //return editText.getText().toString().isEmpty();
     }
 
-    public static boolean isEmptyField(EditText editText) {
+    protected boolean isEmptyField(EditText editText) {
         return editText.getText().toString().isEmpty();
         //return editText.getText().toString().isEmpty();
     }
 
-    public static boolean comparePassword(EditText password, EditText passwordConfirm) {
+    protected boolean comparePassword(EditText password, EditText passwordConfirm) {
         if (!password.getText().toString().equals(passwordConfirm.getText().toString())) {
-            passwordConfirm.setError("La contraseña debe de coincidir");
+            passwordConfirm.setError(getString(R.string.match_password_title));
             return false;
         } else {
             return true;
@@ -128,10 +126,10 @@ public class ParentActivity extends AppCompatActivity {
         }
     }
 
-    protected void logout(){
+    protected void logout() {
         sessionManager.logoutUser();
         setTheme(managerTheme.getFirstTheme());
-        if(timer != null) {
+        if (timer != null) {
             timer.cancel();
             timer = null;
         }
@@ -192,22 +190,21 @@ public class ParentActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    protected void initCountdown(){
-        if(timer == null) {
+    protected void initCountdown() {
+        if (timer == null) {
             timer = new CountDownTimer(TIME_EXPIRED, 1000) {
                 public void onTick(long millisUntilFinished) {
                     int mod = 60;
-                    if(millisUntilFinished / 1000 % mod == 0) {
-                        Toast.makeText(ParentActivity.this, "tu sesión terminará en: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
-                    }
+                    //if (millisUntilFinished / 1000 % mod == 0) {
+                    Toast.makeText(ParentActivity.this, "tu sesión terminará en: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
+                    //}
                 }
 
                 public void onFinish() {
                     Toast.makeText(ParentActivity.this, "Sesión Terminada", Toast.LENGTH_LONG).show();
-                    this.cancel();
                     logout();
-                    finish();
-                    timer = null;
+                    //finish();
+                    //timer = null;
                 }
             };
             timer.start();
@@ -285,8 +282,8 @@ public class ParentActivity extends AppCompatActivity {
         }
     }
 
-    protected void putImage(String image64, ImageView imageView){
-        if( image64 != null) {
+    protected void putImage(String image64, ImageView imageView) {
+        if (image64 != null) {
             byte[] decodedString = Base64.decode(image64, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             imageView.setImageBitmap(decodedByte);
@@ -296,7 +293,14 @@ public class ParentActivity extends AppCompatActivity {
 
     public static String shortUUID() {
         UUID uuid = UUID.randomUUID();
-        long l = ByteBuffer.wrap(uuid.toString().getBytes()).getLong();
-        return Long.toString(l, 5);
+        return uuid.toString().substring(0, 15);
+    }
+
+    protected void setExpireTime(Integer expire) {
+        this.TIME_EXPIRED = expire * 1000;
+    }
+
+    protected void setToken(String token) {
+        this.token = token;
     }
 }
