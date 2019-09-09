@@ -1,5 +1,7 @@
 package com.example.calidata.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class CheckModel {
 
     public String checkModelId;
@@ -10,6 +12,8 @@ public class CheckModel {
     public String date;
     public String description;
 
+    @SerializedName("exito")
+    public Boolean success;
 
     public CheckModel(){
 
@@ -58,6 +62,14 @@ public class CheckModel {
 
     public String getDescription() {
         return description;
+    }
+
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
     }
 
     public void setDescription(String description) {

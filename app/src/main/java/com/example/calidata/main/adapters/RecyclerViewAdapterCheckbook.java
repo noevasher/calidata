@@ -117,7 +117,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     }
 
     public void setList(ArrayList<CheckbookModel> checkbooksList) {
-        this.mData = checkbooksList;
+        mData = checkbooksList;
     }
 
 

@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -40,6 +41,7 @@ import org.apache.commons.codec.binary.Hex;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -130,15 +132,18 @@ public class CheckbookActivity extends ParentActivity {
     private void readCheckBooks() {
         int checkbooksNum = 0;
         if (userId != 0) {
-            /*
-            controller.getCheckbooks(userId).subscribe(response -> {
+            String token = sessionManager.getToken();
+            controller.getCheckbooks(token, userId.intValue()).subscribe(response -> {
                 for (CheckbookModel checkbookModel : response) {
-                    checkbooks.add(checkbookModel.getCheckId());
+                    checkbooksList.add(checkbookModel);
                 }
 
+            }, t -> {
+                Toast.makeText(CheckbookActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             });
             //*/
 
+            /*
             for (int i = 0; i < checkbooksNum; i++) {
                 CheckbookModel checkbookModel = new CheckbookModel();
                 checkbookModel.setCheckbookId("checkbookId: " + i);
@@ -148,6 +153,7 @@ public class CheckbookActivity extends ParentActivity {
                 checkbookModel.setTypeDoc("00");
                 checkbooksList.add(checkbookModel);
             }
+            //*/
             //adapter.notifyDataSetChanged();
         }
     }
@@ -343,29 +349,37 @@ public class CheckbookActivity extends ParentActivity {
 
 
                 if (contents != null) {
-                    String token = "bearer A9qzBO9lLSazlXwcoYqLamn0bLa0rI35OX2YY4RYQp3Y-B2MHAeQwSMkmj5hr1PQAQpRRaJJXtSXiv9zi-u4LB-OqWwPpLutzmeFWhk_Dv2uB83-CvFgXvTAgsQXyCFq1Han89O5aKzK4WWkCzi71O8GF8-FZ5ZUMiCU2IFpDXcFe28Y2tcNNq0U_l3E-ia4BebN174qOGYIUb0NHKfrPtaJMeCbWsG9-ZKDQBxcxv6cLvg4JZcWi-1lw2AoWzxqQ9iT4Rvj1PjNCsnJTTjozQ";
+                    //String token = "bearer A9qzBO9lLSazlXwcoYqLamn0bLa0rI35OX2YY4RYQp3Y-B2MHAeQwSMkmj5hr1PQAQpRRaJJXtSXiv9zi-u4LB-OqWwPpLutzmeFWhk_Dv2uB83-CvFgXvTAgsQXyCFq1Han89O5aKzK4WWkCzi71O8GF8-FZ5ZUMiCU2IFpDXcFe28Y2tcNNq0U_l3E-ia4BebN174qOGYIUb0NHKfrPtaJMeCbWsG9-ZKDQBxcxv6cLvg4JZcWi-1lw2AoWzxqQ9iT4Rvj1PjNCsnJTTjozQ";
+                    String token = sessionManager.getToken();
+                    String checkId = "452185E8-3E69-484D-AC1D-AA97B9C59B4B-52-0-12";
+                    if(token != null) {
+                        controller.addCheckbook(token, checkId).subscribe(response -> {
+                            //if(response.getData() != null && response.getData().isEmpty()){
+                            HashMap<String, Object> dataResponse = response.getData();
+                            if(data != null) {
+                                CheckbookModel checkbookModel = new CheckbookModel();
+                                checkbookModel.setTypeDoc("00");
+                                checkbookModel.setCheckId("" + dataResponse.get("checkbookId"));
+                                checkbookModel.setCheckbookId("" + dataResponse.get("checkbookId"));
+                                checkbooksList.add(checkbookModel);
 
-                    controller.addCheckbook(token, "aaaaaa").subscribe(response -> {
-                        //if(response.getData() != null && response.getData().isEmpty()){
-                        CheckbookModel checkbookModel = new CheckbookModel();
-                        checkbookModel.setTypeDoc("00");
-                        checkbookModel.setCheckId(shortUUID());
-                        checkbookModel.setCheckbookId(shortUUID());
-                        checkbooksList.add(checkbookModel);
+                                adapter.notifyItemInserted(checkbooksList.size());
 
-                        adapter.notifyItemInserted(checkbooksList.size());
+                                recyclerView.postDelayed(() -> {
+                                    recyclerView.scrollToPosition(checkbooksList.size() - 1);
+                                }, 500);
+                                progressBar.setVisibility(View.GONE);
 
-                        recyclerView.postDelayed(() -> {
-                            recyclerView.scrollToPosition(checkbooksList.size() - 1);
-                        }, 500);
-                        progressBar.setVisibility(View.GONE);
+                            }
 
+                            //}
 
-                        //}
-
-                    }, t -> {
-                        Log.e("", t.getMessage());
-                    });
+                        }, t -> {
+                            Log.e("", t.getMessage());
+                        });
+                    }else{
+                        Toast.makeText(CheckbookActivity.this, "token invalido, iniciar sesion nuevamente", Toast.LENGTH_LONG).show();
+                    }
 
                 }
 

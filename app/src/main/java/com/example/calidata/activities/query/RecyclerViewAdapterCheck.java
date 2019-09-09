@@ -2,7 +2,6 @@ package com.example.calidata.activities.query;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calidata.R;
+import com.example.calidata.activities.CheckController;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
 import com.example.calidata.models.CheckModel;
@@ -79,7 +79,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             }
         } else {
             CheckModel model = mData.get(position);
-            final char[] delimiters = { ' ', '_' };
+            final char[] delimiters = {' ', '_'};
 
             String status = model.getStatus();
             String date = model.getDate();
@@ -93,7 +93,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             holder.descriptionText.setText(description);
             holder.quantityText.setText(quantity);
 
-            Drawable logoDrawable = ((ParentActivity)(mContext)).getLogoDrawableByBankName(bankName);
+            Drawable logoDrawable = ((ParentActivity) (mContext)).getLogoDrawableByBankName(bankName);
             holder.logo.setImageDrawable(logoDrawable);
             holder.textBank.setText(WordUtils.capitalizeFully(bankName, delimiters));
             holder.separator.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
@@ -101,7 +101,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
                 holder.cancelBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
                 holder.cancelBtn.setTextColor(ContextCompat.getColor(mContext, R.color.white));
                 holder.cancelBtn.setOnClickListener(v -> {
-                    openDialog(name);
+                    openDialogToDelete(name, position);
                 });
             }
         }
@@ -175,7 +175,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         void onItemClick(View view, int position);
     }
 
-    private void openDialog(String data) {
+    private void openDialogToDelete(String data, int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = ((ParentActivity) mContext).getLayoutInflater();
         ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.cancel_dialog, null);
@@ -188,6 +188,17 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         Button yesBtn = view.findViewById(R.id.button_yes);
         yesBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
         yesBtn.setOnClickListener(v -> {
+            CheckController checkController = new CheckController(mContext);
+            removeAt(position);
+/*
+            checkController.cancelCheckId(((ParentActivity) mContext).sessionManager.getToken(), data)
+                    .subscribe(response -> {
+
+                    if(response.getSuccess()){
+
+                        }
+                    });
+                    //*/
             alertDialog.dismiss();
         });
 
@@ -204,4 +215,9 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
 
     }
 
+    public void removeAt(int position) {
+        mData.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, mData.size());
+    }
 }

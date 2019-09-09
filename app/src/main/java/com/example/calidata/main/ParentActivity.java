@@ -37,7 +37,7 @@ public class ParentActivity extends AppCompatActivity {
     public static final int PICK_IMAGE = 1;
     private static CountDownTimer timer;
     private String token;
-    //private static long TIME_EXPIRED = 3600000;
+    private static Integer TIME_EXPIRED_DEFAULT = 86400;
     private Integer TIME_EXPIRED;
 
     @Override
@@ -192,11 +192,13 @@ public class ParentActivity extends AppCompatActivity {
 
     protected void initCountdown() {
         if (timer == null) {
+            if(TIME_EXPIRED == null)
+                setExpireTime(TIME_EXPIRED_DEFAULT);
             timer = new CountDownTimer(TIME_EXPIRED, 1000) {
                 public void onTick(long millisUntilFinished) {
-                    int mod = 60;
+                    //int mod = 60;
                     //if (millisUntilFinished / 1000 % mod == 0) {
-                    Toast.makeText(ParentActivity.this, "tu sesión terminará en: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(ParentActivity.this, "tu sesión terminará en: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
                     //}
                 }
 

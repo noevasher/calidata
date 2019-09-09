@@ -125,8 +125,9 @@ public class LoginActivity extends ParentActivity {
                                             Double userId = response.getUserId();
                                             setExpireTime(response.getExpiteIn());
                                             User newUser = User.getInstance(response.getUserId(), user, bankId);
-                                            newUser.setAccessToken(response.getAccessToken());
                                             pickBankAndOpenCheckbookByName(bank.getNameBank(), user, userId);
+                                            sessionManager.setAccessToken(response.getTokenType()
+                                                    + " " + response.getAccessToken());
                                             finish();
                                             showLoginFailed(R.string.success_login);
                                             progressBar.setVisibility(View.GONE);

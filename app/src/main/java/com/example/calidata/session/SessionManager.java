@@ -49,6 +49,7 @@ public class SessionManager {
     public static final String KEY_BANK_NAME = "bankName";
     public static final String KEY_USERNAME = "username";
     public static final String KEY_IMAGE64 = "imageUser";
+    public static final String KEY_TOKEN = "token";
 
     public static final String FIRST_THEME_ID = "themeId";
 
@@ -233,5 +234,16 @@ public class SessionManager {
         editor.putString(KEY_USERNAME, username);
         // commit changes
         editor.commit();
+    }
+
+    public void setAccessToken(String accessToken) {
+        editor.putString(KEY_TOKEN, accessToken);
+        // commit changes
+        editor.commit();
+    }
+
+    public String getToken() {
+        return pref.getString(KEY_TOKEN, null);
+
     }
 }

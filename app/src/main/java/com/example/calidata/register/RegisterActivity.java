@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
 import com.example.calidata.login.LoginActivity;
+import com.example.calidata.login.controller.LoginController;
 import com.example.calidata.login.managment.AESCrypt;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.models.Bank;
@@ -66,6 +67,9 @@ public class RegisterActivity extends ParentActivity {
     public ProgressBar progressBar;
 
     private RegisterController registerController;
+    private ArrayAdapter adapter;
+
+    private String encryptPassword;
 
     @SuppressLint("CheckResult")
     @Override
@@ -79,7 +83,7 @@ public class RegisterActivity extends ParentActivity {
         ButterKnife.bind(this);
 
         bankNames.add("Selecciona Entidad");
-        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.labels_bank, bankNames);
+        adapter = new ArrayAdapter(this, R.layout.labels_bank, bankNames);
         adapter.setDropDownViewResource(R.layout.labels_bank);
         spin.setAdapter(adapter);
 
@@ -93,17 +97,7 @@ public class RegisterActivity extends ParentActivity {
             toolbar.setNavigationOnClickListener(view -> finish());
         }
         registerController = new RegisterController(getApplicationContext());
-        registerController.getBanks().subscribe(response -> {
-            for (Bank bank : response) {
-                Log.i("TAG", bank.getIdBank() + "--> " + bank.getNameBank());
-                bankNames.add(bank.getNameBank());
-                bankIds.put(bank.getNameBank(), bank.getIdBank());
-            }
-            adapter.notifyDataSetChanged();
-
-        }, t -> {
-            Log.e("Error", "priblema al cargar bancos");
-        });
+        loadBanks();
 
         registerBtn.setOnClickListener(new OnSingleClickListener() {
             @Override
@@ -115,7 +109,7 @@ public class RegisterActivity extends ParentActivity {
                 int bankId = getIdBank(bankNameSpin);
 
                 try {
-                    String encryptPassword = AESCrypt.encrypt(password);
+                    encryptPassword = AESCrypt.encrypt(password);
                     encryptPassword = encryptPassword.replace("\n", "").replace("\r", "");
 
                     if (ifValidForm()) {
@@ -132,12 +126,23 @@ public class RegisterActivity extends ParentActivity {
                             //registerController_.registerUserByJson(json).subscribe(response -> {
                             Double userId = (Double) response.getData().get("userId");
                             String username = newUser.getUserName();
-                            pickBankAndOpenCheckbookByName(bankNameSpin, email, userId, username);
-                            progressBar.setVisibility(View.GONE);
-                            LoginActivity.getInstance().finish();
-                            finish();
-                            initCountdown();
+
+                            LoginController loginController = new LoginController(getApplicationContext());
+                            loginController.authentication(email, encryptPassword).subscribe(loginResponse -> {
+                                pickBankAndOpenCheckbookByName(bankNameSpin, email, userId, username);
+                                progressBar.setVisibility(View.GONE);
+                                LoginActivity.getInstance().finish();
+                                finish();
+                                initCountdown();
+
+                            }, t -> {
+                                Log.e("Error", t.getMessage());
+                                Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                                progressBar.setVisibility(View.GONE);
+                            });
+
                         }, t -> {
+                            Log.e("Error", t.getMessage());
                             Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
 
@@ -167,6 +172,27 @@ public class RegisterActivity extends ParentActivity {
             }
         });
         validEmptyFields();
+    }
+
+    private int attemps = 5;
+
+    private void loadBanks() {
+
+        registerController.getBanks().subscribe(response -> {
+            for (Bank bank : response) {
+                Log.i("TAG", bank.getIdBank() + "--> " + bank.getNameBank());
+                bankNames.add(bank.getNameBank());
+                bankIds.put(bank.getNameBank(), bank.getIdBank());
+            }
+            adapter.notifyDataSetChanged();
+
+        }, t -> {
+            Log.e("Error", "problema al cargar bancos");
+            if (attemps > 0) {
+                attemps--;
+                loadBanks();
+            }
+        });
     }
 
     private boolean ifValidForm() {

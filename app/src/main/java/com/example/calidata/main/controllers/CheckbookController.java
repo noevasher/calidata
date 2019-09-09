@@ -23,29 +23,38 @@ public class CheckbookController extends ParentController {
     }
 
 
-    public Single<List<CheckbookModel>> getCheckbooks(Double userId) {
+    public Single<List<CheckbookModel>> getCheckbooks(String token, Integer userId) {
         return Single.create(emitter -> {
-            Call<List<CheckbookModel>> call = restClient.getCheckbookByUserId(userId);
-            //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
+            HashMap<String, Object> map = new HashMap();
+            map.put("usuarioId", userId);
+            try {
+                Call<List<CheckbookModel>> call = restClient.getCheckbookByUserId(token, map);
+                //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
 
-            call.enqueue(new Callback<List<CheckbookModel>>() {
-                @Override
-                public void onResponse(Call<List<CheckbookModel>> call, Response<List<CheckbookModel>> response) {
-                    if (response.code() == 200) {
-                        List<CheckbookModel> data = response.body();
-                        emitter.onSuccess(data);
-                    } else {
-                        Throwable throwable = new Exception(response.message());
-                        emitter.onError(throwable);
+                call.enqueue(new Callback<List<CheckbookModel>>() {
+                    @Override
+                    public void onResponse(Call<List<CheckbookModel>> call, Response<List<CheckbookModel>> response) {
+                        if (response.code() == 200) {
+                            List<CheckbookModel> data = response.body();
+                            emitter.onSuccess(data);
+                        } else {
+                            Throwable throwable = new Exception(response.message());
+                            emitter.onError(throwable);
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<List<CheckbookModel>> call, Throwable t) {
-                    Log.e("error", t.toString());
-                    emitter.onError(t);
-                }
-            });
+                    @Override
+                    public void onFailure(Call<List<CheckbookModel>> call, Throwable t) {
+                        Log.e("error", t.toString());
+                        emitter.onError(t);
+                    }
+                });
+            }
+            catch (Exception e){
+                Log.e("error", e.getMessage());
+                e.printStackTrace();
+
+            }
         });
         //*/
     }
@@ -55,26 +64,30 @@ public class CheckbookController extends ParentController {
             try {
                 HashMap<String, Object> body = new HashMap<>();
                 body.put("checkId", checkId);
-                Call<CheckbookModel> call = restClient.addCheckBook(token, body);
-                //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
-                call.enqueue(new Callback<CheckbookModel>() {
-                    @Override
-                    public void onResponse(Call<CheckbookModel> call, Response<CheckbookModel> response) {
-                        if (response.code() == 200) {
-                            CheckbookModel data = response.body();
-                            emitter.onSuccess(data);
-                        } else {
-                            Throwable throwable = new Exception(response.message());
-                            emitter.onError(throwable);
+                try {
+                    Call<CheckbookModel> call = restClient.addCheckBook(token, body);
+                    call.enqueue(new Callback<CheckbookModel>() {
+                        @Override
+                        public void onResponse(Call<CheckbookModel> call, Response<CheckbookModel> response) {
+                            if (response.code() == 200) {
+                                CheckbookModel data = response.body();
+                                emitter.onSuccess(data);
+                            } else {
+                                Throwable throwable = new Exception(response.message());
+                                emitter.onError(throwable);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<CheckbookModel> call, Throwable t) {
-                        Log.e("error", t.toString());
-                        emitter.onError(t);
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<CheckbookModel> call, Throwable t) {
+                            Log.e("error", t.toString());
+                            emitter.onError(t);
+                        }
+                    });
+                }catch(Exception e){
+                    Log.e("error", e.getMessage());
+                    e.printStackTrace();
+                }
             }
             catch(Exception e){
                 e.getStackTrace();

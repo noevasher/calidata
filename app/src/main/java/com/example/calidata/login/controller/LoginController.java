@@ -21,9 +21,9 @@ public class LoginController extends ParentController {
     }
 
     //public Single<LoginResponse> loadJson(String user, String password) {
-    public Single<LoginResponse> authentication(String user, String password) {
+    public Single<LoginResponse> authentication(String email, String password) {
         return Single.create(emitter -> {
-            Call<LoginResponse> call = restClient.authentication(user, password, GRANT_TYPE);
+            Call<LoginResponse> call = restClient.authentication(email, password, GRANT_TYPE);
             //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
 
             call.enqueue(new Callback<LoginResponse>() {
