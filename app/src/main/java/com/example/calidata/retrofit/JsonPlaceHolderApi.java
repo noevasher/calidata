@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import com.example.calidata.models.Bank;
 import com.example.calidata.models.CheckModel;
+import com.example.calidata.models.CheckbookArrayModel;
 import com.example.calidata.models.CheckbookModel;
 import com.example.calidata.models.LoginRequest;
 import com.example.calidata.models.LoginResponse;
@@ -51,7 +52,8 @@ public interface JsonPlaceHolderApi {
 
     @Headers("Content-Type: application/json")
     @POST("cheque/ObtenerChequera")
-    Call<List<CheckbookModel>> getCheckbookByUserId(@Header("Authorization") String token, @Body HashMap<String, Object> body);
+    Call<CheckbookArrayModel> getCheckbookByUserId(@Header("Authorization") String token,
+                                                   @Body HashMap<String, Object> body);
 
     @GET("user/info")
     Call<User> getUserInformation(@Path("id") Double userId);

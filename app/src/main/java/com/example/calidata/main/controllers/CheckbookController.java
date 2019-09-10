@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.calidata.main.ParentController;
+import com.example.calidata.models.CheckbookArrayModel;
 import com.example.calidata.models.CheckbookModel;
 import com.example.calidata.models.User;
 
@@ -23,19 +24,19 @@ public class CheckbookController extends ParentController {
     }
 
 
-    public Single<List<CheckbookModel>> getCheckbooks(String token, Integer userId) {
+    public Single<CheckbookArrayModel> getCheckbooks(String token, Integer userId) {
         return Single.create(emitter -> {
             HashMap<String, Object> map = new HashMap();
             map.put("usuarioId", userId);
             try {
-                Call<List<CheckbookModel>> call = restClient.getCheckbookByUserId(token, map);
+                Call<CheckbookArrayModel> call = restClient.getCheckbookByUserId(token, map);
                 //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
 
-                call.enqueue(new Callback<List<CheckbookModel>>() {
+                call.enqueue(new Callback<CheckbookArrayModel>() {
                     @Override
-                    public void onResponse(Call<List<CheckbookModel>> call, Response<List<CheckbookModel>> response) {
+                    public void onResponse(Call<CheckbookArrayModel> call, Response<CheckbookArrayModel> response) {
                         if (response.code() == 200) {
-                            List<CheckbookModel> data = response.body();
+                            CheckbookArrayModel data = response.body();
                             emitter.onSuccess(data);
                         } else {
                             Throwable throwable = new Exception(response.message());
@@ -44,7 +45,7 @@ public class CheckbookController extends ParentController {
                     }
 
                     @Override
-                    public void onFailure(Call<List<CheckbookModel>> call, Throwable t) {
+                    public void onFailure(Call<CheckbookArrayModel> call, Throwable t) {
                         Log.e("error", t.toString());
                         emitter.onError(t);
                     }

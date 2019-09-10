@@ -1,7 +1,5 @@
 package com.example.calidata.models;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.HashMap;
 
 public class CheckbookModel {

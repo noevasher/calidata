@@ -30,11 +30,13 @@ import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
 import com.example.calidata.main.adapters.RecyclerViewAdapterCheckbook;
 import com.example.calidata.main.controllers.CheckbookController;
+import com.example.calidata.models.CheckbookArrayModel;
 import com.example.calidata.models.CheckbookModel;
 import com.example.calidata.models.User;
 import com.example.calidata.utilities.HelpActivity;
 import com.example.calidata.utilities.SettingsActivity;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -42,6 +44,7 @@ import org.apache.commons.codec.binary.Hex;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -134,9 +137,19 @@ public class CheckbookActivity extends ParentActivity {
         if (userId != 0) {
             String token = sessionManager.getToken();
             controller.getCheckbooks(token, userId.intValue()).subscribe(response -> {
-                for (CheckbookModel checkbookModel : response) {
+                List<HashMap<String, Object>> data = response.getData();
+                for (HashMap<String, Object> checkbook: data) {
+                    Log.i("", checkbook.toString());
+                    CheckbookModel checkbookModel = new CheckbookModel();
+                    Log.i("", (String) checkbook.get("checkbookId"));
+                    checkbookModel.setCheckbookId((String) checkbook.get("checkbookId"));
+                    checkbookModel.setCheckId((String) checkbook.get("checkbookId"));
+                    checkbookModel.setTypeDoc("00");
                     checkbooksList.add(checkbookModel);
                 }
+                //*/
+                adapter.notifyDataSetChanged();
+
 
             }, t -> {
                 Toast.makeText(CheckbookActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
@@ -154,7 +167,6 @@ public class CheckbookActivity extends ParentActivity {
                 checkbooksList.add(checkbookModel);
             }
             //*/
-            //adapter.notifyDataSetChanged();
         }
     }
 
