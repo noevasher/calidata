@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
@@ -35,6 +36,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
     private static final int VIEW_TYPE_EMPTY = 0;
     private static final int VIEW_TYPE_DATA = 1;
+    private static final int EMIT_CODE = 2;
 
     //private List<String> mData;
     private static List<CheckbookModel> mData;
@@ -142,7 +144,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     }
 
 
-    public void openActions() {
+    private void openActions() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = ((CheckbookActivity) mContext).getLayoutInflater();
         ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.activity_main, null);
@@ -195,7 +197,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         imageViewEmit.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
-                openDialog();
+                openDialogToEmit();
             }
         });
 
@@ -210,7 +212,9 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
     }
 
-    public void openDialog() {
+    private void openDialogToEmit() {
+        readQR();
+        /*
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = ((CheckbookActivity) mContext).getLayoutInflater();
         ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.emit_dialog, null);
@@ -219,7 +223,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         AlertDialog alertDialog = builder.create();
 
         TextView label = view.findViewById(R.id.textView_label);
-        label.setText(((CheckbookActivity) mContext).getString(R.string.active_checkbook_label));
+        label.setText(mContext.getString(R.string.active_checkbook_label));
         Button scanBtn = view.findViewById(R.id.button_yes);
         scanBtn.setBackgroundColor(((CheckbookActivity) mContext).getPrimaryColorInTheme());
         scanBtn.setOnClickListener(new OnSingleClickListener() {
@@ -244,17 +248,19 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
         alertDialog.show();
 
+        //*/
+
     }
 
     private void readQR() {
+
         try {
 
             Intent intent = new Intent("com.google.zxing.client.android.SCAN");
             intent.putExtra("SCAN_MODE", "QR_CODE_MODE"); // "PRODUCT_MODE for bar codes
             intent.putExtra("SCAN_MODE", "BAR_CODE_MODE"); // "PRODUCT_MODE for bar codes
 
-            ((CheckbookActivity) mContext).startActivityForResult(intent, 0);
-
+            ((CheckbookActivity) mContext).startActivityForResult(intent, EMIT_CODE);
         } catch (Exception e) {
 
             Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");

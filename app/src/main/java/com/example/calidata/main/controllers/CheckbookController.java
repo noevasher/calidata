@@ -2,8 +2,12 @@ package com.example.calidata.main.controllers;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
+import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentController;
+import com.example.calidata.models.CheckArrayModel;
+import com.example.calidata.models.CheckModel;
 import com.example.calidata.models.CheckbookArrayModel;
 import com.example.calidata.models.CheckbookModel;
 import com.example.calidata.models.User;
@@ -31,7 +35,7 @@ public class CheckbookController extends ParentController {
             try {
                 Call<CheckbookArrayModel> call = restClient.getCheckbookByUserId(token, map);
                 //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
-
+                ((CheckbookActivity)mContext).progressBar.setVisibility(View.VISIBLE);
                 call.enqueue(new Callback<CheckbookArrayModel>() {
                     @Override
                     public void onResponse(Call<CheckbookArrayModel> call, Response<CheckbookArrayModel> response) {
@@ -41,6 +45,7 @@ public class CheckbookController extends ParentController {
                         } else {
                             Throwable throwable = new Exception(response.message());
                             emitter.onError(throwable);
+                            ((CheckbookActivity)mContext).progressBar.setVisibility(View.GONE);
                         }
                     }
 
@@ -48,12 +53,15 @@ public class CheckbookController extends ParentController {
                     public void onFailure(Call<CheckbookArrayModel> call, Throwable t) {
                         Log.e("error", t.toString());
                         emitter.onError(t);
+                        ((CheckbookActivity)mContext).progressBar.setVisibility(View.GONE);
+
                     }
                 });
             }
             catch (Exception e){
                 Log.e("error", e.getMessage());
                 e.printStackTrace();
+                ((CheckbookActivity)mContext).progressBar.setVisibility(View.GONE);
 
             }
         });
@@ -125,4 +133,86 @@ public class CheckbookController extends ParentController {
         });
         //*/
     }
+
+    public Single<CheckbookModel> emitCheckId(String token, String checkId) {
+        return Single.create(emitter -> {
+            try {
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("checkId", checkId);
+                body.put("monto", 5000);
+
+                try {
+                    Call<CheckbookModel> call = restClient.emitCheck(token, body);
+                    call.enqueue(new Callback<CheckbookModel>() {
+                        @Override
+                        public void onResponse(Call<CheckbookModel> call, Response<CheckbookModel> response) {
+                            if (response.code() == 200) {
+                                CheckbookModel data = response.body();
+                                emitter.onSuccess(data);
+                            } else {
+                                Throwable throwable = new Exception(response.message());
+                                emitter.onError(throwable);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CheckbookModel> call, Throwable t) {
+                            Log.e("error", t.toString());
+                            emitter.onError(t);
+                        }
+                    });
+                }catch(Exception e){
+                    Log.e("error", e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+            catch(Exception e){
+                e.getStackTrace();
+                Log.e("ERROR", e.getMessage());
+            }
+
+        });
+        //*/
+    }
+
+    public Single<CheckArrayModel> getChecksByUserId(String token, Integer userId) {
+        return Single.create(emitter -> {
+            try {
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("usuarioId", userId);
+
+                try {
+                    Call<CheckArrayModel> call = restClient.getChecksByUserId(token, body);
+                    call.enqueue(new Callback<CheckArrayModel>() {
+                        @Override
+                        public void onResponse(Call<CheckArrayModel> call, Response<CheckArrayModel> response) {
+                            if (response.code() == 200) {
+                                CheckArrayModel data = response.body();
+                                emitter.onSuccess(data);
+                            } else {
+                                Throwable throwable = new Exception(response.message());
+                                emitter.onError(throwable);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CheckArrayModel> call, Throwable t) {
+                            Log.e("error", t.toString());
+                            emitter.onError(t);
+                        }
+                    });
+                }catch(Exception e){
+                    Log.e("error", e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+            catch(Exception e){
+                e.getStackTrace();
+                Log.e("ERROR", e.getMessage());
+            }
+
+        });
+        //*/
+    }
+
 }

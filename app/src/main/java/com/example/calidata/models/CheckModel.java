@@ -15,7 +15,7 @@ public class CheckModel {
     @SerializedName("exito")
     public Boolean success;
 
-    public CheckModel(){
+    public CheckModel() {
 
     }
 

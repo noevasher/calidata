@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -19,13 +20,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calidata.R;
+import com.example.calidata.activities.CheckController;
 import com.example.calidata.activities.query.filter.FilterActivity;
 import com.example.calidata.main.ParentActivity;
+import com.example.calidata.main.controllers.CheckbookController;
 import com.example.calidata.management.ManagerTheme;
 import com.example.calidata.models.CheckModel;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -49,6 +54,9 @@ public class CheckQueryActivity extends ParentActivity {
 
     RecyclerViewAdapterCheck adapter;
 
+    private Double userId;
+    private String token;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +68,34 @@ public class CheckQueryActivity extends ParentActivity {
         //setArrowToolbar(too);
         // data to populate the RecyclerView with
 
+        userId = sessionManager.getUserId();
+        token = sessionManager.getToken();
         ArrayList<CheckModel> checks = new ArrayList<>();
+
+        CheckbookController controller = new CheckbookController(this);
+        if(token != null && userId != null) {
+            controller.getChecksByUserId(token, userId.intValue()).subscribe(response -> {
+                List<HashMap<String,Object>> data = response.getData();
+                for(HashMap<String,Object> item :data){
+                    CheckModel check = new CheckModel();
+                    check.setCheckId((String) item.get("checkId"));
+                    //check.setDescription("check --> " + i);
+                    //check.setQuantity(Double.parseDouble((String) item.get("count")));
+                    check.setQuantity(0.0);
+                    //check.setDate(i+10 + "/05/2019");
+                    check.setStatus("activo");
+                    checks.add(check);
+                }
+                adapter.notifyDataSetChanged();
+
+            }, t -> {
+                Log.e("", t.getMessage());
+                t.printStackTrace();
+            });
+
+        }
+
+        /*
         for(int i = 0; i < 5; i++) {
             CheckModel check = new CheckModel();
             check.setCheckId(shortUUID());
@@ -92,16 +127,7 @@ public class CheckQueryActivity extends ParentActivity {
             check.setStatus("cancelado");
             checks.add(check);
         }
-        /*
-        ArrayList<String> animalNames = new ArrayList<>();
-
-        animalNames.add("Horse");
-        animalNames.add("Cow");
-        animalNames.add("Camel");
-        animalNames.add("Sheep");
-        animalNames.add("Goat");
-
-//*/
+        //*/
         // set up the RecyclerView-
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);

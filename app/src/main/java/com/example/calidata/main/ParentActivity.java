@@ -35,6 +35,8 @@ public class ParentActivity extends AppCompatActivity {
     public ManagerTheme managerTheme;
     public SessionManager sessionManager;
     public static final int PICK_IMAGE = 1;
+    public static final int EMIT_CODE = 2;
+
     private static CountDownTimer timer;
     private String token;
     private static Integer TIME_EXPIRED_DEFAULT = 86400;

@@ -1,5 +1,7 @@
 package com.example.calidata.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.HashMap;
 
 public class CheckbookModel {
@@ -7,6 +9,12 @@ public class CheckbookModel {
     private String checkbookId;
     private String checkId;
     private String typeDoc;
+
+    @SerializedName("mensaje")
+    private String message;
+
+    @SerializedName("exito")
+    private Boolean success;
 
     public CheckbookModel() {
 
@@ -42,5 +50,21 @@ public class CheckbookModel {
 
     public void setData(HashMap<String, Object> data) {
         this.data = data;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
     }
 }

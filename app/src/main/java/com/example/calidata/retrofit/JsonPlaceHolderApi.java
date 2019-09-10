@@ -3,6 +3,7 @@ package com.example.calidata.retrofit;
 import android.content.Intent;
 
 import com.example.calidata.models.Bank;
+import com.example.calidata.models.CheckArrayModel;
 import com.example.calidata.models.CheckModel;
 import com.example.calidata.models.CheckbookArrayModel;
 import com.example.calidata.models.CheckbookModel;
@@ -45,6 +46,14 @@ public interface JsonPlaceHolderApi {
     @Headers("Content-Type: application/json")
     @POST("cheque/AgregarChequera")
     Call<CheckbookModel> addCheckBook(@Header("Authorization") String token, @Body HashMap<String, Object> body);
+
+    @Headers("Content-Type: application/json")
+    @POST("cheque/LiberaCheque")
+    Call<CheckbookModel> emitCheck(@Header("Authorization") String token, @Body HashMap<String, Object> body);
+
+    @Headers("Content-Type: application/json")
+    @POST("cheque/ObtenerCheques")
+    Call<CheckArrayModel> getChecksByUserId(@Header("Authorization") String token, @Body HashMap<String, Object> body);
 
     @POST("account/register")
     @Headers("Content-Type: application/json")
