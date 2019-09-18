@@ -43,9 +43,16 @@ public class CheckbookController extends ParentController {
                             CheckbookArrayModel data = response.body();
                             emitter.onSuccess(data);
                         } else {
-                            Throwable throwable = new Exception(response.message());
+                            String message = response.message();
+                            /*
+                            if(message.equals("Unauthorized")){
+
+                            }
+                            //*/
+                            Throwable throwable = new Exception(message);
                             emitter.onError(throwable);
                             ((CheckbookActivity)mContext).progressBar.setVisibility(View.GONE);
+
                         }
                     }
 

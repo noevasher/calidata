@@ -25,6 +25,14 @@
     <color name="colorPrimaryDarkF">#B0BEC5</color>
     <color name="colorAccentF">#1565C0</color>
 
+    <color name="colorPrimaryG">#2196F3</color>
+    <color name="colorPrimaryDarkG">#1565C0</color>
+    <color name="colorAccentG">#EF5350</color>
+
+    <color name="colorPrimaryH">#0D47A1</color>
+    <color name="colorPrimaryDarkH">#FF6F00</color>
+    <color name="colorAccentH">#2196F3</color>
+
 
 
     <color name="white">#FFFFFF</color>

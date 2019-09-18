@@ -67,16 +67,17 @@ public class RecyclerViewAdapterEmit extends RecyclerView.Adapter<RecyclerViewAd
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
+        String bankName = managerTheme.getBankName();
         if (viewType == VIEW_TYPE_EMPTY) {
             holder.emptyText.setText(R.string.empty_checks_active);
         } else {
-            Drawable logoDrawable = getLogoDrawable(themeId);
+            Drawable logoDrawable = getLogoDrawable(bankName);
 
             int currentTextColor = holder.optionText.getCurrentTextColor();
             ColorFilter currentIconColor = holder.iconEdit.getColorFilter();
 
             holder.logo.setImageDrawable(logoDrawable);
-            holder.textBank.setText(getBankName(themeId));
+            holder.textBank.setText(getBankName());
             holder.separator.setBackgroundColor(((CheckEmitActivity) mActivity).getPrimaryColorInTheme());
             holder.emitBtn.setBackgroundColor(((CheckEmitActivity) mActivity).getPrimaryColorInTheme());
             holder.emitBtn.setTextColor(ContextCompat.getColor(mContext, R.color.white));
@@ -156,50 +157,49 @@ public class RecyclerViewAdapterEmit extends RecyclerView.Adapter<RecyclerViewAd
     }
 
 
-    private Drawable getLogoDrawable(int themeId) {
+    private Drawable getLogoDrawable(String bankName) {
 
-        switch (themeId) {
-            case R.style.AppThemeBanamex:
-                Log.i("TAG", "tema banamex");
-                return ContextCompat.getDrawable(mContext, R.drawable.ic_citibanamex_logo);
-            case R.style.AppThemeSantander:
-                Log.i("TAG", "tema Santander");
+        switch (bankName) {
+            case "santander":
                 return ContextCompat.getDrawable(mContext, R.drawable.ic_santander_logo);
-
-            case R.style.AppThemeBancomer:
-                Log.i("TAG", "tema Bancomer");
+            case "hsbc":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_hsbc_logo);
+            case "scotiabank":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_scotiabank_logo);
+            case "banorte":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_banorte_logo);
+            case "autofin":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
+            case "bansefi":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
+            case "citibanamex":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_citibanamex_logo);
+            case "bbva bancomer":
                 return ContextCompat.getDrawable(mContext, R.drawable.ic_bancomer_logo);
+            case "famsa":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
+            case "bancoppel":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
+            case "monex":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
+            case "compartamos":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_compartamos_logo);
+            case "banbajio":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_banbajio_logo);
+            case "inbursa":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_inbursa_logo);
+            case "actinver":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
 
-            case R.style.AppTheme:
-                Log.i("TAG", "tema default");
-                break;
             default:
-                break;
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
+
         }
-        return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
     }
 
-    private String getBankName(int themeId) {
-
-        switch (themeId) {
-            case R.style.AppThemeBanamex:
-                Log.i("TAG", "tema banamex");
-                return "Banamex";
-            case R.style.AppThemeSantander:
-                Log.i("TAG", "tema Santander");
-                return "Santander";
-
-            case R.style.AppThemeBancomer:
-                Log.i("TAG", "tema Bancomer");
-                return "Bancomer";
-
-            case R.style.AppTheme:
-                Log.i("TAG", "tema default");
-                break;
-            default:
-                break;
-        }
-        return "Otro Banco";
+    private String getBankName() {
+        String bankName = managerTheme.getBankName();
+        return bankName.toUpperCase();
     }
 
     @Override

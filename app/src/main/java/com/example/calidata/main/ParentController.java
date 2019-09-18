@@ -3,10 +3,9 @@ package com.example.calidata.main;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.calidata.models.Bank;
+import com.example.calidata.models.BankModel;
 import com.example.calidata.retrofit.JsonPlaceHolderApi;
 import com.example.calidata.retrofit.RetrofitManager;
-import com.example.calidata.session.SessionManager;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -29,18 +28,18 @@ public class ParentController {
         mContext = context;
     }
 
-    public Single<List<Bank>> getBanks() {
+    public Single<List<BankModel>> getBanks() {
 
 
         return Single.create(emitter -> {
-            Call<List<Bank>> call = restClient.getBanks();
+            Call<List<BankModel>> call = restClient.getBanks();
             //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
 
-            call.enqueue(new Callback<List<Bank>>() {
+            call.enqueue(new Callback<List<BankModel>>() {
                 @Override
-                public void onResponse(Call<List<Bank>> call, Response<List<Bank>> response) {
+                public void onResponse(Call<List<BankModel>> call, Response<List<BankModel>> response) {
                     if (response.code() == 200) {
-                        List<Bank> data = response.body();
+                        List<BankModel> data = response.body();
                         String listResponse = new Gson().toJson(response.body());
 
                         emitter.onSuccess(data);
@@ -51,7 +50,7 @@ public class ParentController {
                 }
 
                 @Override
-                public void onFailure(Call<List<Bank>> call, Throwable t) {
+                public void onFailure(Call<List<BankModel>> call, Throwable t) {
                     Log.e("error", t.toString());
                     emitter.onError(t);
                 }

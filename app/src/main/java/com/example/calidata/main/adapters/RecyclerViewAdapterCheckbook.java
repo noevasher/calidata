@@ -91,7 +91,6 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
             holder.itemView.setOnClickListener(new OnSingleClickListener() {
                 @Override
                 public void onSingleClick(View v) {
-                    Log.i("AAAA", "click in item card");
                     openActions();
                 }
             });

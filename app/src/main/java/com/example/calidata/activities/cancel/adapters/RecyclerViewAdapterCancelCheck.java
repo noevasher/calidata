@@ -2,6 +2,7 @@ package com.example.calidata.activities.cancel.adapters;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.icu.text.RelativeDateTimeFormatter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,11 +52,12 @@ public class RecyclerViewAdapterCancelCheck extends RecyclerView.Adapter<Recycle
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String animal = mData.get(position);
+        String bankName = managerTheme.getBankName();
         holder.myTextView.setText(animal);
-        Drawable logoDrawable = getLogoDrawable(themeId);
+        Drawable logoDrawable = getLogoDrawable(bankName);
         holder.logo.setImageDrawable(logoDrawable);
-        holder.textBank.setText(getBankName(themeId));
-        holder.separator.setBackgroundColor(((CheckQueryActivity)mContext).getPrimaryColorInTheme());
+        holder.textBank.setText(getBankName());
+        holder.separator.setBackgroundColor(((CheckQueryActivity) mContext).getPrimaryColorInTheme());
     }
 
     // total number of rows
@@ -103,6 +105,47 @@ public class RecyclerViewAdapterCancelCheck extends RecyclerView.Adapter<Recycle
     }
 
 
+    private Drawable getLogoDrawable(String bankName) {
+
+        switch (bankName) {
+            case "santander":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_santander_logo);
+            case "hsbc":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_hsbc_logo);
+            case "scotiabank":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_scotiabank_logo);
+            case "banorte":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_banorte_logo);
+            case "autofin":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
+            case "bansefi":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
+            case "citibanamex":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_citibanamex_logo);
+            case "bbva bancomer":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_bancomer_logo);
+            case "famsa":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
+            case "bancoppel":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
+            case "monex":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
+            case "compartamos":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_compartamos_logo);
+            case "banbajio":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_banbajio_logo);
+            case "inbursa":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_inbursa_logo);
+            case "actinver":
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
+
+            default:
+                return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
+
+        }
+    }
+
+    /*
     private Drawable getLogoDrawable(int themeId) {
 
         switch (themeId) {
@@ -125,27 +168,10 @@ public class RecyclerViewAdapterCancelCheck extends RecyclerView.Adapter<Recycle
         }
         return ContextCompat.getDrawable(mContext, R.drawable.ic_default_logo);
     }
-    private String getBankName(int themeId) {
-
-        switch (themeId) {
-            case R.style.AppThemeBanamex:
-                Log.i("TAG", "tema banamex");
-                return "Banamex";
-            case R.style.AppThemeSantander:
-                Log.i("TAG", "tema Santander");
-                return "Santander";
-
-            case R.style.AppThemeBancomer:
-                Log.i("TAG", "tema Bancomer");
-                return "Bancomer";
-
-            case R.style.AppTheme:
-                Log.i("TAG", "tema default");
-                break;
-            default:
-                break;
-        }
-        return "Otro Banco";
+    //*/
+    private String getBankName() {
+        String bankName = managerTheme.getBankName();
+        return bankName.toUpperCase();
     }
 
 }

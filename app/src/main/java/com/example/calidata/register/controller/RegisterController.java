@@ -4,15 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.calidata.main.ParentController;
-import com.example.calidata.models.Bank;
-import com.example.calidata.models.LoginResponse;
 import com.example.calidata.models.User;
-import com.google.gson.Gson;
-
-import java.util.List;
 
 import io.reactivex.Single;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

@@ -32,7 +32,10 @@ public class LoginController extends ParentController {
                     if (response.code() == 200) {
                         LoginResponse data = response.body();
                         emitter.onSuccess(data);
-                    }else {
+                    }else if(response.code() == 400){
+                        Throwable throwable = new Exception("usuario y contraseña incorrectos");
+                        emitter.onError(throwable);
+                    } else{
                         Throwable throwable = new Exception(response.message());
                         emitter.onError(throwable);
                     }

@@ -2,14 +2,14 @@ package com.example.calidata.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Bank {
+public class BankModel {
     @SerializedName("iD_BANCO")
     private int idBank;
 
     @SerializedName("deS_BANCO")
     private String nameBank;
 
-    public Bank(int idBank, String nameBank){
+    public BankModel(int idBank, String nameBank){
         this.idBank = idBank;
         this.nameBank = nameBank;
     }

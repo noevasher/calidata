@@ -20,7 +20,7 @@ import com.example.calidata.login.controller.LoginController;
 import com.example.calidata.login.managment.AESCrypt;
 import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentActivity;
-import com.example.calidata.models.Bank;
+import com.example.calidata.models.BankModel;
 import com.example.calidata.models.User;
 import com.example.calidata.register.RegisterActivity;
 
@@ -120,7 +120,7 @@ public class LoginActivity extends ParentActivity {
                                 sessionManager.isLoggedIn();
                                 Integer bankId = response.getBankId() == null ? DEFAULT_BANK : response.getBankId();
                                 loginController.getBanks().subscribe(list -> {
-                                    for (Bank bank : list) {
+                                    for (BankModel bank : list) {
                                         if (bank.getIdBank() == bankId) {
                                             Double userId = response.getUserId();
                                             setExpireTime(response.getExpiteIn());

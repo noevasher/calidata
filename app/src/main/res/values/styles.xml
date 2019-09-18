@@ -24,7 +24,14 @@
         <item name="colorAccent">@color/colorAccentB</item>
     </style>
 
-    <style name="AppThemeBancomer" parent="Theme.AppCompat.Light.NoActionBar">
+    <!--
+    Banamex
+    BBVA Bancomer
+    Famsa
+    Bancoppel
+    Monex
+    -->
+    <style name="AppThemeBlue" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryC</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkC</item>
@@ -33,7 +40,15 @@
 
     </style>
 
-    <style name="AppThemeSantander" parent="Theme.AppCompat.Light.NoActionBar">
+    <!--
+    Santander
+    HSBC
+    Scotiabank
+    Banorte
+    Autofin
+    Bansefi
+    -->
+    <style name="AppThemeRed" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryD</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkD</item>
@@ -42,6 +57,24 @@
 
     </style>
 
+    <!--
+    Banjercito
+    IXE
+    Azteca
+    -->
+    <style name="AppThemeGreen" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryB</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkB</item>
+        <item name="colorAccent">@color/colorAccentB</item>
+        <item name="android:statusBarColor">@android:color/darker_gray</item>
+
+    </style>
+
+
+    <!--
+    Banjio
+    -->
     <style name="AppThemeBanbajio" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryE</item>
@@ -51,12 +84,29 @@
 
     </style>
 
-    <style name="AppThemeBanamex" parent="Theme.AppCompat.Light.NoActionBar">
+
+    <!--
+    Inbursa
+    Actinver
+    -->
+    <style name="AppThemeDarkBlue" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimaryD</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkD</item>
-        <item name="colorAccent">@color/colorAccentD</item>
-        <item name="android:statusBarColor">@color/colorAccentD</item>
+        <item name="colorPrimary">@color/colorPrimaryF</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkF</item>
+        <item name="colorAccent">@color/colorAccentF</item>
+        <item name="android:statusBarColor">@android:color/darker_gray</item>
+
+    </style>
+
+    <!--
+    ING
+    -->
+    <style name="AppThemeING" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryH</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkH</item>
+        <item name="colorAccent">@color/colorAccentH</item>
+        <item name="android:statusBarColor">@android:color/darker_gray</item>
 
     </style>
 

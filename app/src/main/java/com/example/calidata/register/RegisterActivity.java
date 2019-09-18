@@ -23,7 +23,7 @@ import com.example.calidata.login.LoginActivity;
 import com.example.calidata.login.controller.LoginController;
 import com.example.calidata.login.managment.AESCrypt;
 import com.example.calidata.main.ParentActivity;
-import com.example.calidata.models.Bank;
+import com.example.calidata.models.BankModel;
 import com.example.calidata.models.User;
 import com.example.calidata.register.controller.RegisterController;
 import com.google.gson.Gson;
@@ -179,7 +179,7 @@ public class RegisterActivity extends ParentActivity {
     private void loadBanks() {
 
         registerController.getBanks().subscribe(response -> {
-            for (Bank bank : response) {
+            for (BankModel bank : response) {
                 Log.i("TAG", bank.getIdBank() + "--> " + bank.getNameBank());
                 bankNames.add(bank.getNameBank());
                 bankIds.put(bank.getNameBank(), bank.getIdBank());

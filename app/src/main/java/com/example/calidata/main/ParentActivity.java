@@ -250,27 +250,32 @@ public class ParentActivity extends AppCompatActivity {
             managerTheme.setBankName(bankName);
             switch (bankName) {
                 case "santander":
-                    setTheme(R.style.AppThemeSantander);
-                    managerTheme.setThemeId(R.style.AppThemeSantander);
-                    break;
                 case "hsbc":
                 case "scotiabank":
                 case "banorte":
-                case "banamex":
-                    setTheme(R.style.AppThemeBanamex);
-                    managerTheme.setThemeId(R.style.AppThemeBanamex);
+                case "autofin":
+                case "bansefi":
+                    setTheme(R.style.AppThemeRed);
+                    managerTheme.setThemeId(R.style.AppThemeRed);
                     break;
-                case "bancomer":
-                    setTheme(R.style.AppThemeBancomer);
-                    managerTheme.setThemeId(R.style.AppThemeBancomer);
+                case "citibanamex":
+                case "bbva bancomer":
+                case "famsa":
+                case "bancoppel":
+                case "monex":
+                    setTheme(R.style.AppThemeBlue);
+                    managerTheme.setThemeId(R.style.AppThemeBlue);
                     break;
+                case "compartamos":
                 case "banbajio":
                     setTheme(R.style.AppThemeBanbajio);
                     managerTheme.setThemeId(R.style.AppThemeBanbajio);
                     break;
                 case "inbursa":
-                case "compartamos":
-                case "bancoppel":
+                case "actinver":
+                    setTheme(R.style.AppThemeDarkBlue);
+                    managerTheme.setThemeId(R.style.AppThemeDarkBlue);
+                    break;
                 default:
                     setTheme(R.style.AppThemeOther);
                     managerTheme.setThemeId(R.style.AppThemeOther);

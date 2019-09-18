@@ -91,15 +91,6 @@ public class CheckbookActivity extends ParentActivity {
         userId = sessionManager.getUserId();
 
         initNavBar();
-/*
-        checkbooks = new ArrayList<>();
-
-        checkbooks.add("**** **** **** **** 1800");
-        checkbooks.add("**** **** **** **** 1856");
-        checkbooks.add("**** **** **** **** 7800");
-        checkbooks.add("**** **** **** **** 9900");
-//*/
-
         checkbooksList = new ArrayList<>();
 
 
@@ -151,7 +142,10 @@ public class CheckbookActivity extends ParentActivity {
                 progressBar.setVisibility(View.GONE);
 
             }, t -> {
-                Toast.makeText(CheckbookActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                if(t.getMessage().equals("Unauthorized")){
+                    Toast.makeText(CheckbookActivity.this, "Inicia sesion nuevamente", Toast.LENGTH_LONG).show();
+                    logout();
+                }
             });
             //*/
         }

@@ -1,34 +1,25 @@
 package com.example.calidata.retrofit;
 
-import android.content.Intent;
-
-import com.example.calidata.models.Bank;
+import com.example.calidata.models.BankModel;
 import com.example.calidata.models.CheckArrayModel;
 import com.example.calidata.models.CheckModel;
 import com.example.calidata.models.CheckbookArrayModel;
 import com.example.calidata.models.CheckbookModel;
-import com.example.calidata.models.LoginRequest;
 import com.example.calidata.models.LoginResponse;
 import com.example.calidata.models.User;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
-import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
-import retrofit2.http.PATCH;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 public interface JsonPlaceHolderApi {
 
@@ -36,7 +27,7 @@ public interface JsonPlaceHolderApi {
     Call<List<Post>> getPosts();
 
     @GET("banco/listadoBanco")
-    Call<List<Bank>> getBanks();
+    Call<List<BankModel>> getBanks();
 
     @FormUrlEncoded
     @Headers("Content-Type: application/x-www-form-urlencoded")
@@ -49,11 +40,13 @@ public interface JsonPlaceHolderApi {
 
     @Headers("Content-Type: application/json")
     @POST("cheque/LiberaCheque")
-    Call<CheckbookModel> emitCheck(@Header("Authorization") String token, @Body HashMap<String, Object> body);
+    Call<CheckbookModel> emitCheck(@Header("Authorization") String token,
+                                   @Body HashMap<String, Object> body);
 
     @Headers("Content-Type: application/json")
     @POST("cheque/ObtenerCheques")
-    Call<CheckArrayModel> getChecksByUserId(@Header("Authorization") String token, @Body HashMap<String, Object> body);
+    Call<CheckArrayModel> getChecksByUserId(@Header("Authorization") String token,
+                                            @Body HashMap<String, Object> body);
 
     @POST("account/register")
     @Headers("Content-Type: application/json")
