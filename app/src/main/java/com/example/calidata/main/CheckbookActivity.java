@@ -1,5 +1,6 @@
 package com.example.calidata.main;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PorterDuff;
@@ -31,7 +32,6 @@ import com.example.calidata.R;
 import com.example.calidata.main.adapters.RecyclerViewAdapterCheckbook;
 import com.example.calidata.main.controllers.CheckbookController;
 import com.example.calidata.models.CheckbookModel;
-import com.example.calidata.models.User;
 import com.example.calidata.utilities.HelpActivity;
 import com.example.calidata.utilities.SettingsActivity;
 import com.google.android.material.navigation.NavigationView;
@@ -48,7 +48,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-
+@SuppressLint("CheckResult")
 public class CheckbookActivity extends ParentActivity {
 
     @BindView(R.id.drawer)
@@ -121,11 +121,9 @@ public class CheckbookActivity extends ParentActivity {
     }
 
     private void readCheckBooks() {
-        int checkbooksNum = 0;
         if (userId != 0) {
             String token = sessionManager.getToken();
             controller.getCheckbooks(token, userId.intValue()).subscribe(response -> {
-                //controller.getCheckbooks(token, 20).subscribe(response -> {
                 List<HashMap<String, Object>> data = response.getData();
                 for (HashMap<String, Object> checkbook : data) {
                     Log.i("", checkbook.toString());
@@ -137,17 +135,19 @@ public class CheckbookActivity extends ParentActivity {
                     checkbookModel.setTypeDoc("00");
                     checkbooksList.add(checkbookModel);
                 }
-                //*/
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
 
             }, t -> {
-                if(t.getMessage().equals("Unauthorized")){
-                    Toast.makeText(CheckbookActivity.this, "Inicia sesion nuevamente", Toast.LENGTH_LONG).show();
+                if (t.getMessage().equals("Unauthorized")) {
+                    Toast.makeText(CheckbookActivity.this, getString(R.string.start_session), Toast.LENGTH_LONG).show();
                     logout();
+                } else {
+                    Toast.makeText(CheckbookActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                 }
+                //logout();
+
             });
-            //*/
         }
     }
 
@@ -217,20 +217,6 @@ public class CheckbookActivity extends ParentActivity {
             drawerLayout.closeDrawers();
             Intent intent;
             switch (menuItem.getItemId()) {
-                /*
-                case R.id.nav_query:
-                    intent = new Intent(this, CheckQueryActivity.class);
-                    startActivity(intent);
-                    return true;
-                case R.id.nav_emit:
-                    intent = new Intent(this, CheckEmitActivity.class);
-                    startActivity(intent);
-                    return true;
-                case R.id.nav_cancel:
-                    intent = new Intent(this, CheckCancelActivity.class);
-                    startActivity(intent);
-                    return true;
-                    //*/
                 case R.id.nav_settings:
                     intent = new Intent(this, SettingsActivity.class);
                     startActivity(intent);
@@ -252,9 +238,7 @@ public class CheckbookActivity extends ParentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         super.onCreateOptionsMenu(menu);
-        //getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
@@ -342,7 +326,6 @@ public class CheckbookActivity extends ParentActivity {
 
 
                 if (contents != null) {
-                    //String token = "bearer A9qzBO9lLSazlXwcoYqLamn0bLa0rI35OX2YY4RYQp3Y-B2MHAeQwSMkmj5hr1PQAQpRRaJJXtSXiv9zi-u4LB-OqWwPpLutzmeFWhk_Dv2uB83-CvFgXvTAgsQXyCFq1Han89O5aKzK4WWkCzi71O8GF8-FZ5ZUMiCU2IFpDXcFe28Y2tcNNq0U_l3E-ia4BebN174qOGYIUb0NHKfrPtaJMeCbWsG9-ZKDQBxcxv6cLvg4JZcWi-1lw2AoWzxqQ9iT4Rvj1PjNCsnJTTjozQ";
                     String token = sessionManager.getToken();
                     String checkId = "452185E8-3E69-484D-AC1D-AA97B9C59B4B-52-0-12";
                     if (token != null) {
@@ -371,42 +354,33 @@ public class CheckbookActivity extends ParentActivity {
                             Log.e("", t.getMessage());
                         });
                     } else {
-                        Toast.makeText(CheckbookActivity.this, "token invalido, iniciar sesion nuevamente", Toast.LENGTH_LONG).show();
+                        Toast.makeText(CheckbookActivity.this, getString(R.string.error_invalid_auth), Toast.LENGTH_LONG).show();
                     }
-
                 }
-
-                //*/
-
-                User user = User.getInstance();
-
-                //*/
             }
             if (resultCode == RESULT_CANCELED) {
                 //handle cancel
                 Log.i("TAG-QR", "CANCELADO");
             }
         }
-        if(requestCode == EMIT_CODE) {
+        if (requestCode == EMIT_CODE) {
             Log.i("DATA", "data: " + data);
             if (resultCode == RESULT_OK) {
                 String contents = data.getStringExtra("SCAN_RESULT");
                 if (contents != null) {
-                    //String token = "bearer A9qzBO9lLSazlXwcoYqLamn0bLa0rI35OX2YY4RYQp3Y-B2MHAeQwSMkmj5hr1PQAQpRRaJJXtSXiv9zi-u4LB-OqWwPpLutzmeFWhk_Dv2uB83-CvFgXvTAgsQXyCFq1Han89O5aKzK4WWkCzi71O8GF8-FZ5ZUMiCU2IFpDXcFe28Y2tcNNq0U_l3E-ia4BebN174qOGYIUb0NHKfrPtaJMeCbWsG9-ZKDQBxcxv6cLvg4JZcWi-1lw2AoWzxqQ9iT4Rvj1PjNCsnJTTjozQ";
                     String token = sessionManager.getToken();
                     String checkId = "452185E8-3E69-484D-AC1D-AA97B9C59B4B-52-0-12";
                     if (token != null) {
                         controller.emitCheckId(token, checkId).subscribe(response -> {
-                           response.getData();
-                           if(response.getSuccess() && response.getMessage().equals("Ok")){
-                            Toast.makeText(CheckbookActivity.this, "Cheque: "
-                                    + checkId + "fue emitido exitosamente", Toast.LENGTH_LONG).show();
+                            response.getData();
+                            if (response.getSuccess() && response.getMessage().equals("Ok")) {
+                                Toast.makeText(CheckbookActivity.this, "Cheque: "
+                                        + checkId + " " + getString(R.string.success_emit_check), Toast.LENGTH_LONG).show();
 
-                           }else{
-                               Toast.makeText(CheckbookActivity.this, "Cheque" +
-                                       "No fue emitido, intentar nuevamente", Toast.LENGTH_LONG).show();
-
-                           }
+                            } else {
+                                Toast.makeText(CheckbookActivity.this, "Cheque: " +
+                                        checkId + getString(R.string.error_emit_check), Toast.LENGTH_LONG).show();
+                            }
                         });
                     }
                 }

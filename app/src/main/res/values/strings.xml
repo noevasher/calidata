@@ -43,7 +43,6 @@
     <string name="singout_label">Salir</string>
     <string name="username_label">Nombre de Usuario</string>
     <string name="emit_delete_label">Esta seguro de emitir el cheque:</string>
-    <string name="fail_login">Error al Autenticarse</string>
     <string name="success_login">Bienvenido</string>
     <string name="change_password_label">Cambiar Password</string>
     <string name="report_label">Reportar Problema</string>
@@ -56,6 +55,10 @@
     <string name="invalid_password">Password debe tener 6 o más caracteres</string>
     <string name="required_field_label">Campo Obligatorio</string>
     <string name="match_password_title">La contraseña debe de coincidir</string>
+    <string name="start_session">Inicia sesion nuevamente</string>
+    <string name="success_emit_check">fue emitido exitosamente</string>
 
+
+    <!-- ERRORS -->
 
 </resources>

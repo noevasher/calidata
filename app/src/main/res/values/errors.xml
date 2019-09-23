@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_invalid_user">Usuario y Contraseña Incorrectos</string>
+    <string name="error_fail_login">Error al Iniciar sesión</string>
+    <string name="error_get_theme">Error al Obtener Tema de Aplicación</string>
+    <string name="error_invalid_auth">La sesión terminó, es necesario iniciar sesion nuevamente</string>
+    <string name="error_emit_check">No pudo ser emitido correctamente</string>
+
+</resources>

@@ -1,15 +1,9 @@
 package com.example.calidata.activities.emit;
 
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.calidata.R;
@@ -59,11 +53,11 @@ public class CheckEmitActivity extends ParentActivity {
 
     private void initPaging(boolean isQR) {
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
-        if(isQR) {
+        if (isQR) {
             fragmentQR = new FragmentQR(this);
             pagerAdapter.addFragment(fragmentQR);
 
-        }else{
+        } else {
             fragmentSearch = new FragmentSearch(this);
             pagerAdapter.addFragment(fragmentSearch);
         }

@@ -15,19 +15,19 @@ import com.example.calidata.R;
 import com.example.calidata.activities.emit.adapters.RecyclerViewAdapterEmit;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class FragmentSearch extends Fragment {
 
     private Context mContext;
 
-    public FragmentSearch (){
+    public FragmentSearch() {
 
     }
 
-    public FragmentSearch (Context context){
+    public FragmentSearch(Context context) {
         this.mContext = context;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

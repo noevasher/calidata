@@ -5,10 +5,8 @@ import android.util.Log;
 
 import com.example.calidata.main.ParentController;
 import com.example.calidata.models.CheckModel;
-import com.example.calidata.models.CheckbookModel;
 
 import java.util.HashMap;
-import java.util.List;
 
 import io.reactivex.Single;
 import retrofit2.Call;
@@ -47,8 +45,7 @@ public class CheckController extends ParentController {
                         emitter.onError(t);
                     }
                 });
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 Log.e("error", e.getMessage());
                 e.printStackTrace();
 

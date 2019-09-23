@@ -14,7 +14,7 @@ public class CheckArrayModel {
     @SerializedName("mensaje")
     private String message;
 
-    public CheckArrayModel(){
+    public CheckArrayModel() {
 
     }
 

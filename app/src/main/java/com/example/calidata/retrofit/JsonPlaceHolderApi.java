@@ -23,16 +23,13 @@ import retrofit2.http.Path;
 
 public interface JsonPlaceHolderApi {
 
-    @GET("posts")
-    Call<List<Post>> getPosts();
-
     @GET("banco/listadoBanco")
     Call<List<BankModel>> getBanks();
 
     @FormUrlEncoded
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @POST("autenticacion")
-    Call<LoginResponse> authentication(@Header("Usuario") String user, @Header("IdPass")String password, @Field("grant_type") String type);
+    Call<LoginResponse> authentication(@Header("Usuario") String user, @Header("IdPass") String password, @Field("grant_type") String type);
 
     @Headers("Content-Type: application/json")
     @POST("cheque/AgregarChequera")
@@ -97,7 +94,6 @@ public interface JsonPlaceHolderApi {
     @PATCH("posts/{id}")
     Call<Post> patchPost(@Path("id") int id, @Body Post post);
 //*/
-
 
 
 }

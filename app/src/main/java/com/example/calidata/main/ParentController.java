@@ -19,7 +19,7 @@ public class ParentController {
 
 
     protected Context mContext;
-    protected RetrofitManager retrofitManager;
+    private RetrofitManager retrofitManager;
     protected JsonPlaceHolderApi restClient;
 
     public ParentController(Context context) {

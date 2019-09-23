@@ -32,22 +32,22 @@ public class User {
     public String tokenType;
 
 
-    public static User getInstance(){
-        if(instance == null){
+    public static User getInstance() {
+        if (instance == null) {
             return new User();
         }
         return instance;
     }
 
-    public static User getInstance(String userName, String email, String password, Integer bankId){
-        if(instance == null){
+    public static User getInstance(String userName, String email, String password, Integer bankId) {
+        if (instance == null) {
             return new User(userName, email, password, bankId);
         }
         return instance;
     }
 
-    public static User getInstance(Double userId, String email, Integer bankId){
-        if(instance == null){
+    public static User getInstance(Double userId, String email, Integer bankId) {
+        if (instance == null) {
             return new User(userId, email, bankId);
         }
         return instance;

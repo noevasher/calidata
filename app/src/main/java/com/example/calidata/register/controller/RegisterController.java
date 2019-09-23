@@ -25,19 +25,17 @@ public class RegisterController extends ParentController {
     }
 
 
-
     public Single<User> registerUserByBody(User user) {
         return Single.create(emitter -> {
-           Call<User> call = restClient.registerUser(user);
+            Call<User> call = restClient.registerUser(user);
             call.enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
                     if (response.code() == 200) {
                         User data = response.body();
-                        if(response.body().isSuccess){
+                        if (response.body().isSuccess) {
                             emitter.onSuccess(data);
-                        }
-                        else{
+                        } else {
                             String message = response.body().getMessage();
                             emitter.onError(new Exception(message));
                         }
@@ -55,8 +53,6 @@ public class RegisterController extends ParentController {
         });
 
     }
-
-
 
 
 }

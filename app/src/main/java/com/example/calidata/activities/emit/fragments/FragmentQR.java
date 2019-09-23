@@ -12,14 +12,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.calidata.R;
 import com.example.calidata.main.ParentActivity;
-
-import java.util.zip.Inflater;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -32,10 +29,11 @@ public class FragmentQR extends Fragment {
     private Context mContext;
     protected FragmentActivity mActivity;
 
-    public FragmentQR (){
+    public FragmentQR() {
 
     }
-    public FragmentQR (Context context){
+
+    public FragmentQR(Context context) {
         this.mContext = context;
     }
 
@@ -53,12 +51,12 @@ public class FragmentQR extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof Activity){
+        if (context instanceof Activity) {
             mActivity = (FragmentActivity) context;
         }
     }
 
-    private void readQR(){
+    private void readQR() {
         try {
 
             Intent intent = new Intent("com.google.zxing.client.android.SCAN");
@@ -70,7 +68,7 @@ public class FragmentQR extends Fragment {
         } catch (Exception e) {
 
             Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
-            Intent marketIntent = new Intent(Intent.ACTION_VIEW,marketUri);
+            Intent marketIntent = new Intent(Intent.ACTION_VIEW, marketUri);
             startActivity(marketIntent);
 
         }
@@ -85,11 +83,10 @@ public class FragmentQR extends Fragment {
                 String format = data.getStringExtra("SCAN_RESULT_FORMAT");
 
 
-
                 TextView textView = view.findViewById(R.id.textView_content);
                 Button emitBtn = view.findViewById(R.id.button_emit);
 
-                emitBtn.setBackgroundColor(((ParentActivity)mContext).getPrimaryColorInTheme());
+                emitBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
                 emitBtn.setTextColor(mContext.getColor(R.color.white));
 
 
@@ -101,7 +98,7 @@ public class FragmentQR extends Fragment {
                 //Log.i("TAG-QR data sqcheme", data.getData().getScheme());
 
             }
-            if(resultCode == RESULT_CANCELED){
+            if (resultCode == RESULT_CANCELED) {
                 //handle cancel
                 Log.i("TAG-QR", "CANCELADO");
                 view.findViewById(R.id.container_fail).setVisibility(View.VISIBLE);

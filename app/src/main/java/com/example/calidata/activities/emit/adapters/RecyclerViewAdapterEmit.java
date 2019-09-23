@@ -2,12 +2,9 @@ package com.example.calidata.activities.emit.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +21,6 @@ import com.example.calidata.R;
 import com.example.calidata.activities.emit.CheckEmitActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -226,7 +221,7 @@ public class RecyclerViewAdapterEmit extends RecyclerView.Adapter<RecyclerViewAd
         LayoutInflater inflater = mActivity.getLayoutInflater();
         ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.cancel_dialog, null);
         TextView label = view.findViewById(R.id.textView_label);
-        label.setText(mContext.getResources().getString(R.string.emit_delete_label) );
+        label.setText(mContext.getResources().getString(R.string.emit_delete_label));
         builder.setView(view);
 
         AlertDialog alertDialog = builder.create();

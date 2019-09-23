@@ -14,7 +14,7 @@ public class CheckbookArrayModel {
     @SerializedName("mensaje")
     private String message;
 
-    public CheckbookArrayModel(){
+    public CheckbookArrayModel() {
 
     }
 

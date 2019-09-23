@@ -27,7 +27,6 @@ import com.example.calidata.register.RegisterActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
 @SuppressLint("CheckResult")
 public class LoginActivity extends ParentActivity {
 
@@ -69,7 +68,7 @@ public class LoginActivity extends ParentActivity {
                 //String theme = getResources().getResourceEntryName(themeResId);
                 managerTheme.saveFirstTheme(themeResId);
             } catch (PackageManager.NameNotFoundException e) {
-                Log.e("Error", "error al obtener tema de aplicacion: " + e.getMessage());
+                Log.e("Error", getString(R.string.error_get_theme) + ": " + e.getMessage());
             }
 
         }
@@ -80,7 +79,7 @@ public class LoginActivity extends ParentActivity {
             usernameEditText.setOnFocusChangeListener((view, hasFocus) -> {
                 if (!hasFocus) {
                     if (usernameEditText.getText().toString().isEmpty()) {
-                        usernameEditText.setError("Campo Requerido");
+                        usernameEditText.setError(getString(R.string.required_field_label));
                     } else {
                         if (!isValidEmail(usernameEditText.getText().toString())) {
                             usernameEditText.setError(getString(R.string.invalid_email));
@@ -91,7 +90,7 @@ public class LoginActivity extends ParentActivity {
             passwordEditText.setOnFocusChangeListener((view, hasFocus) -> {
                 if (!hasFocus) {
                     if (passwordEditText.getText().toString().isEmpty()) {
-                        passwordEditText.setError("Campo Requerido");
+                        passwordEditText.setError(getString(R.string.required_field_label));
                     } else {
                         if (!isValidLength(passwordEditText.getText().toString())) {
                             //passwordEditText.setError(getString(R.string.invalid_password));
@@ -185,16 +184,5 @@ public class LoginActivity extends ParentActivity {
 
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
-    }
-
-
-    private String generateRequest(String encryptRij) {
-        return "{'User' : 'noe', 'IdPass': " + encryptRij + "}";
-    }
-
-
-    private boolean validSession() {
-        sessionManager.checkLogin();
-        return false;
     }
 }

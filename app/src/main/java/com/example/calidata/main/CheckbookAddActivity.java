@@ -1,12 +1,11 @@
 package com.example.calidata.main;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.calidata.R;
 import com.example.calidata.management.ManagerTheme;
@@ -24,14 +23,12 @@ public class CheckbookAddActivity extends ParentActivity {
     public Button addBtn;
 
     @OnClick(R.id.button_add)
-    public void add(){
-        //Intent intent = new Intent(this, CheckbookActivity.class);
-        //startActivityForResult(intent, 0);
+    public void add() {
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("result",0);
-        returnIntent.putExtra("NUM","**** **** **** 3658");
+        returnIntent.putExtra("result", 0);
+        returnIntent.putExtra("NUM", "**** **** **** 3658");
 
-        setResult(Activity.RESULT_OK,returnIntent);
+        setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }
 

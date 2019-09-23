@@ -1,41 +1,34 @@
 package com.example.calidata.activities.query;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calidata.R;
-import com.example.calidata.activities.CheckController;
 import com.example.calidata.activities.query.filter.FilterActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.main.controllers.CheckbookController;
 import com.example.calidata.management.ManagerTheme;
 import com.example.calidata.models.CheckModel;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+@SuppressLint("CheckResult")
 public class CheckQueryActivity extends ParentActivity {
 
     /*
@@ -73,10 +66,10 @@ public class CheckQueryActivity extends ParentActivity {
         ArrayList<CheckModel> checks = new ArrayList<>();
 
         CheckbookController controller = new CheckbookController(this);
-        if(token != null && userId != null) {
+        if (token != null && userId != null) {
             controller.getChecksByUserId(token, userId.intValue()).subscribe(response -> {
-                List<HashMap<String,Object>> data = response.getData();
-                for(HashMap<String,Object> item :data){
+                List<HashMap<String, Object>> data = response.getData();
+                for (HashMap<String, Object> item : data) {
                     CheckModel check = new CheckModel();
                     check.setCheckId((String) item.get("checkId"));
                     //check.setDescription("check --> " + i);
@@ -139,7 +132,7 @@ public class CheckQueryActivity extends ParentActivity {
         setImageListener();
     }
 
-    private void setImageListener(){
+    private void setImageListener() {
         /*
         backImg.setOnClickListener(v->{
             finish();
@@ -153,7 +146,7 @@ public class CheckQueryActivity extends ParentActivity {
     }
 
 
-    private void printConstraintSearch(){
+    private void printConstraintSearch() {
         managerTheme = ManagerTheme.getInstance();
         int themeId = managerTheme.getThemeId();
         setTheme(themeId);

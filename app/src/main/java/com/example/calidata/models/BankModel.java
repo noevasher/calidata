@@ -9,7 +9,7 @@ public class BankModel {
     @SerializedName("deS_BANCO")
     private String nameBank;
 
-    public BankModel(int idBank, String nameBank){
+    public BankModel(int idBank, String nameBank) {
         this.idBank = idBank;
         this.nameBank = nameBank;
     }

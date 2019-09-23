@@ -3,6 +3,7 @@ package com.example.calidata.login.controller;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.calidata.R;
 import com.example.calidata.main.ParentController;
 import com.example.calidata.models.LoginResponse;
 
@@ -32,10 +33,10 @@ public class LoginController extends ParentController {
                     if (response.code() == 200) {
                         LoginResponse data = response.body();
                         emitter.onSuccess(data);
-                    }else if(response.code() == 400){
-                        Throwable throwable = new Exception("usuario y contraseña incorrectos");
+                    } else if (response.code() == 400) {
+                        Throwable throwable = new Exception(mContext.getString(R.string.error_invalid_user));
                         emitter.onError(throwable);
-                    } else{
+                    } else {
                         Throwable throwable = new Exception(response.message());
                         emitter.onError(throwable);
                     }

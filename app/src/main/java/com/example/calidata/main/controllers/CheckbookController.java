@@ -7,19 +7,16 @@ import android.view.View;
 import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentController;
 import com.example.calidata.models.CheckArrayModel;
-import com.example.calidata.models.CheckModel;
 import com.example.calidata.models.CheckbookArrayModel;
 import com.example.calidata.models.CheckbookModel;
 import com.example.calidata.models.User;
 
 import java.util.HashMap;
-import java.util.List;
 
 import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Body;
 
 public class CheckbookController extends ParentController {
 
@@ -35,7 +32,7 @@ public class CheckbookController extends ParentController {
             try {
                 Call<CheckbookArrayModel> call = restClient.getCheckbookByUserId(token, map);
                 //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
-                ((CheckbookActivity)mContext).progressBar.setVisibility(View.VISIBLE);
+                ((CheckbookActivity) mContext).progressBar.setVisibility(View.VISIBLE);
                 call.enqueue(new Callback<CheckbookArrayModel>() {
                     @Override
                     public void onResponse(Call<CheckbookArrayModel> call, Response<CheckbookArrayModel> response) {
@@ -51,7 +48,7 @@ public class CheckbookController extends ParentController {
                             //*/
                             Throwable throwable = new Exception(message);
                             emitter.onError(throwable);
-                            ((CheckbookActivity)mContext).progressBar.setVisibility(View.GONE);
+                            ((CheckbookActivity) mContext).progressBar.setVisibility(View.GONE);
 
                         }
                     }
@@ -60,15 +57,14 @@ public class CheckbookController extends ParentController {
                     public void onFailure(Call<CheckbookArrayModel> call, Throwable t) {
                         Log.e("error", t.toString());
                         emitter.onError(t);
-                        ((CheckbookActivity)mContext).progressBar.setVisibility(View.GONE);
+                        ((CheckbookActivity) mContext).progressBar.setVisibility(View.GONE);
 
                     }
                 });
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 Log.e("error", e.getMessage());
                 e.printStackTrace();
-                ((CheckbookActivity)mContext).progressBar.setVisibility(View.GONE);
+                ((CheckbookActivity) mContext).progressBar.setVisibility(View.GONE);
 
             }
         });
@@ -100,12 +96,11 @@ public class CheckbookController extends ParentController {
                             emitter.onError(t);
                         }
                     });
-                }catch(Exception e){
+                } catch (Exception e) {
                     Log.e("error", e.getMessage());
                     e.printStackTrace();
                 }
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 e.getStackTrace();
                 Log.e("ERROR", e.getMessage());
             }
@@ -168,12 +163,11 @@ public class CheckbookController extends ParentController {
                             emitter.onError(t);
                         }
                     });
-                }catch(Exception e){
+                } catch (Exception e) {
                     Log.e("error", e.getMessage());
                     e.printStackTrace();
                 }
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 e.getStackTrace();
                 Log.e("ERROR", e.getMessage());
             }
@@ -208,12 +202,11 @@ public class CheckbookController extends ParentController {
                             emitter.onError(t);
                         }
                     });
-                }catch(Exception e){
+                } catch (Exception e) {
                     Log.e("error", e.getMessage());
                     e.printStackTrace();
                 }
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 e.getStackTrace();
                 Log.e("ERROR", e.getMessage());
             }

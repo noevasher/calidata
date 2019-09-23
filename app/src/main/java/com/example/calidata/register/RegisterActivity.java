@@ -30,18 +30,21 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+@SuppressLint("CheckResult")
 public class RegisterActivity extends ParentActivity {
 
     //String[] bank = {"Selecciona Entidad", "Banamex", "Santander", "Bancomer", "Otro"};
     ArrayList<String> bankNames = new ArrayList<>();
     private boolean spinActive = false;
     private HashMap<String, Object> bankIds = new HashMap<>();
+    private int attemps = 5;
+
+
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
@@ -174,7 +177,6 @@ public class RegisterActivity extends ParentActivity {
         validEmptyFields();
     }
 
-    private int attemps = 5;
 
     private void loadBanks() {
 
@@ -250,9 +252,7 @@ public class RegisterActivity extends ParentActivity {
     }
 
     private int getIdBank(String value) {
-        long i = 0;
-        for (Iterator<Map.Entry<String, Object>> entries = bankIds.entrySet().iterator(); entries.hasNext(); ) {
-            Map.Entry<String, Object> entry = entries.next();
+        for (Map.Entry<String, Object> entry : bankIds.entrySet()) {
             String name = entry.getKey();
             int id = (int) entry.getValue();
             if (name.equals(value))

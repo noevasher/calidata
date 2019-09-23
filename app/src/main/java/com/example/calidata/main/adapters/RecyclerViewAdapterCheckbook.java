@@ -5,14 +5,11 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
@@ -24,7 +21,6 @@ import com.example.calidata.R;
 import com.example.calidata.activities.cancel.CheckCancelActivity;
 import com.example.calidata.activities.query.CheckQueryActivity;
 import com.example.calidata.main.CheckbookActivity;
-import com.example.calidata.main.CheckbookAddActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
 import com.example.calidata.models.CheckbookModel;
@@ -43,7 +39,6 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     //private List<CheckbookModel> mData;
     private LayoutInflater mInflater;
     private Context mContext;
-    private int themeId;
     private String bankName;
 
     public RecyclerViewAdapterCheckbook(Context context, List<CheckbookModel> data) {
@@ -51,7 +46,6 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         mData = data;
         this.mContext = context;
         ManagerTheme managerTheme = ManagerTheme.getInstance();
-        themeId = managerTheme.getThemeId();
         bankName = managerTheme.getBankName();
 
     }
@@ -76,6 +70,9 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     public void onBindViewHolder(ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
         if (viewType == VIEW_TYPE_EMPTY) {
+            //ProgressBar progressBar = ((CheckbookActivity)mContext).progressBar;
+            //progressBar.setVisibility(View.VISIBLE);
+            //holder.textBank.setVisibility(View.GONE);
 
         } else {
             String number = mData.get(position).getCheckId();
@@ -213,42 +210,6 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
     private void openDialogToEmit() {
         readQR();
-        /*
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        LayoutInflater inflater = ((CheckbookActivity) mContext).getLayoutInflater();
-        ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.emit_dialog, null);
-        builder.setView(view);
-
-        AlertDialog alertDialog = builder.create();
-
-        TextView label = view.findViewById(R.id.textView_label);
-        label.setText(mContext.getString(R.string.active_checkbook_label));
-        Button scanBtn = view.findViewById(R.id.button_yes);
-        scanBtn.setBackgroundColor(((CheckbookActivity) mContext).getPrimaryColorInTheme());
-        scanBtn.setOnClickListener(new OnSingleClickListener() {
-            @Override
-            public void onSingleClick(View v) {
-                readQR();
-                alertDialog.dismiss();
-            }
-        });
-
-        Button searchBtn = view.findViewById(R.id.button_no);
-        searchBtn.setText(mContext.getString(R.string.insert_data));
-        searchBtn.setBackgroundColor(((CheckbookActivity) mContext).getPrimaryColorInTheme());
-        searchBtn.setOnClickListener(new OnSingleClickListener() {
-            @Override
-            public void onSingleClick(View v) {
-                Intent i = new Intent(v.getContext(), CheckbookAddActivity.class);
-                ((CheckbookActivity) mContext).startActivityForResult(i, 0);
-                alertDialog.dismiss();
-            }
-        });
-
-        alertDialog.show();
-
-        //*/
-
     }
 
     private void readQR() {
@@ -264,7 +225,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
             Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
             Intent marketIntent = new Intent(Intent.ACTION_VIEW, marketUri);
-            ((CheckbookActivity) mContext).startActivity(marketIntent);
+            mContext.startActivity(marketIntent);
 
         }
     }

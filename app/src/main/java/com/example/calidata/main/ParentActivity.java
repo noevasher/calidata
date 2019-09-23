@@ -151,29 +151,6 @@ public class ParentActivity extends AppCompatActivity {
         startActivityForResult(intent, PICK_IMAGE);
     }
 
-    /*
-    protected void pickBankAndOpenCheckbook(int bank, String user) {
-        Intent intent = new Intent(this, CheckbookActivity.class);
-
-        switch (bank) {
-            case 1:
-                intent.putExtra("bank", 1);
-                break;
-            case 2:
-                intent.putExtra("bank", 2);
-                break;
-            case 3:
-                intent.putExtra("bank", 3);
-                break;
-            default:
-                intent.putExtra("bank", 2);
-                break;
-        }
-        sessionManager.createLoginSession(user, bank);
-        startActivity(intent);
-    }
-
-//*/
     protected void pickBankAndOpenCheckbookByName(String bankName, String user, Double userId, String username) {
         Intent intent = new Intent(this, CheckbookActivity.class);
         bankName = bankName.toLowerCase();
@@ -194,7 +171,7 @@ public class ParentActivity extends AppCompatActivity {
 
     protected void initCountdown() {
         if (timer == null) {
-            if(TIME_EXPIRED == null)
+            if (TIME_EXPIRED == null)
                 setExpireTime(TIME_EXPIRED_DEFAULT);
             timer = new CountDownTimer(TIME_EXPIRED, 1000) {
                 public void onTick(long millisUntilFinished) {
@@ -207,8 +184,6 @@ public class ParentActivity extends AppCompatActivity {
                 public void onFinish() {
                     Toast.makeText(ParentActivity.this, "Sesión Terminada", Toast.LENGTH_LONG).show();
                     logout();
-                    //finish();
-                    //timer = null;
                 }
             };
             timer.start();
