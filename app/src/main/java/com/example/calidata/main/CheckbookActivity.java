@@ -108,7 +108,48 @@ public class CheckbookActivity extends ParentActivity {
             public void onSingleClick(View v) {
                 //openDialog();
                 progressBar.setVisibility(View.VISIBLE);
-                readQR();
+                //readQR();
+                String token = sessionManager.getToken();
+                String checkId = "452185E8-3E69-484D-AC1D-AA97B9C59B4B-52-0-12";
+                checkId = "A2DCBC76-99A3-4F2E-9916-733E5999BEA6-52-00-116";
+
+                if (token != null) {
+                    String finalCheckId = checkId;
+                    controller.addCheckbook(token, checkId, userId.intValue()).subscribe(response -> {
+                        //if(response.getData() != null && response.getData().isEmpty()){
+                        //HashMap<String, Object> dataResponse = new HashMap<>();
+                        if (response.getMessage().equals("Ok")) {
+                            HashMap<String, Object> dataResponse = response.getData();
+                            CheckbookModel checkbookModel = new CheckbookModel();
+                            checkbookModel.setTypeDoc("00");
+                            //checkbookModel.setCheckId("" + dataResponse.get("checkbookId"));
+                            //checkbookModel.setCheckbookId("" + dataResponse.get("checkbookId"));
+                            checkbookModel.setCheckId(finalCheckId);
+                            checkbookModel.setCheckbookId(finalCheckId);
+                            checkbooksList.add(checkbookModel);
+
+                            adapter.notifyItemInserted(checkbooksList.size());
+
+                            recyclerView.postDelayed(() -> {
+                                recyclerView.scrollToPosition(checkbooksList.size() - 1);
+                            }, 500);
+
+                        }
+                        else{
+                            Toast.makeText(CheckbookActivity.this, response.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                        progressBar.setVisibility(View.GONE);
+
+
+
+                    }, t -> {
+                        Log.e("", t.getMessage());
+                    });
+                    //*/
+                } else {
+                    Toast.makeText(CheckbookActivity.this, getString(R.string.error_invalid_auth), Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
@@ -116,6 +157,8 @@ public class CheckbookActivity extends ParentActivity {
 
         addCheckbookBtn.bringToFront();
         progressBar.bringToFront();
+
+        //Get All checkbooks
         readCheckBooks();
 
     }
@@ -126,9 +169,9 @@ public class CheckbookActivity extends ParentActivity {
             controller.getCheckbooks(token, userId.intValue()).subscribe(response -> {
                 List<HashMap<String, Object>> data = response.getData();
                 for (HashMap<String, Object> checkbook : data) {
-                    Log.i("", checkbook.toString());
+                    //Log.i("", checkbook.toString());
                     CheckbookModel checkbookModel = new CheckbookModel();
-                    String checkbookId = (String) checkbook.get("checkbookId");
+                    String checkbookId = (String) checkbook.get("iD_CheckID");
                     Log.i("", checkbookId);
                     checkbookModel.setCheckbookId(checkbookId);
                     checkbookModel.setCheckId(checkbookId);
@@ -137,6 +180,10 @@ public class CheckbookActivity extends ParentActivity {
                 }
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
+
+                recyclerView.postDelayed(() -> {
+                    recyclerView.scrollToPosition(checkbooksList.size() - 1);
+                }, 500);
 
             }, t -> {
                 if (t.getMessage().equals("Unauthorized")) {
@@ -328,10 +375,13 @@ public class CheckbookActivity extends ParentActivity {
                 if (contents != null) {
                     String token = sessionManager.getToken();
                     String checkId = "452185E8-3E69-484D-AC1D-AA97B9C59B4B-52-0-12";
+                    checkId = "21BBB2D8-0D91-4C71-8A80-BF85498446A1-52-00-116";
+
                     if (token != null) {
-                        controller.addCheckbook(token, checkId).subscribe(response -> {
+                        controller.addCheckbook(token, checkId, userId.intValue()).subscribe(response -> {
                             //if(response.getData() != null && response.getData().isEmpty()){
-                            HashMap<String, Object> dataResponse = response.getData();
+                            HashMap<String, Object> dataResponse = new HashMap<>();
+                            //HashMap<String, Object> dataResponse = response.getData();
                             if (data != null) {
                                 CheckbookModel checkbookModel = new CheckbookModel();
                                 checkbookModel.setTypeDoc("00");
@@ -350,9 +400,11 @@ public class CheckbookActivity extends ParentActivity {
 
                             //}
 
+
                         }, t -> {
                             Log.e("", t.getMessage());
                         });
+                        //*/
                     } else {
                         Toast.makeText(CheckbookActivity.this, getString(R.string.error_invalid_auth), Toast.LENGTH_LONG).show();
                     }
@@ -381,6 +433,9 @@ public class CheckbookActivity extends ParentActivity {
                                 Toast.makeText(CheckbookActivity.this, "Cheque: " +
                                         checkId + getString(R.string.error_emit_check), Toast.LENGTH_LONG).show();
                             }
+                        }, t -> {
+                            Toast.makeText(CheckbookActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+
                         });
                     }
                 }
@@ -403,9 +458,6 @@ public class CheckbookActivity extends ParentActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (adapter.getItemCount() > 0) {
-            System.out.println(adapter.getItemCount());
-        }
     }
 
     @Override

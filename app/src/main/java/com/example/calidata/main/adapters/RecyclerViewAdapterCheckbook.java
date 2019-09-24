@@ -75,20 +75,22 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
             //holder.textBank.setVisibility(View.GONE);
 
         } else {
-            String number = mData.get(position).getCheckId();
+            String checkbookId = mData.get(position).getCheckId();
+            String checkbookIdCut = checkbookId.substring(0, checkbookId.length() - 10);
+
             //Drawable logoDrawable = getLogoDrawable(themeId);
             Drawable logoDrawable = ((ParentActivity) (mContext)).getLogoDrawableByBankName(bankName);
-
             holder.logo.setImageDrawable(logoDrawable);
             //holder.textBank.setText(getBankName(themeId));
             String output = bankName.substring(0, 1).toUpperCase() + bankName.substring(1);
 
             holder.textBank.setText(output);
-            holder.textViewCheckNumber.setText(number);
+            holder.textViewCheckNumber.setText(checkbookIdCut);
+            String finalCheckbookId = checkbookId;
             holder.itemView.setOnClickListener(new OnSingleClickListener() {
                 @Override
                 public void onSingleClick(View v) {
-                    openActions();
+                    openActions(finalCheckbookId);
                 }
             });
         }
@@ -140,7 +142,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     }
 
 
-    private void openActions() {
+    private void openActions(String checkbookId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = ((CheckbookActivity) mContext).getLayoutInflater();
         ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.activity_main, null);
@@ -157,7 +159,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         viewToolbar.setBackgroundColor(((CheckbookActivity) mContext).getPrimaryColorInTheme());
 
 
-        setImagesListeners(view);
+        setImagesListeners(view, checkbookId);
 
         AlertDialog alertDialog = builder.create();
         closeWindow.setOnClickListener(new OnSingleClickListener() {
@@ -173,7 +175,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     }
 
 
-    private void setImagesListeners(View view) {
+    private void setImagesListeners(View view, String checkbookId) {
         ImageView imageViewQuery = view.findViewById(R.id.imageView_query);
         ImageView imageViewEmit = view.findViewById(R.id.imageView_emit);
         ImageView imageViewCancel = view.findViewById(R.id.imageView_cancel);
@@ -186,6 +188,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
             @Override
             public void onSingleClick(View v) {
                 Intent intent = new Intent(mContext, CheckQueryActivity.class);
+                intent.putExtra("checkbookId", checkbookId);
                 mContext.startActivity(intent);
             }
         });

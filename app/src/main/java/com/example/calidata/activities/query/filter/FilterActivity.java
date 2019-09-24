@@ -1,8 +1,10 @@
 package com.example.calidata.activities.query.filter;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,12 +17,20 @@ import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
+import com.example.calidata.activities.query.CheckQueryActivity;
 import com.example.calidata.main.ParentActivity;
+import com.example.calidata.main.controllers.CheckbookController;
 import com.example.calidata.management.ManagerTheme;
+import com.example.calidata.models.CheckArrayModel;
 import com.github.guilhe.views.SeekBarRangedView;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -31,6 +41,7 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
     private final static int MAX = 1000000;
     private static final String CERO = "0";
     private static final String BARRA = "/";
+    private final static int FILTER_CODE = 222;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -66,6 +77,11 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
     final int anio = c.get(Calendar.YEAR);
     private SeekBarRangedView rangebar;
     private ColorStateList colorText;
+    private String checkbookId;
+    private float minVal;
+    private float maxVal;
+
+    private CheckbookController controller;
 
     @OnClick(R.id.constraintLayout_date_start)
     public void getStartDate() {
@@ -74,6 +90,10 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
  *También puede cargar los valores que usted desee
  */
         DatePickerDialog recogerFecha = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+
+            applyBtn.setEnabled(true);
+            applyBtn.setBackgroundColor(getPrimaryColorInTheme());
+
             //Esta variable lo que realiza es aumentar en uno el mes ya que comienza desde 0 = enero
             final int mesActual = month + 1;
             //Formateo el día obtenido: antepone el 0 si son menores de 10
@@ -92,6 +112,10 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
     @OnClick(R.id.constraintLayout_date_end)
     public void getEndDate() {
         DatePickerDialog recogerFecha = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+
+            applyBtn.setEnabled(true);
+            applyBtn.setBackgroundColor(getPrimaryColorInTheme());
+
             //Esta variable lo que realiza es aumentar en uno el mes ya que comienza desde 0 = enero
             final int mesActual = month + 1;
             //Formateo el día obtenido: antepone el 0 si son menores de 10
@@ -125,14 +149,45 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
 
         rangebar = findViewById(R.id.rangebar1);
         initSeekBar();
-        applyBtn.setBackgroundColor(getPrimaryColorInTheme());
+        //applyBtn.setBackgroundColor(getPrimaryColorInTheme());
+        applyBtn.setBackgroundColor(getColor(R.color.colorPrimaryGray));
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.status_check, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+        checkbookId = getIntent().getExtras().getString("checkbookId", null);
 
+
+        controller = new CheckbookController(this);
+
+
+        applyBtn.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                int position = spinner.getSelectedItemPosition();
+                Log.i("", startTextDate + " -> " + endTextDate + " -> " +position);
+                System.out.println( "LOG");
+                System.out.println( startTextDate + " -> " + endTextDate + " -> " +position);
+                String token = sessionManager.getToken();
+                Integer userId = sessionManager.getUserId().intValue();
+                if (token != null && userId != null && checkbookId != null) {
+                    HashMap<String, Object> body = new HashMap<>();
+                    body.put("idUsuario", userId);
+                    body.put("ID_CheckID", checkbookId);
+                    controller.getChecksByFilters(token, body).subscribe(response -> {
+                        ArrayList<HashMap<String, Object>> checks = (ArrayList<HashMap<String, Object>>) response.getData();
+                        Intent intent = new Intent();
+                        intent.putExtra("list", checks);
+
+                        setResult(FILTER_CODE,intent);
+                        finish();//finishing activity
+
+                    });
+                }
+            }
+        });
     }
 
     private void initSeekBar() {
@@ -153,10 +208,15 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
 
             @Override
             public void onChanging(SeekBarRangedView view, float minValue, float maxValue) {
+                applyBtn.setEnabled(true);
+                applyBtn.setBackgroundColor(getPrimaryColorInTheme());
+
                 updateLayout(minValue, maxValue);
             }
 
             private void updateLayout(float minValue, float maxValue) {
+                minVal = minValue;
+                maxVal = maxValue;
                 String min = String.format(Locale.getDefault(), "min: %2.0f", minValue);
                 String max = String.format(Locale.getDefault(), "max: %2.0f", maxValue);
 
@@ -173,6 +233,7 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
         // Inflate the menu; this adds items to the action bar if it is present.
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.filter_menu, menu);
+        //menu.setGroupEnabled(0, false);
         return true;
     }
 
@@ -189,6 +250,9 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
 
             rangebar.setSelectedMaxValue(MAX);
             rangebar.setSelectedMinValue(0);
+
+            applyBtn.setEnabled(false);
+            applyBtn.setBackgroundColor(getColor(R.color.colorPrimaryGray));
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -196,11 +260,16 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if(i > 0){
+            applyBtn.setEnabled(true);
+            applyBtn.setBackgroundColor(getPrimaryColorInTheme());
 
+        }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
 }

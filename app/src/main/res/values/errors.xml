@@ -5,5 +5,6 @@
     <string name="error_get_theme">Error al Obtener Tema de Aplicación</string>
     <string name="error_invalid_auth">La sesión terminó, es necesario iniciar sesion nuevamente</string>
     <string name="error_emit_check">No pudo ser emitido correctamente</string>
+    <string name="error_service_internal">Error interno de servicio</string>
 
 </resources>

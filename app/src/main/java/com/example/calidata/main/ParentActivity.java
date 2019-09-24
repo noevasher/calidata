@@ -287,4 +287,27 @@ public class ParentActivity extends AppCompatActivity {
     protected void setToken(String token) {
         this.token = token;
     }
+
+    protected String pickStatus(String status) {
+        switch (status) {
+            case "1":
+                return "Solicitado";
+            case "2":
+                return "Asignado";
+            case "3":
+                return "Entregado";
+            case "4":
+                return "Activado";
+            case "5":
+                return "Liberado";
+            case "6":
+                return "Pagado";
+            case "7":
+                return "Cancelado";
+            case "8":
+                return "Bloqueado";
+            default:
+                return "Otro Estatus";
+        }
+    }
 }

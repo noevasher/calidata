@@ -86,13 +86,13 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             String name = model.getCheckId();
             String description = model.getDescription();
             String quantity = "" + model.getQuantity();
-
-            holder.myTextView.setText(name);
+            String checkId = model.getCheckId();
+            checkId = "****" + checkId.substring(checkId.length() - 15, checkId.length() - 10);
             holder.statusText.setText(status);
             holder.dateText.setText(date);
             holder.descriptionText.setText(description);
             holder.quantityText.setText(quantity);
-
+            holder.checkIdText.setText(checkId);
             Drawable logoDrawable = ((ParentActivity) (mContext)).getLogoDrawableByBankName(bankName);
             holder.logo.setImageDrawable(logoDrawable);
             holder.textBank.setText(WordUtils.capitalizeFully(bankName, delimiters));
@@ -128,7 +128,6 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView myTextView;
         ImageView logo;
         ConstraintLayout separator;
         TextView textBank;
@@ -138,10 +137,10 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         TextView statusText;
         TextView descriptionText;
         TextView quantityText;
+        TextView checkIdText;
 
         ViewHolder(View itemView) {
             super(itemView);
-            myTextView = itemView.findViewById(R.id.textView_name);
             logo = itemView.findViewById(R.id.logo);
             separator = itemView.findViewById(R.id.separator1);
             textBank = itemView.findViewById(R.id.textView_bank);
@@ -151,6 +150,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             statusText = itemView.findViewById(R.id.textView_status);
             descriptionText = itemView.findViewById(R.id.textView_description);
             quantityText = itemView.findViewById(R.id.textView_quantity);
+            checkIdText = itemView.findViewById(R.id.textView_folio);
             itemView.setOnClickListener(this);
         }
 

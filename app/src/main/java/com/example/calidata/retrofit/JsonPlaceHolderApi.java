@@ -45,6 +45,11 @@ public interface JsonPlaceHolderApi {
     Call<CheckArrayModel> getChecksByUserId(@Header("Authorization") String token,
                                             @Body HashMap<String, Object> body);
 
+    @Headers("Content-Type: application/json")
+    @POST("cheque/ObtenerCheques")
+    Call<CheckArrayModel> getChecksByUserIdAndCheckId(@Header("Authorization") String token,
+                                            @Body HashMap<String, Object> body);
+
     @POST("account/register")
     @Headers("Content-Type: application/json")
     Call<User> registerUser(@Body User user);

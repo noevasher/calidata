@@ -28,7 +28,7 @@ public class CheckbookController extends ParentController {
     public Single<CheckbookArrayModel> getCheckbooks(String token, Integer userId) {
         return Single.create(emitter -> {
             HashMap<String, Object> map = new HashMap();
-            map.put("usuarioId", userId);
+            map.put("idUsuario", userId);
             try {
                 Call<CheckbookArrayModel> call = restClient.getCheckbookByUserId(token, map);
                 //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
@@ -71,11 +71,14 @@ public class CheckbookController extends ParentController {
         //*/
     }
 
-    public Single<CheckbookModel> addCheckbook(String token, String checkId) {
+    public Single<CheckbookModel> addCheckbook(String token, String checkId, Integer userId) {
         return Single.create(emitter -> {
             try {
                 HashMap<String, Object> body = new HashMap<>();
-                body.put("checkId", checkId);
+                //body.put("checkId", checkId);
+                body.put("ID_CheckID", checkId);
+                body.put("idUsuario", userId);
+
                 try {
                     Call<CheckbookModel> call = restClient.addCheckBook(token, body);
                     call.enqueue(new Callback<CheckbookModel>() {
@@ -180,10 +183,86 @@ public class CheckbookController extends ParentController {
         return Single.create(emitter -> {
             try {
                 HashMap<String, Object> body = new HashMap<>();
-                body.put("usuarioId", userId);
+                body.put("idUsuario", userId);
 
                 try {
                     Call<CheckArrayModel> call = restClient.getChecksByUserId(token, body);
+                    call.enqueue(new Callback<CheckArrayModel>() {
+                        @Override
+                        public void onResponse(Call<CheckArrayModel> call, Response<CheckArrayModel> response) {
+                            if (response.code() == 200) {
+                                CheckArrayModel data = response.body();
+                                emitter.onSuccess(data);
+                            } else {
+                                Throwable throwable = new Exception(response.message());
+                                emitter.onError(throwable);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CheckArrayModel> call, Throwable t) {
+                            Log.e("error", t.toString());
+                            emitter.onError(t);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("error", e.getMessage());
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.getStackTrace();
+                Log.e("ERROR", e.getMessage());
+            }
+
+        });
+        //*/
+    }
+
+    public Single<CheckArrayModel> getChecksByUserIdAndCheckId(String token, String checkId, Integer userId) {
+        return Single.create(emitter -> {
+            try {
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("idUsuario", userId);
+                body.put("ID_CheckID", checkId);
+
+                try {
+                    Call<CheckArrayModel> call = restClient.getChecksByUserIdAndCheckId(token, body);
+                    call.enqueue(new Callback<CheckArrayModel>() {
+                        @Override
+                        public void onResponse(Call<CheckArrayModel> call, Response<CheckArrayModel> response) {
+                            if (response.code() == 200) {
+                                CheckArrayModel data = response.body();
+                                emitter.onSuccess(data);
+                            } else {
+                                Throwable throwable = new Exception(response.message());
+                                emitter.onError(throwable);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CheckArrayModel> call, Throwable t) {
+                            Log.e("error", t.toString());
+                            emitter.onError(t);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("error", e.getMessage());
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.getStackTrace();
+                Log.e("ERROR", e.getMessage());
+            }
+
+        });
+        //*/
+    }
+    public Single<CheckArrayModel> getChecksByFilters(String token, HashMap<String, Object> body) {
+        return Single.create(emitter -> {
+            try {
+
+                try {
+                    Call<CheckArrayModel> call = restClient.getChecksByUserIdAndCheckId(token, body);
                     call.enqueue(new Callback<CheckArrayModel>() {
                         @Override
                         public void onResponse(Call<CheckArrayModel> call, Response<CheckArrayModel> response) {

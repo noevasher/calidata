@@ -74,7 +74,6 @@ public class RecyclerViewAdapterCancelCheck extends RecyclerView.Adapter<Recycle
 
         ViewHolder(View itemView) {
             super(itemView);
-            myTextView = itemView.findViewById(R.id.textView_name);
             logo = itemView.findViewById(R.id.logo);
             separator = itemView.findViewById(R.id.separator1);
             textBank = itemView.findViewById(R.id.textView_bank);

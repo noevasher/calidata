@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 
 @SuppressLint("CheckResult")
 public class CheckQueryActivity extends ParentActivity {
-
+    private final static int FILTER_CODE = 222;
     /*
     @BindView(R.id.imageView_back)
     public ImageView backImg;
@@ -49,6 +49,8 @@ public class CheckQueryActivity extends ParentActivity {
 
     private Double userId;
     private String token;
+    private String checkbookId;
+    public ArrayList<CheckModel> checks = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,23 +62,23 @@ public class CheckQueryActivity extends ParentActivity {
         setToolbar(toolbar, getResources().getString(R.string.query_check_title), true);
         //setArrowToolbar(too);
         // data to populate the RecyclerView with
-
+        checkbookId = getIntent().getExtras().getString("checkbookId", null);
         userId = sessionManager.getUserId();
         token = sessionManager.getToken();
-        ArrayList<CheckModel> checks = new ArrayList<>();
 
         CheckbookController controller = new CheckbookController(this);
-        if (token != null && userId != null) {
-            controller.getChecksByUserId(token, userId.intValue()).subscribe(response -> {
+        if (token != null && userId != null && checkbookId != null) {
+            controller.getChecksByUserIdAndCheckId(token, checkbookId, userId.intValue()).subscribe(response -> {
                 List<HashMap<String, Object>> data = response.getData();
                 for (HashMap<String, Object> item : data) {
                     CheckModel check = new CheckModel();
-                    check.setCheckId((String) item.get("checkId"));
-                    //check.setDescription("check --> " + i);
-                    //check.setQuantity(Double.parseDouble((String) item.get("count")));
-                    check.setQuantity(0.0);
-                    //check.setDate(i+10 + "/05/2019");
-                    check.setStatus("activo");
+                    check.setCheckId((String) item.get("iD_CheckID"));
+                    check.setDescription((String) item.get("description"));
+                    check.setQuantity((Double) item.get("monto"));
+                    check.setDate((String) item.get("fecha"));
+                    String status = (String) item.get("estatus");
+
+                    check.setStatus(pickStatus(status));
                     checks.add(check);
                 }
                 adapter.notifyDataSetChanged();
@@ -88,40 +90,7 @@ public class CheckQueryActivity extends ParentActivity {
 
         }
 
-        /*
-        for(int i = 0; i < 5; i++) {
-            CheckModel check = new CheckModel();
-            check.setCheckId(shortUUID());
-            check.setCheckModelId(shortUUID());
-            check.setDescription("check --> " + i);
-            check.setQuantity((double) (100 * (i+1)));
-            check.setDate(i+10 + "/05/2019");
-            check.setStatus("activo");
-            checks.add(check);
-        }
-        for(int i = 0; i < 5; i++) {
-            CheckModel check = new CheckModel();
-            check.setCheckId(shortUUID());
-            check.setCheckModelId(shortUUID());
-            check.setDescription("check --> " + i);
-            check.setQuantity((double) (200 * (i+1)));
-            check.setDate(i+10 + "/05/2019");
-            check.setStatus("pagado");
-            checks.add(check);
-        }
 
-        for(int i = 0; i < 5; i++) {
-            CheckModel check = new CheckModel();
-            check.setCheckId(shortUUID());
-            check.setCheckModelId(shortUUID());
-            check.setDescription("check --> " + i);
-            check.setQuantity((double) (200 * (i+1)));
-            check.setDate(i+10 + "/05/2019");
-            check.setStatus("cancelado");
-            checks.add(check);
-        }
-        //*/
-        // set up the RecyclerView-
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -131,6 +100,7 @@ public class CheckQueryActivity extends ParentActivity {
         printConstraintSearch();
         setImageListener();
     }
+
 
     private void setImageListener() {
         /*
@@ -176,7 +146,9 @@ public class CheckQueryActivity extends ParentActivity {
             case R.id.action_filter:
                 // User chose the "Settings" item, show the app settings UI...
                 Intent intent = new Intent(this, FilterActivity.class);
-                startActivity(intent);
+                intent.putExtra("checkbookId", checkbookId);
+                startActivityForResult(intent, FILTER_CODE);
+                //startActivity(intent);
                 return true;
 
             default:
@@ -184,6 +156,19 @@ public class CheckQueryActivity extends ParentActivity {
                 // Invoke the superclass to handl0e it.
                 return super.onOptionsItemSelected(item);
 
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // check if the request code is same as what is passed  here it is 2
+        if (requestCode == FILTER_CODE) {
+            String message = data.getStringExtra("MESSAGE");
+            List list = (List) data.getSerializableExtra("list");
+            //checks.add(check);
+            adapter.notifyDataSetChanged();
+            //textView1.setText(message);
         }
     }
 
