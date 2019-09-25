@@ -86,7 +86,9 @@ public class CheckQueryActivity extends ParentActivity {
                 List<HashMap<String, Object>> data = response.getData();
                 for (HashMap<String, Object> item : data) {
                     CheckModel check = new CheckModel();
-                    check.setCheckId((String) item.get("iD_CheckID"));
+                    String checkId = (String) item.get("iD_CheckID");
+                    System.out.println("cheque: " + checkId);
+                    check.setCheckId(checkId);
                     check.setDescription((String) item.get("description"));
                     check.setQuantity((Double) item.get("monto"));
                     check.setDate((String) item.get("fecha"));

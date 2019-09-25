@@ -139,12 +139,9 @@ public class CheckbookController extends ParentController {
         //*/
     }
 
-    public Single<CheckbookModel> emitCheckId(String token, String checkId) {
+    public Single<CheckbookModel> emitCheckId(String token, HashMap<String, Object> body) {
         return Single.create(emitter -> {
             try {
-                HashMap<String, Object> body = new HashMap<>();
-                body.put("checkId", checkId);
-                body.put("monto", 5000);
 
                 try {
                     Call<CheckbookModel> call = restClient.emitCheck(token, body);

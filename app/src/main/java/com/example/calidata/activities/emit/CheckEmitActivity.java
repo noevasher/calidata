@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +19,8 @@ import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.main.controllers.CheckbookController;
 import com.example.calidata.management.ManagerTheme;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +45,16 @@ public class CheckEmitActivity extends ParentActivity {
     @BindView(R.id.separator1)
     public ConstraintLayout separator1;
 
+    @BindView(R.id.editText_client_name)
+    public EditText clientText;
+
+    @BindView(R.id.editText_description)
+    public EditText description;
+
+    @BindView(R.id.editText_mount)
+    public EditText mount;
+
+
     private String checkId;
 
     @Override
@@ -54,7 +67,7 @@ public class CheckEmitActivity extends ParentActivity {
 
 
         setToolbar(toolbar, getResources().getString(R.string.emit_title), true);
-        checkId = (String) getIntent().getExtras().get("checkbookId");
+        checkId = (String) getIntent().getExtras().get("checkId");
         checkIdText.setText(checkId);
         //initToolbar();
         emitBtn.setBackgroundColor(getPrimaryColorInTheme());
@@ -64,9 +77,21 @@ public class CheckEmitActivity extends ParentActivity {
                 CheckbookController controller = new CheckbookController(CheckEmitActivity.this);
                 String token = sessionManager.getToken();
                 if (token != null) {
-                    controller.emitCheckId(token, checkId).subscribe(response -> {
+                    HashMap<String, Object> body = new HashMap<>();
+                    body.put("ID_CheckID", checkId);
+                    body.put("monto", mount.getText().toString());
+                    String descriptionS = description.getText().toString();
+                    String clientName = clientText.getText().toString();
+
+                    //if(!descriptionS.isEmpty())
+                        body.put("Descripcion", descriptionS);
+                    //if(!clientName.isEmpty())
+                        body.put("Beneficiario", clientName);
+
+
+                    controller.emitCheckId(token, body).subscribe(response -> {
                         response.getData();
-                        if (response.getSuccess() && response.getMessage().equals("Ok")) {
+                        if (response.getSuccess() && response.getMessage().equals("OK")) {
                             Toast.makeText(CheckEmitActivity.this, "Cheque: "
                                     + checkId + " " + getString(R.string.success_emit_check), Toast.LENGTH_LONG).show();
 

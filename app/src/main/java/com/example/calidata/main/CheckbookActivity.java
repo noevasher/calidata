@@ -381,7 +381,7 @@ public class CheckbookActivity extends ParentActivity {
                     String token = sessionManager.getToken();
                     if (token != null) {
                         Intent intent = new Intent(CheckbookActivity.this, CheckEmitActivity.class);
-                        intent.putExtra("checkbookId", checkId);
+                        intent.putExtra("checkId", checkId);
                         startActivity(intent);
                     }
                 }
