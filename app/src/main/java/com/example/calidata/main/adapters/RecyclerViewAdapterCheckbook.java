@@ -13,12 +13,14 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
 import com.example.calidata.activities.cancel.CheckCancelActivity;
+import com.example.calidata.activities.emit.CheckEmitActivity;
 import com.example.calidata.activities.query.CheckQueryActivity;
 import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentActivity;
@@ -154,14 +156,12 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         Toolbar actionToolbar = view.findViewById(R.id.toolbar);
 
         String title = mContext.getString(R.string.main_title);
-        //((CheckbookActivity) mContext).setToolbar(actionToolbar, title, false);
+
         titleText.setText(title);
         viewToolbar.setBackgroundColor(((CheckbookActivity) mContext).getPrimaryColorInTheme());
 
-
-        setImagesListeners(view, checkbookId);
-
         AlertDialog alertDialog = builder.create();
+        setImagesListeners(view, checkbookId, alertDialog);
         closeWindow.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
@@ -175,7 +175,13 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     }
 
 
-    private void setImagesListeners(View view, String checkbookId) {
+    private void openCardEmit(String checkbookId) {
+        Intent intent = new Intent(mContext, CheckEmitActivity.class);
+        mContext.startActivity(intent);
+    }
+
+
+    private void setImagesListeners(View view, String checkbookId, AlertDialog alertDialog) {
         ImageView imageViewQuery = view.findViewById(R.id.imageView_query);
         ImageView imageViewEmit = view.findViewById(R.id.imageView_emit);
         ImageView imageViewCancel = view.findViewById(R.id.imageView_cancel);
@@ -196,7 +202,9 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         imageViewEmit.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
-                openDialogToEmit();
+                readCheckQR();
+
+                alertDialog.dismiss();
             }
         });
 
@@ -204,6 +212,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
             @Override
             public void onSingleClick(View v) {
                 Intent intent = new Intent(mContext, CheckCancelActivity.class);
+                intent.putExtra("checkbookId", checkbookId);
                 mContext.startActivity(intent);
 
             }
@@ -211,11 +220,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
     }
 
-    private void openDialogToEmit() {
-        readQR();
-    }
-
-    private void readQR() {
+    private void readCheckQR() {
 
         try {
 

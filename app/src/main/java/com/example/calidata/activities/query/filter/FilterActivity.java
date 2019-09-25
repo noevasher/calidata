@@ -1,5 +1,6 @@
 package com.example.calidata.activities.query.filter;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -37,6 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+@SuppressLint("CheckResult")
 public class FilterActivity extends ParentActivity implements AdapterView.OnItemSelectedListener {
     private final static int MAX = 1000000;
     private static final String CERO = "0";
@@ -173,9 +175,7 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
                 String token = sessionManager.getToken();
                 Integer userId = sessionManager.getUserId().intValue();
                 if (token != null && userId != null && checkbookId != null) {
-                    HashMap<String, Object> body = new HashMap<>();
-                    body.put("idUsuario", userId);
-                    body.put("ID_CheckID", checkbookId);
+                    HashMap<String, Object> body = buildBody(userId);
                     controller.getChecksByFilters(token, body).subscribe(response -> {
                         ArrayList<HashMap<String, Object>> checks = (ArrayList<HashMap<String, Object>>) response.getData();
                         Intent intent = new Intent();
@@ -190,6 +190,25 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
         });
     }
 
+    private HashMap<String, Object> buildBody(Integer userId){
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("idUsuario", userId);
+        body.put("ID_CheckID", checkbookId);
+        if(minVal != 0 )
+            body.put("min", minVal);
+        if(maxVal != 0 )
+            body.put("max", maxVal);
+        if(spinner.getSelectedItemPosition() > 0){
+            body.put("status", spinner.getSelectedItemPosition());
+        }
+        if(startTextDate != null && !startTextDate.isEmpty()){
+            body.put("dateStart", startTextDate);
+        }
+        if(endTextDate != null && !endTextDate.isEmpty()){
+            body.put("dateEnd", endTextDate);
+        }
+        return body;
+    }
     private void initSeekBar() {
         String min = "min: 0";
         String max = "max: " + MAX;

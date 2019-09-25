@@ -1,6 +1,7 @@
 package com.example.calidata.register;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -129,13 +130,13 @@ public class RegisterActivity extends ParentActivity {
                             //registerController_.registerUserByJson(json).subscribe(response -> {
                             Double userId = (Double) response.getData().get("userId");
                             String username = newUser.getUserName();
-
                             LoginController loginController = new LoginController(getApplicationContext());
                             loginController.authentication(email, encryptPassword).subscribe(loginResponse -> {
-                                pickBankAndOpenCheckbookByName(bankNameSpin, email, userId, username);
+                                pickBankAndOpenCheckbookByName(bankNameSpin, email, userId.intValue(), username);
                                 progressBar.setVisibility(View.GONE);
                                 LoginActivity.getInstance().finish();
                                 finish();
+                                Toast.makeText(RegisterActivity.this,R.string.success_login, Toast.LENGTH_LONG).show();
                                 initCountdown();
 
                             }, t -> {
@@ -143,7 +144,7 @@ public class RegisterActivity extends ParentActivity {
                                 Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                                 progressBar.setVisibility(View.GONE);
                             });
-
+//*/
                         }, t -> {
                             Log.e("Error", t.getMessage());
                             Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();

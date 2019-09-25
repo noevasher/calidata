@@ -47,7 +47,7 @@ public class CheckQueryActivity extends ParentActivity {
 
     RecyclerViewAdapterCheck adapter;
 
-    private Double userId;
+    private Integer userId;
     private String token;
     private String checkbookId;
     public ArrayList<CheckModel> checks = new ArrayList<>();
@@ -66,6 +66,20 @@ public class CheckQueryActivity extends ParentActivity {
         userId = sessionManager.getUserId();
         token = sessionManager.getToken();
 
+        getChecks();
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        adapter = new RecyclerViewAdapterCheck(this, checks, R.layout.card_check);
+        recyclerView.setAdapter(adapter);
+
+        printConstraintSearch();
+        setImageListener();
+    }
+
+
+    private void getChecks() {
         CheckbookController controller = new CheckbookController(this);
         if (token != null && userId != null && checkbookId != null) {
             controller.getChecksByUserIdAndCheckId(token, checkbookId, userId.intValue()).subscribe(response -> {
@@ -90,17 +104,7 @@ public class CheckQueryActivity extends ParentActivity {
 
         }
 
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new RecyclerViewAdapterCheck(this, checks, R.layout.card_check);
-        recyclerView.setAdapter(adapter);
-
-        printConstraintSearch();
-        setImageListener();
     }
-
 
     private void setImageListener() {
         /*

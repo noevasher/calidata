@@ -57,6 +57,7 @@ public class LoginActivity extends ParentActivity {
         super.onCreate(savedInstanceState);
         loginActivity = this;
 
+        //logout();
         if (managerTheme.getThemeId() != 0) {
             setTheme(managerTheme.getFirstTheme());
 
@@ -124,7 +125,7 @@ public class LoginActivity extends ParentActivity {
                                             Double userId = response.getUserId();
                                             setExpireTime(response.getExpiteIn());
                                             User newUser = User.getInstance(response.getUserId(), user, bankId);
-                                            pickBankAndOpenCheckbookByName(bank.getNameBank(), user, userId);
+                                            pickBankAndOpenCheckbookByName(bank.getNameBank(), user, userId.intValue());
                                             sessionManager.setAccessToken(response.getTokenType()
                                                     + " " + response.getAccessToken());
                                             finish();

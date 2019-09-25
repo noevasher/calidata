@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.calidata.main.ParentController;
+import com.example.calidata.models.CheckArrayModel;
 import com.example.calidata.models.CheckModel;
 
 import java.util.HashMap;
@@ -22,10 +23,9 @@ public class CheckController extends ParentController {
     public Single<CheckModel> cancelCheckId(String token, String checkId) {
         return Single.create(emitter -> {
             HashMap<String, Object> map = new HashMap();
-            map.put("checkId", checkId);
+            map.put("CheckId", checkId);
             try {
                 Call<CheckModel> call = restClient.cancelCheckId(token, map);
-                //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
 
                 call.enqueue(new Callback<CheckModel>() {
                     @Override
@@ -50,6 +50,43 @@ public class CheckController extends ParentController {
                 e.printStackTrace();
 
             }
+        });
+        //*/
+    }
+
+    public Single<CheckModel> cancelCheckId(String token, HashMap<String, Object> body) {
+        return Single.create(emitter -> {
+            try {
+
+                try {
+                    Call<CheckModel> call = restClient.cancelCheckId(token, body);
+                    call.enqueue(new Callback<CheckModel>() {
+                        @Override
+                        public void onResponse(Call<CheckModel> call, Response<CheckModel> response) {
+                            if (response.code() == 200) {
+                                CheckModel data = response.body();
+                                emitter.onSuccess(data);
+                            } else {
+                                Throwable throwable = new Exception(response.message());
+                                emitter.onError(throwable);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CheckModel> call, Throwable t) {
+                            Log.e("error", t.toString());
+                            emitter.onError(t);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("error", e.getMessage());
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.getStackTrace();
+                Log.e("ERROR", e.getMessage());
+            }
+
         });
         //*/
     }

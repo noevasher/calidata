@@ -151,7 +151,7 @@ public class ParentActivity extends AppCompatActivity {
         startActivityForResult(intent, PICK_IMAGE);
     }
 
-    protected void pickBankAndOpenCheckbookByName(String bankName, String user, Double userId, String username) {
+    protected void pickBankAndOpenCheckbookByName(String bankName, String user, Integer userId, String username) {
         Intent intent = new Intent(this, CheckbookActivity.class);
         bankName = bankName.toLowerCase();
         intent.putExtra("bankName", bankName);
@@ -160,7 +160,7 @@ public class ParentActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    protected void pickBankAndOpenCheckbookByName(String bankName, String user, Double userId) {
+    protected void pickBankAndOpenCheckbookByName(String bankName, String user, Integer userId) {
         Intent intent = new Intent(this, CheckbookActivity.class);
         bankName = bankName.toLowerCase();
         intent.putExtra("bankName", bankName);

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -22,6 +23,7 @@ import com.example.calidata.models.CheckModel;
 
 import org.apache.commons.lang3.text.WordUtils;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewAdapterCheck.ViewHolder> {
@@ -189,16 +191,21 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         yesBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
         yesBtn.setOnClickListener(v -> {
             CheckController checkController = new CheckController(mContext);
-            removeAt(position);
-/*
-            checkController.cancelCheckId(((ParentActivity) mContext).sessionManager.getToken(), data)
-                    .subscribe(response -> {
+            //removeAt(position);
+            String token = ((ParentActivity) mContext).sessionManager.getToken();
+            if (token != null) {
+                HashMap<String,Object> body = new HashMap<>();
+                body.put("CheckId", data);
+                checkController.cancelCheckId(token, body).subscribe(response -> {
+                    if (response.getSuccess()) {
+                        removeAt(position);
 
-                    if(response.getSuccess()){
-
-                        }
-                    });
-                    //*/
+                    }
+                }, throwable -> {
+                    Toast.makeText(mContext, throwable.getMessage(), Toast.LENGTH_LONG).show();
+                });
+            }
+            //*/
             alertDialog.dismiss();
         });
 

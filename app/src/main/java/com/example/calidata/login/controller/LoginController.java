@@ -34,7 +34,8 @@ public class LoginController extends ParentController {
                         LoginResponse data = response.body();
                         emitter.onSuccess(data);
                     } else if (response.code() == 400) {
-                        Throwable throwable = new Exception(mContext.getString(R.string.error_invalid_user));
+                        //Throwable throwable = new Exception(mContext.getString(R.string.error_invalid_user));
+                        Throwable throwable = new Exception(response.message());
                         emitter.onError(throwable);
                     } else {
                         Throwable throwable = new Exception(response.message());

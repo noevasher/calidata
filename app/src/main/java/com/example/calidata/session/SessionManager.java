@@ -90,7 +90,7 @@ public class SessionManager {
         editor.commit();
     }
 
-    public void createLoginSessionBank(String email, String bankName, Double userId, String username) {
+    public void createLoginSessionBank(String email, String bankName, Integer userId, String username) {
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
@@ -100,7 +100,7 @@ public class SessionManager {
         // Storing email in pref
         editor.putString(KEY_EMAIL, email);
 
-        editor.putLong(KEY_USER_ID, userId.longValue());
+        editor.putInt(KEY_USER_ID, userId);
         editor.putString(KEY_USERNAME, username);
 
 
@@ -108,7 +108,7 @@ public class SessionManager {
         editor.commit();
     }
 
-    public void createLoginSessionBank(String email, String bankName, Double userId) {
+    public void createLoginSessionBank(String email, String bankName, Integer userId) {
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
@@ -118,7 +118,7 @@ public class SessionManager {
         // Storing email in pref
         editor.putString(KEY_EMAIL, email);
 
-        editor.putLong(KEY_USER_ID, userId.longValue());
+        editor.putInt(KEY_USER_ID, userId);
 
 
         // commit changes
@@ -209,9 +209,9 @@ public class SessionManager {
 
     }
 
-    public Double getUserId() {
-        Long id = pref.getLong(KEY_USER_ID, 0);
-        return id.doubleValue();
+    public Integer getUserId() {
+        Integer id = pref.getInt(KEY_USER_ID, 0);
+        return id;
 
     }
 

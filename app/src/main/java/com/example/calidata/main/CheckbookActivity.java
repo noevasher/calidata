@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
+import com.example.calidata.activities.emit.CheckEmitActivity;
 import com.example.calidata.main.adapters.RecyclerViewAdapterCheckbook;
 import com.example.calidata.main.controllers.CheckbookController;
 import com.example.calidata.models.CheckbookModel;
@@ -73,7 +74,7 @@ public class CheckbookActivity extends ParentActivity {
 
     public CircleImageView imageProfile;
     private CheckbookController controller;
-    private Double userId;
+    private Integer userId;
     private TextView textName;
     private RecyclerView recyclerView;
 
@@ -108,47 +109,7 @@ public class CheckbookActivity extends ParentActivity {
             public void onSingleClick(View v) {
                 //openDialog();
                 progressBar.setVisibility(View.VISIBLE);
-                //readQR();
-                String token = sessionManager.getToken();
-                String checkId = "452185E8-3E69-484D-AC1D-AA97B9C59B4B-52-0-12";
-                checkId = "A2DCBC76-99A3-4F2E-9916-733E5999BEA6-52-00-116";
-
-                if (token != null) {
-                    String finalCheckId = checkId;
-                    controller.addCheckbook(token, checkId, userId.intValue()).subscribe(response -> {
-                        //if(response.getData() != null && response.getData().isEmpty()){
-                        //HashMap<String, Object> dataResponse = new HashMap<>();
-                        if (response.getMessage().equals("Ok")) {
-                            HashMap<String, Object> dataResponse = response.getData();
-                            CheckbookModel checkbookModel = new CheckbookModel();
-                            checkbookModel.setTypeDoc("00");
-                            //checkbookModel.setCheckId("" + dataResponse.get("checkbookId"));
-                            //checkbookModel.setCheckbookId("" + dataResponse.get("checkbookId"));
-                            checkbookModel.setCheckId(finalCheckId);
-                            checkbookModel.setCheckbookId(finalCheckId);
-                            checkbooksList.add(checkbookModel);
-
-                            adapter.notifyItemInserted(checkbooksList.size());
-
-                            recyclerView.postDelayed(() -> {
-                                recyclerView.scrollToPosition(checkbooksList.size() - 1);
-                            }, 500);
-
-                        }
-                        else{
-                            Toast.makeText(CheckbookActivity.this, response.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                        progressBar.setVisibility(View.GONE);
-
-
-
-                    }, t -> {
-                        Log.e("", t.getMessage());
-                    });
-                    //*/
-                } else {
-                    Toast.makeText(CheckbookActivity.this, getString(R.string.error_invalid_auth), Toast.LENGTH_LONG).show();
-                }
+                readQR();
 
             }
         });
@@ -369,24 +330,18 @@ public class CheckbookActivity extends ParentActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                String contents = data.getStringExtra("SCAN_RESULT");
+                String checkId = data.getStringExtra("SCAN_RESULT");
 
 
-                if (contents != null) {
+                if (checkId != null) {
                     String token = sessionManager.getToken();
-                    String checkId = "452185E8-3E69-484D-AC1D-AA97B9C59B4B-52-0-12";
-                    checkId = "21BBB2D8-0D91-4C71-8A80-BF85498446A1-52-00-116";
-
                     if (token != null) {
                         controller.addCheckbook(token, checkId, userId.intValue()).subscribe(response -> {
-                            //if(response.getData() != null && response.getData().isEmpty()){
-                            HashMap<String, Object> dataResponse = new HashMap<>();
-                            //HashMap<String, Object> dataResponse = response.getData();
-                            if (data != null) {
+                            if (response.getSuccess()) {
                                 CheckbookModel checkbookModel = new CheckbookModel();
                                 checkbookModel.setTypeDoc("00");
-                                checkbookModel.setCheckId("" + dataResponse.get("checkbookId"));
-                                checkbookModel.setCheckbookId("" + dataResponse.get("checkbookId"));
+                                checkbookModel.setCheckId(checkId);
+                                checkbookModel.setCheckbookId(checkId);
                                 checkbooksList.add(checkbookModel);
 
                                 adapter.notifyItemInserted(checkbooksList.size());
@@ -397,12 +352,15 @@ public class CheckbookActivity extends ParentActivity {
                                 progressBar.setVisibility(View.GONE);
 
                             }
+                            else{
+                                Toast.makeText(CheckbookActivity.this, response.getMessage(), Toast.LENGTH_LONG).show();
 
-                            //}
-
+                            }
 
                         }, t -> {
                             Log.e("", t.getMessage());
+                            Toast.makeText(CheckbookActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+
                         });
                         //*/
                     } else {
@@ -418,25 +376,13 @@ public class CheckbookActivity extends ParentActivity {
         if (requestCode == EMIT_CODE) {
             Log.i("DATA", "data: " + data);
             if (resultCode == RESULT_OK) {
-                String contents = data.getStringExtra("SCAN_RESULT");
-                if (contents != null) {
+                String checkId = data.getStringExtra("SCAN_RESULT");
+                if (checkId != null) {
                     String token = sessionManager.getToken();
-                    String checkId = "452185E8-3E69-484D-AC1D-AA97B9C59B4B-52-0-12";
                     if (token != null) {
-                        controller.emitCheckId(token, checkId).subscribe(response -> {
-                            response.getData();
-                            if (response.getSuccess() && response.getMessage().equals("Ok")) {
-                                Toast.makeText(CheckbookActivity.this, "Cheque: "
-                                        + checkId + " " + getString(R.string.success_emit_check), Toast.LENGTH_LONG).show();
-
-                            } else {
-                                Toast.makeText(CheckbookActivity.this, "Cheque: " +
-                                        checkId + getString(R.string.error_emit_check), Toast.LENGTH_LONG).show();
-                            }
-                        }, t -> {
-                            Toast.makeText(CheckbookActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-
-                        });
+                        Intent intent = new Intent(CheckbookActivity.this, CheckEmitActivity.class);
+                        intent.putExtra("checkbookId", checkId);
+                        startActivity(intent);
                     }
                 }
             }
