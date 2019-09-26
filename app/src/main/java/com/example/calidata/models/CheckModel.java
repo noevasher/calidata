@@ -2,6 +2,8 @@ package com.example.calidata.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class CheckModel {
 
     public String checkModelId;
@@ -14,6 +16,10 @@ public class CheckModel {
 
     @SerializedName("exito")
     public Boolean success;
+
+    @SerializedName("mensaje")
+    public String message;
+    public List data;
 
     public CheckModel() {
 
@@ -74,5 +80,21 @@ public class CheckModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public List getData() {
+        return data;
+    }
+
+    public void setData(List data) {
+        this.data = data;
     }
 }

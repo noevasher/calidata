@@ -254,6 +254,7 @@ public class CheckbookController extends ParentController {
         });
         //*/
     }
+
     public Single<CheckArrayModel> getChecksByFilters(String token, HashMap<String, Object> body) {
         return Single.create(emitter -> {
             try {

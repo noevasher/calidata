@@ -269,43 +269,6 @@ public class CheckbookActivity extends ParentActivity {
         }
     }
 
-    public void openDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.emit_dialog, null);
-        builder.setView(view);
-
-        AlertDialog alertDialog = builder.create();
-
-        TextView label = view.findViewById(R.id.textView_label);
-        label.setText(getString(R.string.active_checkbook_label));
-        Button scanBtn = view.findViewById(R.id.button_yes);
-        scanBtn.setBackgroundColor(getPrimaryColorInTheme());
-        scanBtn.setOnClickListener(new OnSingleClickListener() {
-            @Override
-            public void onSingleClick(View v) {
-                readQR();
-                alertDialog.dismiss();
-            }
-        });
-
-        Button searchBtn = view.findViewById(R.id.button_no);
-        searchBtn.setText(getString(R.string.insert_data));
-        searchBtn.setBackgroundColor(getPrimaryColorInTheme());
-        searchBtn.setOnClickListener(new OnSingleClickListener() {
-            @Override
-            public void onSingleClick(View v) {
-                Intent i = new Intent(v.getContext(), CheckbookAddActivity.class);
-                startActivityForResult(i, 0);
-                alertDialog.dismiss();
-            }
-        });
-
-        alertDialog.show();
-
-    }
-
-
     private void readQR() {
         try {
 

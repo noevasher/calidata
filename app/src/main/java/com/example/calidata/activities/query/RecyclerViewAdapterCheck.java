@@ -20,6 +20,7 @@ import com.example.calidata.activities.CheckController;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.management.ManagerTheme;
 import com.example.calidata.models.CheckModel;
+import com.example.calidata.session.SessionManager;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -40,6 +41,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
     private int themeId;
     private int cardLayout;
     private String bankName;
+    private SessionManager sessionManager;
 
     // data is passed into the constructor
     public RecyclerViewAdapterCheck(Context context, List<CheckModel> data, int cardCancel) {
@@ -50,6 +52,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         themeId = managerTheme.getThemeId();
         bankName = managerTheme.getBankName();
         cardLayout = cardCancel;
+        sessionManager = SessionManager.getInstance(context);
     }
 
 
@@ -85,11 +88,11 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
 
             String status = model.getStatus();
             String date = model.getDate();
-            String name = model.getCheckId();
             String description = model.getDescription();
             String quantity = "" + model.getQuantity();
+            String originalCheckId = model.getCheckId();
             String checkId = model.getCheckId();
-            checkId = "****" + checkId.substring(checkId.length() - 15, checkId.length() - 10);
+            checkId = "****" + checkId.substring(checkId.length() - 15, checkId.length() - 9);
             holder.statusText.setText(status);
             holder.dateText.setText(date);
             holder.descriptionText.setText(description);
@@ -102,8 +105,9 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             if (holder.cancelBtn != null) {
                 holder.cancelBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
                 holder.cancelBtn.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+                String finalCheckId = originalCheckId;
                 holder.cancelBtn.setOnClickListener(v -> {
-                    openDialogToDelete(name, position);
+                    openDialogToDelete(finalCheckId, position);
                 });
             }
         }
@@ -177,7 +181,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         void onItemClick(View view, int position);
     }
 
-    private void openDialogToDelete(String data, int position) {
+    private void openDialogToDelete(String checkId, int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = ((ParentActivity) mContext).getLayoutInflater();
         ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.cancel_dialog, null);
@@ -186,7 +190,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         AlertDialog alertDialog = builder.create();
 
         TextView label = view.findViewById(R.id.textView_label);
-        label.setText(label.getText().toString() + ": " + data);
+        label.setText(label.getText().toString() + ": " + checkId);
         Button yesBtn = view.findViewById(R.id.button_yes);
         yesBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
         yesBtn.setOnClickListener(v -> {
@@ -195,10 +199,14 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             String token = ((ParentActivity) mContext).sessionManager.getToken();
             if (token != null) {
                 HashMap<String,Object> body = new HashMap<>();
-                body.put("CheckId", data);
+                body.put("ID_CheckID", checkId);
+                body.put("idUsuario", sessionManager.getUserId());
                 checkController.cancelCheckId(token, body).subscribe(response -> {
                     if (response.getSuccess()) {
                         removeAt(position);
+
+                    }else{
+                        Toast.makeText(mContext, response.getMessage(), Toast.LENGTH_LONG).show();
 
                     }
                 }, throwable -> {

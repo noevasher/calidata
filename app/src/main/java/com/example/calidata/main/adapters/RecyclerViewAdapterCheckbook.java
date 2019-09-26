@@ -78,7 +78,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
         } else {
             String checkbookId = mData.get(position).getCheckId();
-            String checkbookIdCut = checkbookId.substring(0, checkbookId.length() - 10);
+            String checkbookIdCut = checkbookId.substring(0, checkbookId.length() - 9);
 
             //Drawable logoDrawable = getLogoDrawable(themeId);
             Drawable logoDrawable = ((ParentActivity) (mContext)).getLogoDrawableByBankName(bankName);
