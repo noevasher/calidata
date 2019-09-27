@@ -20,6 +20,8 @@ import com.example.calidata.main.ParentActivity;
 import com.example.calidata.main.controllers.CheckbookController;
 import com.example.calidata.management.ManagerTheme;
 import com.example.calidata.models.CheckModel;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,16 +88,17 @@ public class CheckQueryActivity extends ParentActivity {
                 List<HashMap<String, Object>> data = response.getData();
                 for (HashMap<String, Object> item : data) {
                     CheckModel check = new CheckModel();
+                    String[] date = ((String) item.get("fecha")).split("T");
                     String checkId = (String) item.get("iD_CheckID");
                     System.out.println("cheque: " + checkId);
                     check.setCheckId(checkId);
                     check.setDescription((String) item.get("description"));
                     check.setQuantity((Double) item.get("monto"));
-                    check.setDate((String) item.get("fecha"));
+                    check.setDate(date[0]);
                     String status = (String) item.get("estatus");
 
                     check.setStatus(pickStatus(status));
-                    checks.add(check);
+                    adapter.addAndSort(check);
                 }
                 adapter.notifyDataSetChanged();
 
@@ -169,13 +172,49 @@ public class CheckQueryActivity extends ParentActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // check if the request code is same as what is passed  here it is 2
+        Gson gson = new Gson();
         if (requestCode == FILTER_CODE) {
-            String message = data.getStringExtra("MESSAGE");
-            List list = (List) data.getSerializableExtra("list");
-            //checks.add(check);
-            adapter.notifyDataSetChanged();
-            //textView1.setText(message);
+            if (resultCode == FILTER_CODE) {
+
+                List list = (List<CheckModel>) data.getSerializableExtra("list");
+                checks.clear();
+
+                for (Object item : list) {
+                    JsonElement jsonElement = gson.toJsonTree(item);
+                    CheckModel model = gson.fromJson(jsonElement, CheckModel.class);
+                    String date = model.getDate();
+                    model.setDate(date.split("T")[0]);
+                    String status = model.getStatus();
+                    model.setStatus(selectStatus(status));
+
+                    checks.add(model);
+                }
+                adapter.notifyDataSetChanged();
+
+            }
         }
     }
 
+    private String selectStatus(String statusNumber) {
+        switch (statusNumber) {
+            case "1":
+                return "Solicitado";
+            case "2":
+                return "Asignado";
+            case "3":
+                return "Entregado";
+            case "4":
+                return "Activado";
+            case "5":
+                return "Liberado";
+            case "6":
+                return "Pagado";
+            case "7":
+                return "Cancelado";
+            case "8":
+                return "Bloqueado";
+            default:
+                return "";
+        }
+    }
 }

@@ -287,7 +287,6 @@ public class CheckbookActivity extends ParentActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -357,11 +356,6 @@ public class CheckbookActivity extends ParentActivity {
             }
         }
         progressBar.setVisibility(View.GONE);
-    }
-
-    private String hex2String(String hexString) throws DecoderException, UnsupportedEncodingException {
-        byte[] bytes = Hex.decodeHex(hexString.toCharArray());
-        return new String(bytes, "UTF-8");
     }
 
     @Override

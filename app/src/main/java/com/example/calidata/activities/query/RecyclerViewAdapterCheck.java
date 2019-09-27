@@ -2,6 +2,7 @@ package com.example.calidata.activities.query;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -24,6 +26,8 @@ import com.example.calidata.session.SessionManager;
 
 import org.apache.commons.lang3.text.WordUtils;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -204,7 +208,6 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
                 checkController.cancelCheckId(token, body).subscribe(response -> {
                     if (response.getSuccess()) {
                         removeAt(position);
-
                     }else{
                         Toast.makeText(mContext, response.getMessage(), Toast.LENGTH_LONG).show();
 
@@ -230,9 +233,28 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
 
     }
 
-    public void removeAt(int position) {
+    private void removeAt(int position) {
         mData.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, mData.size());
+    }
+
+    void addAndSort(CheckModel model){
+        mData.add(model);
+        Collections.sort(mData, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+
+    }
+
+    void addAndSort(List<CheckModel> list){
+        mData.clear();
+        mData.addAll(list);
+        Collections.sort(mData, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+
+    }
+
+    void addAndSort_(CheckModel model){
+        mData.add(model);
+        Collections.sort(mData, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+
     }
 }

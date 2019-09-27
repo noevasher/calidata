@@ -35,7 +35,7 @@
     <string name="empty_checks_label">No se encuentran cheques dispobibles</string>
     <string name="empty_checks_active">No se encuentran cheques con estatus ACTIVO</string>
     <string name="empty_checks_empty_cancel">No se tienen cheques para cancelar</string>
-    <string name="start_date_label">Fecha Inicial</string>
+    <string name="start_date_label">Fechas</string>
     <string name="end_date_label">Fecha Final</string>
     <string name="query_check_title">Consultar Cheque</string>
     <string name="options_label">Opciones</string>
@@ -57,6 +57,8 @@
     <string name="match_password_title">La contraseña debe de coincidir</string>
     <string name="start_session">Inicia sesion nuevamente</string>
     <string name="success_emit_check">fue emitido exitosamente</string>
+    <string name="error_incorrect_start_date">La fecha inicial debe ser menor a la fecha final</string>
+    <string name="error_incorrect_end_date">La fecha final debe ser mayor a la fecha inicial</string>
 
 
     <!-- ERRORS -->

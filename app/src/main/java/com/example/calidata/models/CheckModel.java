@@ -6,19 +6,29 @@ import java.util.List;
 
 public class CheckModel {
 
-    public String checkModelId;
-    public String checkId;
+    private String checkModelId;
 
-    public String status;
-    public Double quantity;
-    public String date;
-    public String description;
+    @SerializedName("iD_CheckID")
+    private String checkId;
+
+    @SerializedName("estatus")
+    private String status;
+
+    @SerializedName("monto")
+    private Double quantity;
+
+    @SerializedName("fecha")
+    private String date;
+
+    @SerializedName("descripcion")
+    private String description;
 
     @SerializedName("exito")
-    public Boolean success;
+    private Boolean success;
 
     @SerializedName("mensaje")
     public String message;
+
     public List data;
 
     public CheckModel() {
@@ -97,4 +107,5 @@ public class CheckModel {
     public void setData(List data) {
         this.data = data;
     }
+
 }

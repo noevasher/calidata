@@ -5,7 +5,6 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,25 +12,26 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
-import com.example.calidata.activities.query.CheckQueryActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.main.controllers.CheckbookController;
 import com.example.calidata.management.ManagerTheme;
-import com.example.calidata.models.CheckArrayModel;
 import com.github.guilhe.views.SeekBarRangedView;
 
-import java.lang.reflect.Array;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -42,7 +42,7 @@ import butterknife.OnClick;
 public class FilterActivity extends ParentActivity implements AdapterView.OnItemSelectedListener {
     private final static int MAX = 1000000;
     private static final String CERO = "0";
-    private static final String BARRA = "/";
+    private static final String BARRA = "-";
     private final static int FILTER_CODE = 222;
 
     @BindView(R.id.toolbar)
@@ -67,8 +67,11 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
     @BindView(R.id.textView_date_end)
     public TextView endText;
 
-    private String startTextDate;
-    private String endTextDate;
+    @BindView(R.id.imageView_clear_date)
+    public ImageView clearDates;
+
+    private String startTextDate = "";
+    private String endTextDate = "";
 
     //Calendario para obtener fecha & hora
     public final Calendar c = Calendar.getInstance();
@@ -85,52 +88,17 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
 
     private CheckbookController controller;
 
+    private Date startDate;
+    private Date endDate;
+    Calendar calendar = Calendar.getInstance();
+
+    private boolean activeStartDate;
+    private boolean activeEndDate;
+
     @OnClick(R.id.constraintLayout_date_start)
     public void getStartDate() {
-        //Estos valores deben ir en ese orden, de lo contrario no mostrara la fecha actual
-/**
- *También puede cargar los valores que usted desee
- */
-        DatePickerDialog recogerFecha = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
-
-            applyBtn.setEnabled(true);
-            applyBtn.setBackgroundColor(getPrimaryColorInTheme());
-
-            //Esta variable lo que realiza es aumentar en uno el mes ya que comienza desde 0 = enero
-            final int mesActual = month + 1;
-            //Formateo el día obtenido: antepone el 0 si son menores de 10
-            String diaFormateado = (dayOfMonth < 10) ? CERO + String.valueOf(dayOfMonth) : String.valueOf(dayOfMonth);
-            //Formateo el mes obtenido: antepone el 0 si son menores de 10
-            String mesFormateado = (mesActual < 10) ? CERO + String.valueOf(mesActual) : String.valueOf(mesActual);
-            //Muestro la fecha con el formato deseado
-            dateText.setText(diaFormateado + BARRA + mesFormateado + BARRA + year);
-            dateText.setTextColor(getPrimaryColorInTheme());
-
-        }, anio, mes, dia);
-        //Muestro el widget
-        recogerFecha.show();
-    }
-
-    @OnClick(R.id.constraintLayout_date_end)
-    public void getEndDate() {
-        DatePickerDialog recogerFecha = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
-
-            applyBtn.setEnabled(true);
-            applyBtn.setBackgroundColor(getPrimaryColorInTheme());
-
-            //Esta variable lo que realiza es aumentar en uno el mes ya que comienza desde 0 = enero
-            final int mesActual = month + 1;
-            //Formateo el día obtenido: antepone el 0 si son menores de 10
-            String diaFormateado = (dayOfMonth < 10) ? CERO + String.valueOf(dayOfMonth) : String.valueOf(dayOfMonth);
-            //Formateo el mes obtenido: antepone el 0 si son menores de 10
-            String mesFormateado = (mesActual < 10) ? CERO + String.valueOf(mesActual) : String.valueOf(mesActual);
-            //Muestro la fecha con el formato deseado
-            endText.setText(diaFormateado + BARRA + mesFormateado + BARRA + year);
-            endText.setTextColor(getPrimaryColorInTheme());
-
-        }, anio, mes, dia);
-        //Muestro el widget
-        recogerFecha.show();
+        activeStartDate = true;
+        configPicker(true);
     }
 
     @Override
@@ -142,9 +110,6 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
         setContentView(R.layout.activity_filter);
 
         ButterKnife.bind(this);
-
-        startTextDate = dateText.getText().toString();
-        endTextDate = endText.getText().toString();
         colorText = dateText.getTextColors();
         String title = getResources().getString(R.string.filter_title);
         setToolbar(toolbar, title, true);
@@ -168,47 +133,66 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
         applyBtn.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
-                int position = spinner.getSelectedItemPosition();
-                Log.i("", startTextDate + " -> " + endTextDate + " -> " +position);
-                System.out.println( "LOG");
-                System.out.println( startTextDate + " -> " + endTextDate + " -> " +position);
+                int status = spinner.getSelectedItemPosition();
+                System.out.println(startTextDate + " -> " + endTextDate + " -> " + status);
                 String token = sessionManager.getToken();
-                Integer userId = sessionManager.getUserId().intValue();
+                Integer userId = sessionManager.getUserId();
                 if (token != null && userId != null && checkbookId != null) {
-                    HashMap<String, Object> body = buildBody(userId);
+                    HashMap<String, Object> body = buildBody(userId, status);
                     controller.getChecksByFilters(token, body).subscribe(response -> {
                         ArrayList<HashMap<String, Object>> checks = (ArrayList<HashMap<String, Object>>) response.getData();
+
                         Intent intent = new Intent();
                         intent.putExtra("list", checks);
-
-                        setResult(FILTER_CODE,intent);
+                        setResult(FILTER_CODE, intent);
                         finish();//finishing activity
 
+                    }, t -> {
+                        Toast.makeText(FilterActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                     });
                 }
             }
         });
+
+        clearDates.setOnClickListener(l -> {
+            endText.setText("");
+            endText.setVisibility(View.GONE);
+            dateText.setText("");
+            l.setVisibility(View.GONE);
+        });
+
     }
 
-    private HashMap<String, Object> buildBody(Integer userId){
+    public static Date parseDate(String date) {
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    private HashMap<String, Object> buildBody(Integer userId, Integer status) {
         HashMap<String, Object> body = new HashMap<>();
         body.put("idUsuario", userId);
         body.put("ID_CheckID", checkbookId);
-        if(minVal != 0 )
+        if (status != 0)
+            body.put("status", "" + status);
+
+        if (minVal != 0)
             body.put("min", minVal);
-        if(maxVal != 0 )
+        if (maxVal != 0)
             body.put("max", maxVal);
-        if(spinner.getSelectedItemPosition() > 0){
-            body.put("status", spinner.getSelectedItemPosition());
-        }
-        if(startTextDate != null && !startTextDate.isEmpty()){
+        if (startTextDate != null && !startTextDate.isEmpty()) {
             body.put("dateStart", startTextDate);
         }
-        if(endTextDate != null && !endTextDate.isEmpty()){
+        if (endTextDate != null && !endTextDate.isEmpty()) {
             body.put("dateEnd", endTextDate);
         }
+
+
         return body;
     }
+
     private void initSeekBar() {
         String min = "min: 0";
         String max = "max: " + MAX;
@@ -279,7 +263,7 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if(i > 0){
+        if (i > 0) {
             applyBtn.setEnabled(true);
             applyBtn.setBackgroundColor(getPrimaryColorInTheme());
 
@@ -290,5 +274,101 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
+
+    private long dateStartInit;
+
+    private void configPicker(boolean start) {
+        DatePickerDialog recogerFecha = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+
+            clearDates.setVisibility(View.VISIBLE);
+            //Esta variable lo que realiza es aumentar en uno el mes ya que comienza desde 0 = enero
+            final int mesActual = month + 1;
+            //Formateo el día obtenido: antepone el 0 si son menores de 10
+            String diaFormateado = (dayOfMonth < 10) ? CERO + String.valueOf(dayOfMonth) : String.valueOf(dayOfMonth);
+            //Formateo el mes obtenido: antepone el 0 si son menores de 10
+            String mesFormateado = (mesActual < 10) ? CERO + String.valueOf(mesActual) : String.valueOf(mesActual);
+            //Muestro la fecha con el formato deseado
+
+            if(start) {
+                startDate = calendar.getTime();
+                startTextDate = year + BARRA + mesFormateado + BARRA + diaFormateado;
+                dateText.setText(startTextDate);
+                dateText.setTextColor(getPrimaryColorInTheme());
+
+                calendar.set(year,month, dayOfMonth);
+                dateStartInit = calendar.getTime().getTime();
+                configPicker(false);
+            }else{
+                endText.setVisibility(View.VISIBLE);
+
+                endDate = calendar.getTime();
+                endTextDate = year + BARRA + mesFormateado + BARRA + diaFormateado;
+                endText.setText(endTextDate);
+                endText.setTextColor(getPrimaryColorInTheme());
+
+            }
+
+        }, anio, mes, dia);
+        recogerFecha.getDatePicker().setMaxDate(System.currentTimeMillis());
+        if(!start){
+            recogerFecha.getDatePicker().setMinDate(dateStartInit);
+            applyBtn.setEnabled(true);
+            applyBtn.setBackgroundColor(getPrimaryColorInTheme());
+
+        }
+        recogerFecha.show();
+    }
+
+    private boolean isValidDate() {
+        if (endDate != null && startDate != null) {
+            return endDate.getTime() >= startDate.getTime();
+        } else return false;
+    }
+
+/*textView_date_end
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
+        int mesActual = monthOfYear + 1;
+        String diaFormateado = (dayOfMonth < 10) ? CERO + dayOfMonth : String.valueOf(dayOfMonth);
+        //Formateo el mes obtenido: antepone el 0 si son menores de 10
+        String mesFormateado = (mesActual < 10) ? CERO + mesActual : String.valueOf(mesActual);
+
+        startTextDate = year + BARRA + mesFormateado + BARRA + diaFormateado;
+
+        mesActual = monthOfYearEnd + 1;
+        diaFormateado = (dayOfMonthEnd < 10) ? CERO + dayOfMonthEnd : String.valueOf(dayOfMonthEnd);
+        mesFormateado = (monthOfYearEnd < 10) ? CERO + monthOfYearEnd : String.valueOf(monthOfYearEnd);
+        endTextDate = year + BARRA + mesFormateado + BARRA + diaFormateado;
+
+        Calendar calendarStart = Calendar.getInstance();
+        Calendar calendarEnd = Calendar.getInstance();
+
+        calendarStart.set(year, monthOfYear, dayOfMonth);
+        startDate = calendarStart.getTime();
+
+
+        calendarEnd.set(yearEnd, monthOfYearEnd, dayOfMonthEnd);
+        endDate = calendarEnd.getTime();
+
+
+        Calendar[] startArray = {calendarStart};
+        Calendar[] endArray = {calendarEnd};
+
+        dpd.setHighlightedDays(startArray, endArray);
+        if(isValidDate()) {
+            dateText.setText("De: " + startTextDate + "\n" + "A: " + endTextDate);
+            dateText.setTextColor(getPrimaryColorInTheme());
+            applyBtn.setEnabled(true);
+            applyBtn.setBackgroundColor(getPrimaryColorInTheme());
+
+        }else{
+            Toast.makeText(FilterActivity.this, getString(R.string.error_incorrect_start_date), Toast.LENGTH_LONG).show();
+
+        }
+
+    }
+    //*/
+
 
 }

@@ -39,12 +39,9 @@ dependencies {
     implementation "android.arch.navigation:navigation-fragment:1.0.0"
     // For Kotlin use navigation-fragment-ktx
     implementation "android.arch.navigation:navigation-ui:1.0.0" // For Kotlin use navigation-ui-ktx
-    //implementation 'com.github.Mohammed-Alaa:RangeSeekBar:1.0.3'
-    implementation 'com.edmodo:rangebar:1.0.0'
-    implementation 'com.appyvet:materialrangebar:1.4.6'
 
     implementation 'me.dm7.barcodescanner:zxing:1.9'
-    implementation 'com.github.guilhe:seekbar-ranged-view:1.0.3'
+    implementation 'com.github.guilhe:seekbar-ranged-view:2.0.1'
 
     implementation 'de.hdodenhof:circleimageview:3.0.0'
 
@@ -54,6 +51,5 @@ dependencies {
 
     implementation 'commons-codec:commons-codec:1.12'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
-
 
 }

@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:text="Fechas"
+        android:text="Rango de Fechas"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/separator1" />
 
@@ -87,64 +87,48 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:src="@drawable/ic_date_range_24px"
             android:tint="@color/colorGray"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_date_start"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/textView_date_start" />
 
         <TextView
             android:id="@+id/textView_date_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@string/start_date_label"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+            android:layout_marginTop="8dp"
+            android:hint="@string/start_date_label"
             app:layout_constraintStart_toEndOf="@+id/imageView8"
-            app:layout_constraintTop_toTopOf="@+id/imageView8" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout_date_end"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/filter_backgrounf"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout_date_start">
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView_date_end"
+            android:id="@+id/imageView_clear_date"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/ic_date_range_24px"
-            android:tint="@color/colorGray"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginEnd="16dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_date_start"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView_date_start"
+            app:srcCompat="@drawable/ic_close" />
 
         <TextView
             android:id="@+id/textView_date_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/end_date_label"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView_date_end"
-            app:layout_constraintStart_toEndOf="@+id/imageView_date_end"
-            app:layout_constraintTop_toTopOf="@+id/imageView_date_end" />
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="End Fecha"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textView_date_start"
+            app:layout_constraintTop_toBottomOf="@+id/textView_date_start" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/separator1"
@@ -180,7 +164,7 @@
         android:background="@color/colorPrimaryGray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout_date_end">
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout_date_start">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
