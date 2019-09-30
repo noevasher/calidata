@@ -82,12 +82,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/change_password_label"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-                    app:layout_constraintStart_toEndOf="@+id/imageView3"
-                    app:layout_constraintTop_toTopOf="@+id/imageView3" />
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView_close"
+                    app:layout_constraintStart_toEndOf="@+id/imageView_close"
+                    app:layout_constraintTop_toTopOf="@+id/imageView_close" />
 
                 <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/imageView_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -135,26 +135,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
                     android:text="TextView"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textSize="25sp"
                     app:layout_constraintEnd_toEndOf="@+id/imageView_profile"
                     app:layout_constraintStart_toStartOf="@+id/imageView_profile"
-                    app:layout_constraintTop_toBottomOf="@+id/textView_email" />
+                    app:layout_constraintTop_toBottomOf="@+id/imageView_profile" />
 
                 <TextView
                     android:id="@+id/textView_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:text="TextView"
-                    android:textSize="20sp"
                     android:textColor="@color/white"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/imageView_profile"
                     app:layout_constraintStart_toStartOf="@+id/imageView_profile"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView_profile" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView_username" />
 
                 <ImageView
                     android:id="@+id/imageView_editUserName"
@@ -165,6 +165,17 @@
                     app:layout_constraintStart_toEndOf="@+id/textView_username"
                     app:layout_constraintTop_toTopOf="@+id/textView_username"
                     app:srcCompat="@drawable/ic_edit_24px" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView_profile"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView_profile"
+                    app:layout_constraintStart_toStartOf="@+id/imageView_profile"
+                    app:layout_constraintTop_toTopOf="@+id/imageView_profile" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

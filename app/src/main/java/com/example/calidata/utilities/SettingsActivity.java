@@ -3,6 +3,7 @@ package com.example.calidata.utilities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -15,8 +16,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
@@ -32,6 +35,8 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
+
+import static android.media.MediaRecorder.VideoSource.CAMERA;
 
 public class SettingsActivity extends ParentActivity {
 
@@ -64,6 +69,12 @@ public class SettingsActivity extends ParentActivity {
 
     @BindView(R.id.constraintLayout_issue)
     public ConstraintLayout issuePanel;
+
+    @BindView(R.id.imageView_close)
+    public ImageView close;
+
+    @BindView(R.id.progressBar)
+    public ProgressBar progressBar;
 
     public static Observable<String> imageObs;
     public static Observable<String> usernameObs;
@@ -112,23 +123,13 @@ public class SettingsActivity extends ParentActivity {
         });
         addImage.setColorFilter(getColor(R.color.white), PorterDuff.Mode.SRC_IN);
         editUserName.setColorFilter(getColor(R.color.white), PorterDuff.Mode.SRC_IN);
-
+        close.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
         //addImage.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
         //editUserName.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
 
-        addImage.setOnClickListener(new OnSingleClickListener() {
-            @Override
-            public void onSingleClick(View v) {
-                pickFromGallery();
-            }
-        });
+        addImage.setOnClickListener(imageListener);
 
-        imageProfile.setOnClickListener(new OnSingleClickListener() {
-            @Override
-            public void onSingleClick(View v) {
-                pickFromGallery();
-            }
-        });
+        imageProfile.setOnClickListener(imageListener);
 
         editUserName.setOnClickListener(v -> {
             changeUsername();
@@ -143,6 +144,14 @@ public class SettingsActivity extends ParentActivity {
         });
 
     }
+
+    private OnSingleClickListener imageListener = new OnSingleClickListener() {
+        @Override
+        public void onSingleClick(View v) {
+            progressBar.setVisibility(View.VISIBLE);
+            showPictureDialog(progressBar);
+        }
+    };
 
     private void changeUsername() {
 
@@ -216,7 +225,7 @@ public class SettingsActivity extends ParentActivity {
                 String text = editText.getText().toString();
 
                 if (text.isEmpty()) {
-                    editText.setError("En necesario escribir un nombre de usuario");
+                    editText.setError(getString(R.string.error_empty_username));
                 } else {
                     saveBtn.setEnabled(true);
                     saveBtn.setBackgroundColor(SettingsActivity.this.getPrimaryColorInTheme());
@@ -236,23 +245,39 @@ public class SettingsActivity extends ParentActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == this.RESULT_CANCELED) {
+            return;
+        }
         if (requestCode == PICK_IMAGE) {
-            Log.i("DATA", "data: " + data);
-            if (data != null && data.getData() != null) {
+            if (data != null) {
                 try {
-
                     imageProfile.setImageURI(data.getData());
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
                     bitmap = compressImage(bitmap);
                     imageProfile.buildDrawingCache();
                     String encodedImageData = getEncoded64ImageStringFromBitmap(bitmap);
                     sessionManager.saveProfileImage(encodedImageData);
+                    progressBar.setVisibility(View.GONE);
 
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Toast.makeText(this, "Fallo al cargar Imagen!", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
                 }
             }
+
+        } else if (requestCode == CAMERA) {
+            Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+            imageProfile.setImageBitmap(thumbnail);
+            imageProfile.buildDrawingCache();
+            String encodedImageData = getEncoded64ImageStringFromBitmap(thumbnail);
+            sessionManager.saveProfileImage(encodedImageData);
+            progressBar.setVisibility(View.GONE);
+            //saveImage(thumbnail);
         }
+
+
     }
 
     private Bitmap compressImage(Bitmap original) {

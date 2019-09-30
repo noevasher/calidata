@@ -59,6 +59,7 @@
     <string name="success_emit_check">fue emitido exitosamente</string>
     <string name="error_incorrect_start_date">La fecha inicial debe ser menor a la fecha final</string>
     <string name="error_incorrect_end_date">La fecha final debe ser mayor a la fecha inicial</string>
+    <string name="error_empty_username">En necesario escribir un nombre de usuario</string>
 
 
     <!-- ERRORS -->

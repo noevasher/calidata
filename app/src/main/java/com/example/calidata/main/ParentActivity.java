@@ -1,6 +1,9 @@
 package com.example.calidata.main;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -16,12 +19,15 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.calidata.R;
@@ -30,12 +36,15 @@ import com.example.calidata.session.SessionManager;
 
 import java.util.UUID;
 
+import static android.media.MediaRecorder.VideoSource.CAMERA;
+
 public class ParentActivity extends AppCompatActivity {
     private static final int WORD_LENGTH = 6;
+    private static final int PERMISSIONS_REQUEST_CAMERA = 555;
     public ManagerTheme managerTheme;
     public SessionManager sessionManager;
-    public static final int PICK_IMAGE = 1;
-    public static final int EMIT_CODE = 2;
+    public static final int PICK_IMAGE = 10;
+    public static final int EMIT_CODE = 20;
 
     private static CountDownTimer timer;
     private String token;
@@ -138,17 +147,106 @@ public class ParentActivity extends AppCompatActivity {
         finish();
     }
 
-    public void pickFromGallery() {
-        //Create an Intent with action as ACTION_PICK
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        // Sets the type as image/*. This ensures only components of type image are selected
-        intent.setType("image/*");
-        //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
-        String[] mimeTypes = {"image/jpeg", "image/png"};
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
 
-        // Launching the Intent
-        startActivityForResult(intent, PICK_IMAGE);
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    System.out.println("ACEPT");
+                    takePhotoFromCamera();
+
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    System.out.println("DENEGADO");
+
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
+
+    protected void showPictureDialog(ProgressBar progressbar) {
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
+        pictureDialog.setTitle("Select Action");
+        String[] pictureDialogItems = {
+                "Select photo from gallery",
+                "Capture photo from camera"};
+        pictureDialog.setItems(pictureDialogItems,
+                (dialog, which) -> {
+                    switch (which) {
+                        case 0:
+                            choosePhotoFromGallary();
+                            break;
+                        case 1:
+                            requestCameraPermission();
+                            break;
+                    }
+                });
+        pictureDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                progressbar.setVisibility(View.GONE);
+            }
+        });
+
+        pictureDialog.show();
+    }
+
+    public void requestCameraPermission(){
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CAMERA)) {
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                System.out.println("PERMISOS CONSEDIDOS");
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        PERMISSIONS_REQUEST_CAMERA);
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        PERMISSIONS_REQUEST_CAMERA);
+                System.out.println("PERMISOS NO CONSEDIDOS");
+
+            }
+        } else {
+            // Permission has already been granted
+            takePhotoFromCamera();
+
+        }
+        //*/
+    }
+
+    public void choosePhotoFromGallary() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        startActivityForResult(galleryIntent, PICK_IMAGE);
+    }
+
+    private void takePhotoFromCamera() {
+        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, CAMERA);
     }
 
     protected void pickBankAndOpenCheckbookByName(String bankName, String user, Integer userId, String username) {
@@ -197,6 +295,8 @@ public class ParentActivity extends AppCompatActivity {
                 return ContextCompat.getDrawable(this, R.drawable.ic_santander_logo);
             case "banamex":
                 return ContextCompat.getDrawable(this, R.drawable.ic_citibanamex_logo);
+            case "citibanamex":
+                return ContextCompat.getDrawable(this, R.drawable.ic_citibanamex_logo);
             case "hsbc":
                 return ContextCompat.getDrawable(this, R.drawable.ic_hsbc_logo);
             case "bancomer":
@@ -234,6 +334,7 @@ public class ParentActivity extends AppCompatActivity {
                     managerTheme.setThemeId(R.style.AppThemeRed);
                     break;
                 case "citibanamex":
+                case "banamex":
                 case "bbva bancomer":
                 case "famsa":
                 case "bancoppel":
