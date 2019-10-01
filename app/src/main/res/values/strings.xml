@@ -60,6 +60,10 @@
     <string name="error_incorrect_start_date">La fecha inicial debe ser menor a la fecha final</string>
     <string name="error_incorrect_end_date">La fecha final debe ser mayor a la fecha inicial</string>
     <string name="error_empty_username">En necesario escribir un nombre de usuario</string>
+    <string name="terms">Terminos y Condiciones</string>
+    <string name="privacy_label">Privacidad</string>
+    <string name="contact_label">Contáctanos</string>
+    <string name="profile_label">Perfíl</string>
 
 
     <!-- ERRORS -->

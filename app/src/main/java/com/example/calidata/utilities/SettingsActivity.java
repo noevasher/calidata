@@ -3,14 +3,12 @@ package com.example.calidata.utilities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.ImageDecoder;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -64,7 +62,7 @@ public class SettingsActivity extends ParentActivity {
     @BindView(R.id.imageView_profile)
     public de.hdodenhof.circleimageview.CircleImageView imageProfile;
 
-    @BindView(R.id.constraintLayout7_change_password)
+    @BindView(R.id.constraintLayout_terms)
     public ConstraintLayout changePasswordPanel;
 
     @BindView(R.id.constraintLayout_issue)
@@ -75,6 +73,9 @@ public class SettingsActivity extends ParentActivity {
 
     @BindView(R.id.progressBar)
     public ProgressBar progressBar;
+
+    @BindView(R.id.imageView_report)
+    public ImageView report;
 
     public static Observable<String> imageObs;
     public static Observable<String> usernameObs;
@@ -124,6 +125,7 @@ public class SettingsActivity extends ParentActivity {
         addImage.setColorFilter(getColor(R.color.white), PorterDuff.Mode.SRC_IN);
         editUserName.setColorFilter(getColor(R.color.white), PorterDuff.Mode.SRC_IN);
         close.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
+        report.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
         //addImage.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
         //editUserName.setColorFilter(getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
 

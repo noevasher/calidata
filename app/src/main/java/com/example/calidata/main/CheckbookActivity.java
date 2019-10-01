@@ -225,12 +225,29 @@ public class CheckbookActivity extends ParentActivity {
             drawerLayout.closeDrawers();
             Intent intent;
             switch (menuItem.getItemId()) {
-                case R.id.nav_settings:
+                case R.id.nav_profile:
                     intent = new Intent(this, SettingsActivity.class);
                     startActivity(intent);
                     return true;
-                case R.id.nav_help:
+                case R.id.nav_terms:
                     intent = new Intent(this, HelpActivity.class);
+                    intent.putExtra("title", "Terminos y Condiciones");
+                    intent.putExtra("fragment", 0);
+
+                    startActivity(intent);
+                    return true;
+                case R.id.nav_privacy:
+                    intent = new Intent(this, HelpActivity.class);
+                    intent.putExtra("title", "Privacidad");
+                    intent.putExtra("fragment", 1);
+
+                    startActivity(intent);
+                    return true;
+                case R.id.nav_contact:
+                    intent = new Intent(this, HelpActivity.class);
+                    intent.putExtra("title", "Contacto");
+                    intent.putExtra("fragment", 2);
+
                     startActivity(intent);
                     return true;
                 case R.id.nav_close:
