@@ -132,6 +132,9 @@ public class RegisterActivity extends ParentActivity {
                             String username = newUser.getUserName();
                             LoginController loginController = new LoginController(getApplicationContext());
                             loginController.authentication(email, encryptPassword).subscribe(loginResponse -> {
+                                sessionManager.setAccessToken(response.getTokenType()
+                                        + " " + response.getAccessToken());
+
                                 pickBankAndOpenCheckbookByName(bankNameSpin, email, userId.intValue(), username);
                                 progressBar.setVisibility(View.GONE);
                                 LoginActivity.getInstance().finish();

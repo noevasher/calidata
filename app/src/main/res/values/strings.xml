@@ -64,6 +64,20 @@
     <string name="privacy_label">Privacidad</string>
     <string name="contact_label">Contáctanos</string>
     <string name="profile_label">Perfíl</string>
+    <string name="status_label">Estatus:</string>
+    <string name="dates_label">Rango de Fechas</string>
+    <string name="count_label">Cantidad:</string>
+    <string name="apply_btn_label">Aplicar</string>
+    <string name="query_check_label">Consultar Cheque</string>
+    <string name="free_check_label">Libera Cheque</string>
+    <string name="cancel_check_label">Cancelar Cheque</string>
+    <string name="current_password_label">Contraseña Actual</string>
+    <string name="new_password_label">Nueva Contraseña</string>
+    <string name="date_label">Fecha:</string>
+    <string name="check_label">Cheque</string>
+    <string name="description_label">Descripcion:</string>
+    <string name="name_label">Nombre:</string>
+    <string name="bene_label">Beneficiario:</string>
 
 
     <!-- ERRORS -->

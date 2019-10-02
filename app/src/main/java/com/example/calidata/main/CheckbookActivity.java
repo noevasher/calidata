@@ -315,7 +315,7 @@ public class CheckbookActivity extends ParentActivity {
                 if (checkId != null) {
                     String token = sessionManager.getToken();
                     if (token != null) {
-                        controller.addCheckbook(token, checkId, userId.intValue()).subscribe(response -> {
+                        controller.addCheckbook(token, checkId, userId).subscribe(response -> {
                             if (response.getSuccess()) {
                                 CheckbookModel checkbookModel = new CheckbookModel();
                                 checkbookModel.setTypeDoc("00");

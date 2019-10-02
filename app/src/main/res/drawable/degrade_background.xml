@@ -8,13 +8,6 @@
                 android:startColor="@color/primaryGreen"
                 android:endColor="#E8F5E9"
                 android:type= "linear"/>
-            <!--
-            <gradient
-                android:angle="270"
-                android:startColor="@color/primaryPurple"
-                android:endColor="#EDE7F6"
-                android:type= "linear"/>
-                -->
         </shape>
     </item>
 </selector>

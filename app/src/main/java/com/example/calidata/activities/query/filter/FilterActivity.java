@@ -26,6 +26,7 @@ import com.example.calidata.main.controllers.CheckbookController;
 import com.example.calidata.management.ManagerTheme;
 import com.github.guilhe.views.SeekBarRangedView;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -292,7 +293,8 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
 
             if(start) {
                 startDate = calendar.getTime();
-                startTextDate = year + BARRA + mesFormateado + BARRA + diaFormateado;
+                startTextDate = diaFormateado + BARRA + mesFormateado + BARRA + year ;
+                //startTextDate = formatDate(startTextDate);
                 dateText.setText(startTextDate);
                 dateText.setTextColor(getPrimaryColorInTheme());
 
@@ -303,7 +305,8 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
                 endText.setVisibility(View.VISIBLE);
 
                 endDate = calendar.getTime();
-                endTextDate = year + BARRA + mesFormateado + BARRA + diaFormateado;
+                endTextDate = diaFormateado + BARRA + mesFormateado + BARRA + year ;
+
                 endText.setText(endTextDate);
                 endText.setTextColor(getPrimaryColorInTheme());
 
@@ -326,49 +329,21 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
         } else return false;
     }
 
-/*textView_date_end
-    @Override
-    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
-        int mesActual = monthOfYear + 1;
-        String diaFormateado = (dayOfMonth < 10) ? CERO + dayOfMonth : String.valueOf(dayOfMonth);
-        //Formateo el mes obtenido: antepone el 0 si son menores de 10
-        String mesFormateado = (mesActual < 10) ? CERO + mesActual : String.valueOf(mesActual);
+    public String formatDate(String target){
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        //String dateInString = "07/06/2013";
+        try {
 
-        startTextDate = year + BARRA + mesFormateado + BARRA + diaFormateado;
-
-        mesActual = monthOfYearEnd + 1;
-        diaFormateado = (dayOfMonthEnd < 10) ? CERO + dayOfMonthEnd : String.valueOf(dayOfMonthEnd);
-        mesFormateado = (monthOfYearEnd < 10) ? CERO + monthOfYearEnd : String.valueOf(monthOfYearEnd);
-        endTextDate = year + BARRA + mesFormateado + BARRA + diaFormateado;
-
-        Calendar calendarStart = Calendar.getInstance();
-        Calendar calendarEnd = Calendar.getInstance();
-
-        calendarStart.set(year, monthOfYear, dayOfMonth);
-        startDate = calendarStart.getTime();
-
-
-        calendarEnd.set(yearEnd, monthOfYearEnd, dayOfMonthEnd);
-        endDate = calendarEnd.getTime();
-
-
-        Calendar[] startArray = {calendarStart};
-        Calendar[] endArray = {calendarEnd};
-
-        dpd.setHighlightedDays(startArray, endArray);
-        if(isValidDate()) {
-            dateText.setText("De: " + startTextDate + "\n" + "A: " + endTextDate);
-            dateText.setTextColor(getPrimaryColorInTheme());
-            applyBtn.setEnabled(true);
-            applyBtn.setBackgroundColor(getPrimaryColorInTheme());
-
-        }else{
-            Toast.makeText(FilterActivity.this, getString(R.string.error_incorrect_start_date), Toast.LENGTH_LONG).show();
-
+            Date date = formatter.parse(target);
+            System.out.println(date);
+            System.out.println(formatter.format(date));
+            return formatter.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
         }
 
     }
-    //*/
 
 
 }
