@@ -26,7 +26,6 @@ import com.example.calidata.main.controllers.CheckbookController;
 import com.example.calidata.management.ManagerTheme;
 import com.github.guilhe.views.SeekBarRangedView;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -149,7 +148,13 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
                         finish();//finishing activity
 
                     }, t -> {
-                        Toast.makeText(FilterActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        if (t.getMessage().equals("Unauthorized")) {
+                            Toast.makeText(FilterActivity.this, getString(R.string.start_session), Toast.LENGTH_LONG).show();
+                            logout();
+                        } else {
+                            Log.e("", t.getMessage());
+                            Toast.makeText(FilterActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        }
                     });
                 }
             }
@@ -291,21 +296,21 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
             String mesFormateado = (mesActual < 10) ? CERO + String.valueOf(mesActual) : String.valueOf(mesActual);
             //Muestro la fecha con el formato deseado
 
-            if(start) {
+            if (start) {
                 startDate = calendar.getTime();
-                startTextDate = diaFormateado + BARRA + mesFormateado + BARRA + year ;
+                startTextDate = diaFormateado + BARRA + mesFormateado + BARRA + year;
                 //startTextDate = formatDate(startTextDate);
                 dateText.setText(startTextDate);
                 dateText.setTextColor(getPrimaryColorInTheme());
 
-                calendar.set(year,month, dayOfMonth);
+                calendar.set(year, month, dayOfMonth);
                 dateStartInit = calendar.getTime().getTime();
                 configPicker(false);
-            }else{
+            } else {
                 endText.setVisibility(View.VISIBLE);
 
                 endDate = calendar.getTime();
-                endTextDate = diaFormateado + BARRA + mesFormateado + BARRA + year ;
+                endTextDate = diaFormateado + BARRA + mesFormateado + BARRA + year;
 
                 endText.setText(endTextDate);
                 endText.setTextColor(getPrimaryColorInTheme());
@@ -314,7 +319,7 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
 
         }, anio, mes, dia);
         recogerFecha.getDatePicker().setMaxDate(System.currentTimeMillis());
-        if(!start){
+        if (!start) {
             recogerFecha.getDatePicker().setMinDate(dateStartInit);
             applyBtn.setEnabled(true);
             applyBtn.setBackgroundColor(getPrimaryColorInTheme());
@@ -329,7 +334,7 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
         } else return false;
     }
 
-    public String formatDate(String target){
+    public String formatDate(String target) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         //String dateInString = "07/06/2013";
         try {

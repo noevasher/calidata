@@ -13,7 +13,7 @@ import com.example.calidata.R;
 
 class PrivacyFragment extends Fragment {
 
-    public PrivacyFragment(){
+    public PrivacyFragment() {
 
     }
 

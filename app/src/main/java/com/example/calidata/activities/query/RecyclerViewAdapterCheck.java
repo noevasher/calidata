@@ -1,8 +1,8 @@
 package com.example.calidata.activities.query;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -27,10 +26,10 @@ import com.example.calidata.session.SessionManager;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+@SuppressLint("CheckResult")
 public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewAdapterCheck.ViewHolder> {
 
     private static final int VIEW_TYPE_EMPTY = 0;
@@ -202,13 +201,13 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             //removeAt(position);
             String token = ((ParentActivity) mContext).sessionManager.getToken();
             if (token != null) {
-                HashMap<String,Object> body = new HashMap<>();
+                HashMap<String, Object> body = new HashMap<>();
                 body.put("ID_CheckID", checkId);
                 body.put("idUsuario", sessionManager.getUserId());
                 checkController.cancelCheckId(token, body).subscribe(response -> {
                     if (response.getSuccess()) {
                         removeAt(position);
-                    }else{
+                    } else {
                         Toast.makeText(mContext, response.getMessage(), Toast.LENGTH_LONG).show();
 
                     }
@@ -239,20 +238,20 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         notifyItemRangeChanged(position, mData.size());
     }
 
-    void addAndSort(CheckModel model){
+    void addAndSort(CheckModel model) {
         mData.add(model);
         Collections.sort(mData, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
 
     }
 
-    void addAndSort(List<CheckModel> list){
+    void addAndSort(List<CheckModel> list) {
         mData.clear();
         mData.addAll(list);
         Collections.sort(mData, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
 
     }
 
-    void addAndSort_(CheckModel model){
+    void addAndSort_(CheckModel model) {
         mData.add(model);
         Collections.sort(mData, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
 

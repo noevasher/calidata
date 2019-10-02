@@ -1,7 +1,7 @@
 package com.example.calidata.activities.emit;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +15,6 @@ import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
 import com.example.calidata.activities.emit.fragments.FragmentQR;
 import com.example.calidata.activities.emit.fragments.FragmentSearch;
-import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.main.controllers.CheckbookController;
 import com.example.calidata.management.ManagerTheme;
@@ -54,6 +53,7 @@ public class CheckEmitActivity extends ParentActivity {
     @BindView(R.id.editText_mount)
     public EditText mount;
 
+    private Integer userId;
 
     private String checkId;
 
@@ -64,6 +64,7 @@ public class CheckEmitActivity extends ParentActivity {
         setTheme(managerTheme.getThemeId());
         setContentView(R.layout.emit_activity);
         ButterKnife.bind(this);
+        userId = sessionManager.getUserId();
 
 
         setToolbar(toolbar, getResources().getString(R.string.emit_title), true);
@@ -79,14 +80,15 @@ public class CheckEmitActivity extends ParentActivity {
                 if (token != null) {
                     HashMap<String, Object> body = new HashMap<>();
                     body.put("ID_CheckID", checkId);
+                    body.put("idUsuario", userId);
                     body.put("monto", mount.getText().toString());
                     String descriptionS = description.getText().toString();
                     String clientName = clientText.getText().toString();
 
                     //if(!descriptionS.isEmpty())
-                        body.put("Descripcion", descriptionS);
+                    body.put("Descripcion", descriptionS);
                     //if(!clientName.isEmpty())
-                        body.put("Beneficiario", clientName);
+                    body.put("Beneficiario", clientName);
 
 
                     controller.emitCheckId(token, body).subscribe(response -> {
@@ -100,8 +102,13 @@ public class CheckEmitActivity extends ParentActivity {
                                     checkId + getString(R.string.error_emit_check), Toast.LENGTH_LONG).show();
                         }
                     }, t -> {
-                        Toast.makeText(CheckEmitActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-
+                        if (t.getMessage().equals("Unauthorized")) {
+                            Toast.makeText(CheckEmitActivity.this, getString(R.string.start_session), Toast.LENGTH_LONG).show();
+                            logout();
+                        } else {
+                            Log.e("", t.getMessage());
+                            Toast.makeText(CheckEmitActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        }
                     });
                 }
 

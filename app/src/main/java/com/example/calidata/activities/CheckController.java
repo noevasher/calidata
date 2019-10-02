@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.calidata.main.ParentController;
-import com.example.calidata.models.CheckArrayModel;
 import com.example.calidata.models.CheckModel;
 
 import java.util.HashMap;
@@ -18,40 +17,6 @@ public class CheckController extends ParentController {
 
     public CheckController(Context context) {
         super(context);
-    }
-
-    public Single<CheckModel> cancelCheckId(String token, String checkId) {
-        return Single.create(emitter -> {
-            HashMap<String, Object> map = new HashMap();
-            map.put("CheckId", checkId);
-            try {
-                Call<CheckModel> call = restClient.cancelCheckId(token, map);
-
-                call.enqueue(new Callback<CheckModel>() {
-                    @Override
-                    public void onResponse(Call<CheckModel> call, Response<CheckModel> response) {
-                        if (response.code() == 200) {
-                            CheckModel data = response.body();
-                            emitter.onSuccess(data);
-                        } else {
-                            Throwable throwable = new Exception(response.message());
-                            emitter.onError(throwable);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<CheckModel> call, Throwable t) {
-                        Log.e("error", t.toString());
-                        emitter.onError(t);
-                    }
-                });
-            } catch (Exception e) {
-                Log.e("error", e.getMessage());
-                e.printStackTrace();
-
-            }
-        });
-        //*/
     }
 
     public Single<CheckModel> cancelCheckId(String token, HashMap<String, Object> body) {

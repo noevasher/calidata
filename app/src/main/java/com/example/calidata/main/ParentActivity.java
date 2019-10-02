@@ -32,8 +32,10 @@ import androidx.core.content.ContextCompat;
 
 import com.example.calidata.R;
 import com.example.calidata.management.ManagerTheme;
+import com.example.calidata.models.CheckModel;
 import com.example.calidata.session.SessionManager;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import static android.media.MediaRecorder.VideoSource.CAMERA;
@@ -204,7 +206,7 @@ public class ParentActivity extends AppCompatActivity {
         pictureDialog.show();
     }
 
-    public void requestCameraPermission(){
+    public void requestCameraPermission() {
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
@@ -410,5 +412,20 @@ public class ParentActivity extends AppCompatActivity {
             default:
                 return "Otro Estatus";
         }
+    }
+
+    protected CheckModel loadChecks(HashMap<String, Object> item) {
+        CheckModel check = new CheckModel();
+        String[] date = ((String) item.get("fecha")).split("T");
+        String checkId = (String) item.get("iD_CheckID");
+        System.out.println("cheque: " + checkId);
+        check.setCheckId(checkId);
+        check.setDescription((String) item.get("description"));
+        check.setQuantity((Double) item.get("monto"));
+        check.setDate(date[0]);
+        String status = (String) item.get("estatus");
+
+        check.setStatus(pickStatus(status));
+        return check;
     }
 }

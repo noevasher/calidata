@@ -5,24 +5,18 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,10 +31,6 @@ import com.example.calidata.utilities.HelpActivity;
 import com.example.calidata.utilities.SettingsActivity;
 import com.google.android.material.navigation.NavigationView;
 
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
-
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -127,10 +117,9 @@ public class CheckbookActivity extends ParentActivity {
     private void readCheckBooks() {
         if (userId != 0) {
             String token = sessionManager.getToken();
-            controller.getCheckbooks(token, userId.intValue()).subscribe(response -> {
+            controller.getCheckbooks(token, userId).subscribe(response -> {
                 List<HashMap<String, Object>> data = response.getData();
                 for (HashMap<String, Object> checkbook : data) {
-                    //Log.i("", checkbook.toString());
                     CheckbookModel checkbookModel = new CheckbookModel();
                     String checkbookId = (String) checkbook.get("iD_CheckID");
                     Log.i("", checkbookId);
@@ -141,7 +130,7 @@ public class CheckbookActivity extends ParentActivity {
                 }
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
-
+                recyclerView.setVisibility(View.VISIBLE);
                 recyclerView.postDelayed(() -> {
                     recyclerView.scrollToPosition(checkbooksList.size() - 1);
                 }, 500);
@@ -330,16 +319,19 @@ public class CheckbookActivity extends ParentActivity {
                                 }, 500);
                                 progressBar.setVisibility(View.GONE);
 
-                            }
-                            else{
+                            } else {
                                 Toast.makeText(CheckbookActivity.this, response.getMessage(), Toast.LENGTH_LONG).show();
 
                             }
 
                         }, t -> {
-                            Log.e("", t.getMessage());
-                            Toast.makeText(CheckbookActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-
+                            if (t.getMessage().equals("Unauthorized")) {
+                                Toast.makeText(CheckbookActivity.this, getString(R.string.start_session), Toast.LENGTH_LONG).show();
+                                logout();
+                            } else {
+                                Log.e("", t.getMessage());
+                                Toast.makeText(CheckbookActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                            }
                         });
                         //*/
                     } else {

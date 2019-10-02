@@ -1,7 +1,6 @@
 package com.example.calidata.register;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -139,7 +138,7 @@ public class RegisterActivity extends ParentActivity {
                                 progressBar.setVisibility(View.GONE);
                                 LoginActivity.getInstance().finish();
                                 finish();
-                                Toast.makeText(RegisterActivity.this,R.string.success_login, Toast.LENGTH_LONG).show();
+                                Toast.makeText(RegisterActivity.this, R.string.success_login, Toast.LENGTH_LONG).show();
                                 initCountdown();
 
                             }, t -> {

@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -47,6 +50,13 @@ public class CheckQueryActivity extends ParentActivity {
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
+    @BindView(R.id.progressBar)
+    public ProgressBar progressBar;
+
+    @BindView(R.id.recyclerview)
+    public RecyclerView recyclerView;
+
+
     RecyclerViewAdapterCheck adapter;
 
     private Integer userId;
@@ -68,6 +78,7 @@ public class CheckQueryActivity extends ParentActivity {
         userId = sessionManager.getUserId();
         token = sessionManager.getToken();
 
+
         getChecks();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
@@ -84,9 +95,11 @@ public class CheckQueryActivity extends ParentActivity {
     private void getChecks() {
         CheckbookController controller = new CheckbookController(this);
         if (token != null && userId != null && checkbookId != null) {
-            controller.getChecksByUserIdAndCheckId(token, checkbookId, userId.intValue()).subscribe(response -> {
+            controller.getChecksByUserIdAndCheckId(token, checkbookId, userId).subscribe(response -> {
                 List<HashMap<String, Object>> data = response.getData();
                 for (HashMap<String, Object> item : data) {
+                    CheckModel check = loadChecks(item);
+                    /*
                     CheckModel check = new CheckModel();
                     String[] date = ((String) item.get("fecha")).split("T");
                     String checkId = (String) item.get("iD_CheckID");
@@ -98,13 +111,21 @@ public class CheckQueryActivity extends ParentActivity {
                     String status = (String) item.get("estatus");
 
                     check.setStatus(pickStatus(status));
+                    //*/
                     adapter.addAndSort(check);
                 }
+                recyclerView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
                 adapter.notifyDataSetChanged();
 
             }, t -> {
-                Log.e("", t.getMessage());
-                t.printStackTrace();
+                if (t.getMessage().equals("Unauthorized")) {
+                    Toast.makeText(CheckQueryActivity.this, getString(R.string.start_session), Toast.LENGTH_LONG).show();
+                    logout();
+                } else {
+                    Log.e("", t.getMessage());
+                    Toast.makeText(CheckQueryActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                }
             });
 
         }

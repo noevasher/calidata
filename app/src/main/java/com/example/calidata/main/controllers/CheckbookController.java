@@ -142,34 +142,28 @@ public class CheckbookController extends ParentController {
     public Single<CheckbookModel> emitCheckId(String token, HashMap<String, Object> body) {
         return Single.create(emitter -> {
             try {
-
-                try {
-                    Call<CheckbookModel> call = restClient.emitCheck(token, body);
-                    call.enqueue(new Callback<CheckbookModel>() {
-                        @Override
-                        public void onResponse(Call<CheckbookModel> call, Response<CheckbookModel> response) {
-                            if (response.code() == 200) {
-                                CheckbookModel data = response.body();
-                                emitter.onSuccess(data);
-                            } else {
-                                Throwable throwable = new Exception(response.message());
-                                emitter.onError(throwable);
-                            }
+                Call<CheckbookModel> call = restClient.emitCheck(token, body);
+                call.enqueue(new Callback<CheckbookModel>() {
+                    @Override
+                    public void onResponse(Call<CheckbookModel> call, Response<CheckbookModel> response) {
+                        if (response.code() == 200) {
+                            CheckbookModel data = response.body();
+                            emitter.onSuccess(data);
+                        } else {
+                            Throwable throwable = new Exception(response.message());
+                            emitter.onError(throwable);
                         }
+                    }
 
-                        @Override
-                        public void onFailure(Call<CheckbookModel> call, Throwable t) {
-                            Log.e("error", t.toString());
-                            emitter.onError(t);
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.e("error", e.getMessage());
-                    e.printStackTrace();
-                }
+                    @Override
+                    public void onFailure(Call<CheckbookModel> call, Throwable t) {
+                        Log.e("error", t.toString());
+                        emitter.onError(t);
+                    }
+                });
             } catch (Exception e) {
-                e.getStackTrace();
-                Log.e("ERROR", e.getMessage());
+                Log.e("error", e.getMessage());
+                e.printStackTrace();
             }
 
         });

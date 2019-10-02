@@ -1,7 +1,6 @@
 package com.example.calidata.utilities;
 
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -64,9 +63,9 @@ class ContactFragment extends Fragment {
                 i.setType("text/plain");
 
                 //i.setType("message/rfc822");
-                i.putExtra(Intent.EXTRA_EMAIL  , new String[]{email});
+                i.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
                 i.putExtra(Intent.EXTRA_SUBJECT, "");
-                i.putExtra(Intent.EXTRA_TEXT   , "");
+                i.putExtra(Intent.EXTRA_TEXT, "");
                 try {
                     startActivity(Intent.createChooser(i, "Send mail..."));
                 } catch (android.content.ActivityNotFoundException ex) {

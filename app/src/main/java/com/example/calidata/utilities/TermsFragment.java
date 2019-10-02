@@ -13,7 +13,7 @@ import com.example.calidata.R;
 
 class TermsFragment extends Fragment {
 
-    public TermsFragment(){
+    public TermsFragment() {
 
     }
 

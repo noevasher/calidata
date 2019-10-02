@@ -3,7 +3,6 @@ package com.example.calidata.login.controller;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.calidata.R;
 import com.example.calidata.main.ParentController;
 import com.example.calidata.models.LoginResponse;
 

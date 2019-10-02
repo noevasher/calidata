@@ -1,6 +1,10 @@
 package com.example.calidata.activities.cancel;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -21,6 +25,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+@SuppressLint("CheckResult")
 public class CheckCancelActivity extends ParentActivity {
 
     @BindView(R.id.toolbar)
@@ -29,8 +34,10 @@ public class CheckCancelActivity extends ParentActivity {
     @BindView(R.id.recyclerview)
     public RecyclerView recyclerView;
 
+    @BindView(R.id.progressBar)
+    public ProgressBar progressBar;
+
     private RecyclerViewAdapterCheck adapter;
-    private String checkbookId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +52,7 @@ public class CheckCancelActivity extends ParentActivity {
         setToolbar(toolbar, title, true);
 
         ArrayList<CheckModel> checks = new ArrayList<>();
-        checkbookId = getIntent().getExtras().getString("checkbookId", null);
+        String checkbookId = getIntent().getExtras().getString("checkbookId", null);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -56,26 +63,37 @@ public class CheckCancelActivity extends ParentActivity {
         CheckbookController controller = new CheckbookController(this);
         HashMap<String, Object> body = new HashMap<>();
         body.put("ID_CheckID", checkbookId);
-        body.put("idUsuario", sessionManager.getUserId().intValue());
+        body.put("idUsuario", sessionManager.getUserId());
         body.put("status", "4");
         String token = sessionManager.getToken();
         if (token != null) {
             controller.getChecksByFilters(token, body).subscribe(response -> {
                 List<HashMap<String, Object>> data = response.getData();
-                for (HashMap<String, Object> item: data) {
+                for (HashMap<String, Object> item : data) {
+                    CheckModel check = loadChecks(item);
+/*
                     CheckModel check = new CheckModel();
                     check.setCheckId((String) item.get("iD_CheckID"));
                     check.setCheckModelId((String) item.get("iD_CheckID"));
-                    check.setDescription("check --> " + item.get("descripcion"));
+                    check.setDescription(item.get("descripcion"));
                     check.setQuantity((Double) item.get("monto"));
                     check.setDate((String) item.get("fecha"));
                     check.setStatus("Activo");
                     System.out.println(item.get("status"));
+                    //*/
                     checks.add(check);
                 }
+                progressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
                 adapter.notifyDataSetChanged();
             }, t -> {
-                Toast.makeText(CheckCancelActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                if (t.getMessage().equals("Unauthorized")) {
+                    Toast.makeText(CheckCancelActivity.this, getString(R.string.start_session), Toast.LENGTH_LONG).show();
+                    logout();
+                } else {
+                    Log.e("", t.getMessage());
+                    Toast.makeText(CheckCancelActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                }
             });
         }
     }
