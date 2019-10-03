@@ -55,8 +55,19 @@ public interface JsonPlaceHolderApi {
     Call<CheckModel> cancelCheckId(@Header("Authorization") String token, @Body HashMap<String, Object> body);
 
     //-----------SERVICIOS DE USUARIO----------------//
-    @GET("user/info")
-    Call<User> getUserInformation(@Path("id") Double userId);
+    @GET("login/getProfileInfo")
+    Call<User> getUserInformation(@Header("idUsuario") Integer userId);
+
+    @POST("login/saveProfileInfo")
+    Call<User> saveProfile(@Body HashMap<String, Object> body);
+
+    @POST("login/changePassword")
+    @Headers("Content-Type: application/json")
+    Call<User> changePassword(@Header("Authorization") String token, @Body HashMap<String, Object> body);
+
+    @POST("login/forgotPassword")
+    @Headers("Content-Type: application/json")
+    Call<User> forgotPassword(@Body HashMap<String, Object> body);
 
     @FormUrlEncoded
     @Headers("Content-Type: application/x-www-form-urlencoded")
@@ -66,6 +77,7 @@ public interface JsonPlaceHolderApi {
     @POST("account/register")
     @Headers("Content-Type: application/json")
     Call<User> registerUser(@Body User user);
+
 
 
 }

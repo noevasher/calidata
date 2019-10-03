@@ -112,7 +112,7 @@ public class CheckbookController extends ParentController {
         //*/
     }
 
-    public Single<User> getUserInformation(Double userId) {
+    public Single<User> getUserInformation(Integer userId) {
         return Single.create(emitter -> {
             Call<User> call = restClient.getUserInformation(userId);
             //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
@@ -122,6 +122,42 @@ public class CheckbookController extends ParentController {
                 public void onResponse(Call<User> call, Response<User> response) {
                     if (response.code() == 200) {
                         User data = response.body();
+                        data.setUserName((String) response.body().getData().get("usuario"));
+                        String image = (String) response.body().getData().get("image64");
+                        if(image != null && !image.isEmpty()) {
+                            data.setImage64(image);
+                        }
+                        emitter.onSuccess(data);
+                    } else {
+                        Throwable throwable = new Exception(response.message());
+                        emitter.onError(throwable);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    Log.e("error", t.toString());
+                    emitter.onError(t);
+                }
+            });
+        });
+        //*/
+    }
+
+    public Single<User> saveProfile(HashMap<String, Object> body) {
+        return Single.create(emitter -> {
+            Call<User> call = restClient.saveProfile(body);
+
+            call.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    if (response.code() == 200) {
+                        User data = response.body();
+                        data.setUserName((String) response.body().getData().get("usuario"));
+                        String image = (String) response.body().getData().get("image64");
+                        if(image != null && !image.isEmpty()) {
+                            data.setImage64(image);
+                        }
                         emitter.onSuccess(data);
                     } else {
                         Throwable throwable = new Exception(response.message());

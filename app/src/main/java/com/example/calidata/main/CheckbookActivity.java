@@ -148,17 +148,6 @@ public class CheckbookActivity extends ParentActivity {
         }
     }
 
-    private String hideCheckId(String checkId) {
-        int size = checkId.length();
-        String hidden = "";
-        String startSubString = checkId.substring(0, size - 4);
-        String endSubString = checkId.substring(size - 4, size);
-        for (int i = 0; i < size - 4; i++) {
-            hidden += "*";
-        }
-        return hidden + endSubString;
-    }
-
     private void initNavBar() {
         View header = navigationView.getHeaderView(0);
         header.setBackgroundColor(getPrimarySoftColorInTheme());
@@ -169,19 +158,27 @@ public class CheckbookActivity extends ParentActivity {
 
         if (sessionManager.getKeyUsername() != null) {
             textName.setText(sessionManager.getKeyUsername());
+        }else{
+            controller.getUserInformation(sessionManager.getUserId()).subscribe(response -> {
+                String username = response.getUserName();
+                textName.setText(username);
+                sessionManager.saveProfileName(username);
+            }, t ->{
+                Toast.makeText(this, t.getMessage(), Toast.LENGTH_LONG).show();
+            });
         }
         if (sessionManager.getKeyImage64() != null) {
             putImage(sessionManager.getKeyImage64(), imageProfile);
 
+        } else {
+            controller.getUserInformation(userId).subscribe(response -> {
+                textName.setText(response.getUserName());
+                String image64 = response.getImage64();
+                putImage(image64, imageProfile);
+            }, t -> {
+                Toast.makeText(this, t.getMessage(), Toast.LENGTH_LONG).show();
+            });
         }
-        //llamar servicio de informacion de usuario
-        /*
-        controller.getUserInformation(userId).subscribe(response ->{
-            textName.setText(response.getUserName());
-            String image64 = response.getImage64();
-            putImage(image64, imageProfile);
-        });
-        //*/
 
 
         imageProfile.setOnClickListener(new OnSingleClickListener() {

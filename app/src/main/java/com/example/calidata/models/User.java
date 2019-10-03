@@ -9,6 +9,7 @@ public class User {
     private static User instance = null;
     private Double userId;
 
+    @SerializedName("Usuario")
     public String userName;
 
     public String email;
@@ -26,7 +27,9 @@ public class User {
     @SerializedName("data")
     public HashMap<String, Object> data;
 
+    @SerializedName("image64")
     public String image64;
+
     public String accessToken;
 
     public String tokenType;

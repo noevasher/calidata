@@ -1,5 +1,6 @@
 package com.example.calidata.utilities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,10 +26,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
+import com.example.calidata.login.managment.AESCrypt;
 import com.example.calidata.main.ParentActivity;
+import com.example.calidata.utilities.controllers.UserController;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +40,12 @@ import io.reactivex.Observable;
 
 import static android.media.MediaRecorder.VideoSource.CAMERA;
 
+@SuppressLint("CheckResult")
 public class SettingsActivity extends ParentActivity {
+
+    private String oldPassword;
+    private String newPassword;
+    private String token;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -79,6 +88,7 @@ public class SettingsActivity extends ParentActivity {
 
     public static Observable<String> imageObs;
     public static Observable<String> usernameObs;
+    private UserController userController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,23 +97,41 @@ public class SettingsActivity extends ParentActivity {
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
         setToolbar(toolbar, "Settings", true);
-
+        userController = new UserController(this);
         constraintImage.setBackgroundColor(getPrimarySoftColorInTheme());
         //scrollview.setBackgroundColor(getPrimarySoftColorInTheme());
 
         String userName = sessionManager.getUserDetails().get("name");
         String email = sessionManager.getUserDetails().get("email");
 
-        userNameText.setText("Noe Vasquez Herrera");
+        userNameText.setText(userName);
         emailText.setText(email);
 
         if (sessionManager.getKeyImage64() != null) {
             putImage(sessionManager.getKeyImage64(), imageProfile);
+        } else {
+            UserController controller = new UserController(this);
+            controller.getUserInformation(sessionManager.getUserId()).subscribe(response -> {
+                String image64Response = response.getImage64();
+                putImage(image64Response, imageProfile);
 
+            }, t -> {
+                Toast.makeText(this, t.getMessage(), Toast.LENGTH_LONG).show();
+            });
         }
 
         if (sessionManager.getKeyUsername() != null) {
             userNameText.setText(sessionManager.getKeyUsername());
+        } else {
+            UserController controller = new UserController(this);
+            controller.getUserInformation(sessionManager.getUserId()).subscribe(response -> {
+                String username = response.getUserName();
+                userNameText.setText(username);
+                sessionManager.saveProfileName(username);
+            }, t -> {
+                Toast.makeText(this, t.getMessage(), Toast.LENGTH_LONG).show();
+            });
+
         }
 
         imageObs = Observable.create(emitter -> {
@@ -166,6 +194,7 @@ public class SettingsActivity extends ParentActivity {
         Button saveBtn = view.findViewById(R.id.button_save);
         saveBtn.setEnabled(false);
         EditText editText = view.findViewById(R.id.editText_username);
+        editText.setText(sessionManager.getKeyUsername());
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -187,8 +216,8 @@ public class SettingsActivity extends ParentActivity {
                     saveBtn.setEnabled(true);
                     saveBtn.setBackgroundColor(SettingsActivity.this.getPrimaryColorInTheme());
                     saveBtn.setOnClickListener(v -> {
-                        userNameText.setText(text);
-                        sessionManager.saveProfileName(text);
+
+                        loadToSave(text, null);
                         alertDialog.dismiss();
                     });
                 }
@@ -200,7 +229,39 @@ public class SettingsActivity extends ParentActivity {
 
     }
 
+    private void loadToSave(String username, String image64) {
+        token = sessionManager.getToken();
+        if (token != null) {
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("ID_Usuario", sessionManager.getUserId());
+            if (username != null && !username.isEmpty())
+                body.put("Usuario", username);
+            if (image64 != null && !image64.isEmpty())
+                body.put("image64", image64);
+
+            userController.saveProfile(body).subscribe(response -> {
+                if (username != null && !username.isEmpty()) {
+                    userNameText.setText(username);
+                    sessionManager.saveProfileName(username);
+                }
+                if (image64 != null && !image64.isEmpty()) {
+                    sessionManager.saveProfileImage(image64);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }, t -> {
+                Toast.makeText(this, "", Toast.LENGTH_LONG).show();
+            });
+        } else {
+            Toast.makeText(this, R.string.error_fail_login, Toast.LENGTH_LONG).show();
+            logout();
+        }
+    }
+
+    private boolean newActive;
+    private boolean oldActive;
+
     private void openDialogPassword() {
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -210,8 +271,34 @@ public class SettingsActivity extends ParentActivity {
         AlertDialog alertDialog = builder.create();
         Button saveBtn = view.findViewById(R.id.button_save);
         saveBtn.setEnabled(false);
-        EditText editText = view.findViewById(R.id.editText_newPassword);
-        editText.addTextChangedListener(new TextWatcher() {
+        EditText newPasswordText = view.findViewById(R.id.editText_newPassword);
+        EditText oldPasswordText = view.findViewById(R.id.editText_oldPassword);
+
+        newPasswordText.setOnFocusChangeListener((textView, hasFocus) -> {
+            if (!hasFocus) {
+                if (newPasswordText.getText().toString().isEmpty()) {
+                    newPasswordText.setError(getString(R.string.required_field_label));
+                    newActive = false;
+
+                } else {
+                    newActive = true;
+                }
+            }
+        });
+
+        oldPasswordText.setOnFocusChangeListener((textView, hasFocus) -> {
+            if (!hasFocus) {
+                if (oldPasswordText.getText().toString().isEmpty()) {
+                    oldPasswordText.setError(getString(R.string.required_field_label));
+                    oldActive = false;
+                } else {
+                    oldActive = true;
+                }
+            }
+        });
+
+
+        newPasswordText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -224,18 +311,52 @@ public class SettingsActivity extends ParentActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                String text = editText.getText().toString();
+                String text = newPasswordText.getText().toString();
 
                 if (text.isEmpty()) {
-                    editText.setError(getString(R.string.error_empty_username));
+                    newPasswordText.setError(getString(R.string.error_empty_username));
                 } else {
-                    saveBtn.setEnabled(true);
-                    saveBtn.setBackgroundColor(SettingsActivity.this.getPrimaryColorInTheme());
-                    saveBtn.setOnClickListener(v -> {
-                        //userNameText.setText(text);
-                        alertDialog.dismiss();
-                    });
+                        saveBtn.setEnabled(true);
+                        saveBtn.setBackgroundColor(SettingsActivity.this.getPrimaryColorInTheme());
+
                 }
+            }
+        });
+
+        saveBtn.setOnClickListener(v -> {
+            if (newActive && oldActive) {
+                newPassword = newPasswordText.getText().toString();
+                oldPassword = oldPasswordText.getText().toString();
+                try {
+                    newPassword = AESCrypt.encrypt(newPasswordText.getText().toString());
+                    newPassword = newPassword
+                            .replace("\n", "")
+                            .replace("\r", "");
+                    oldPassword = AESCrypt.encrypt(oldPassword);
+                    oldPassword = oldPassword
+                            .replace("\n", "")
+                            .replace("\r", "");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("ID_Usuario", sessionManager.getUserId());
+                body.put("newPassword", newPassword);
+                body.put("oldPassword", oldPassword);
+
+                userController.changePassword(token, body).subscribe(response -> {
+                    String message = response.getMessage();
+                    if (message.equals("OK")) {
+                        Toast.makeText(SettingsActivity.this, R.string.success_change_password, Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(SettingsActivity.this, message, Toast.LENGTH_LONG).show();
+                    }
+                }, t -> {
+                    Toast.makeText(SettingsActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+
+                });
+                alertDialog.dismiss();
             }
         });
 
@@ -259,8 +380,8 @@ public class SettingsActivity extends ParentActivity {
                     bitmap = compressImage(bitmap);
                     imageProfile.buildDrawingCache();
                     String encodedImageData = getEncoded64ImageStringFromBitmap(bitmap);
-                    sessionManager.saveProfileImage(encodedImageData);
-                    progressBar.setVisibility(View.GONE);
+                    loadToSave(null, encodedImageData);
+
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -274,8 +395,7 @@ public class SettingsActivity extends ParentActivity {
             imageProfile.setImageBitmap(thumbnail);
             imageProfile.buildDrawingCache();
             String encodedImageData = getEncoded64ImageStringFromBitmap(thumbnail);
-            sessionManager.saveProfileImage(encodedImageData);
-            progressBar.setVisibility(View.GONE);
+            loadToSave(null, encodedImageData);
             //saveImage(thumbnail);
         }
 

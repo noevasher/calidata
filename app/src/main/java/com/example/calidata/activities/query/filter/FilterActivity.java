@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -40,7 +41,7 @@ import butterknife.OnClick;
 
 @SuppressLint("CheckResult")
 public class FilterActivity extends ParentActivity implements AdapterView.OnItemSelectedListener {
-    private final static int MAX = 1000000;
+    private final static int MAX = 100000;
     private static final String CERO = "0";
     private static final String BARRA = "-";
     private final static int FILTER_CODE = 222;
@@ -72,6 +73,9 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
 
     private String startTextDate = "";
     private String endTextDate = "";
+
+    private String startDateToShow= "";
+    private String endDateToShow = "";
 
     //Calendario para obtener fecha & hora
     public final Calendar c = Calendar.getInstance();
@@ -145,7 +149,7 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
                         Intent intent = new Intent();
                         intent.putExtra("list", checks);
                         setResult(FILTER_CODE, intent);
-                        finish();//finishing activity
+                        finish();
 
                     }, t -> {
                         if (t.getMessage().equals("Unauthorized")) {
@@ -189,10 +193,10 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
         if (maxVal != 0)
             body.put("max", maxVal);
         if (startTextDate != null && !startTextDate.isEmpty()) {
-            body.put("dateStart", startTextDate);
+            body.put("dateStart", startDateToShow);
         }
         if (endTextDate != null && !endTextDate.isEmpty()) {
-            body.put("dateEnd", endTextDate);
+            body.put("dateEnd", endDateToShow);
         }
 
 
@@ -201,7 +205,7 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
 
     private void initSeekBar() {
         String min = "min: 0";
-        String max = "max: " + MAX;
+        String max = "max: " + MAX + "+";
         minText.setText(min);
         maxText.setText(max);
 
@@ -209,6 +213,8 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
         rangebar.setProgressColor(getPrimaryColorInTheme());
         rangebar.setMaxValue(MAX);
         rangebar.setMinValue(0);
+        rangebar.enableProgressBySteps(true);
+        rangebar.setProgressSteps(getSteps());
         rangebar.setOnSeekBarRangedChangeListener(new SeekBarRangedView.OnSeekBarRangedChangeListener() {
             @Override
             public void onChanged(SeekBarRangedView view, float minValue, float maxValue) {
@@ -226,14 +232,28 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
             private void updateLayout(float minValue, float maxValue) {
                 minVal = minValue;
                 maxVal = maxValue;
-                String min = String.format(Locale.getDefault(), "min: %2.0f", minValue);
+                String min = String.format(Locale.getDefault(), "min: %2.0f" + "", minValue);
                 String max = String.format(Locale.getDefault(), "max: %2.0f", maxValue);
-
+                if(maxValue == (float) MAX){
+                    max = String.format(Locale.getDefault(), "max: %2.0f" + " +", maxValue);
+                }
                 minText.setText(min);
                 maxText.setText(max);
             }
         });
 
+    }
+
+    private List<Float> getSteps(){
+        List<Float> list = new ArrayList<>();
+        for(int i = 0; i< MAX; i++){
+            if(i % 1000 == 0) {
+                Float f = (float) i;
+                list.add(f);
+            }
+        }
+        list.add((float)MAX);
+        return  list;
     }
 
 
@@ -299,7 +319,7 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
             if (start) {
                 startDate = calendar.getTime();
                 startTextDate = diaFormateado + BARRA + mesFormateado + BARRA + year;
-                //startTextDate = formatDate(startTextDate);
+                startDateToShow = year + BARRA + mesFormateado + BARRA + diaFormateado;
                 dateText.setText(startTextDate);
                 dateText.setTextColor(getPrimaryColorInTheme());
 
@@ -311,6 +331,7 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
 
                 endDate = calendar.getTime();
                 endTextDate = diaFormateado + BARRA + mesFormateado + BARRA + year;
+                endDateToShow = year + BARRA + mesFormateado + BARRA + diaFormateado;
 
                 endText.setText(endTextDate);
                 endText.setTextColor(getPrimaryColorInTheme());

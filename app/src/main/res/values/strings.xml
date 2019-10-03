@@ -78,6 +78,10 @@
     <string name="description_label">Descripcion:</string>
     <string name="name_label">Nombre:</string>
     <string name="bene_label">Beneficiario:</string>
+    <string name="success_change_password">Cambio Exitoso de Contraseña</string>
+    <string name="forgot_password"><u>Olvidé mi contraseña</u>.</string>
+    <string name="send_email">Enviar</string>
+    <string name="error_empty_email">Es necesario ingresar un email</string>
 
 
     <!-- ERRORS -->

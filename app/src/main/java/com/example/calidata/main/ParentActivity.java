@@ -374,14 +374,11 @@ public class ParentActivity extends AppCompatActivity {
             byte[] decodedString = Base64.decode(image64, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             imageView.setImageBitmap(decodedByte);
+            sessionManager.saveProfileImage(image64);
+
         }
     }
 
-
-    public static String shortUUID() {
-        UUID uuid = UUID.randomUUID();
-        return uuid.toString().substring(0, 15);
-    }
 
     protected void setExpireTime(Integer expire) {
         this.TIME_EXPIRED = expire * 1000;
