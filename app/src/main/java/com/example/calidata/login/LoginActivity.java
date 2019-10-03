@@ -251,7 +251,7 @@ public class LoginActivity extends ParentActivity {
                 body.put("Correo", password.getText().toString());
                 controller.forgotPassword(body).subscribe(response -> {
                     if (response.equals("OK")) {
-                        Toast.makeText(LoginActivity.this, "Se envió un correo a: "
+                        Toast.makeText(LoginActivity.this, getString(R.string.sent_email)
                                 + password.getText().toString(), Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(LoginActivity.this, response, Toast.LENGTH_LONG).show();

@@ -13,7 +13,7 @@ public class RetrofitManager {
     //private static final String BASE_URL = "http://jsonplaceholder.typicode.com/";
     //  private static final String BASE_URL = "http://servicekeycheckcalidata.azurewebsites.net/api/";
     //private static final String BASE_URL = "https://servicerestkeycheck20190827085849.azurewebsites.net/api/";
-    private static final String BASE_URL = "http://webapicalidata.azurewebsites.net/api/";
+    private static final String BASE_URL = "https://webapicalidata.azurewebsites.net/api/";
 
     private Retrofit retrofit;
 

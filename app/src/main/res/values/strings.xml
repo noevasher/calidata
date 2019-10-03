@@ -82,6 +82,7 @@
     <string name="forgot_password"><u>Olvidé mi contraseña</u>.</string>
     <string name="send_email">Enviar</string>
     <string name="error_empty_email">Es necesario ingresar un email</string>
+    <string name="sent_email">Se envió un correo a:</string>
 
 
     <!-- ERRORS -->
