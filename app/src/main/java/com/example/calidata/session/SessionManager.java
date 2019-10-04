@@ -76,20 +76,6 @@ public class SessionManager {
         editor.commit();
     }
 
-    public void createLoginSession(String email, String userId) {
-        // Storing login value as TRUE
-        editor.putBoolean(IS_LOGIN, true);
-
-        // Storing name in pref
-        editor.putString(KEY_USER_ID, userId);
-
-        // Storing email in pref
-        editor.putString(KEY_EMAIL, email);
-
-        // commit changes
-        editor.commit();
-    }
-
     public void createLoginSessionBank(String email, String bankName, Integer userId, String username) {
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
@@ -210,8 +196,13 @@ public class SessionManager {
     }
 
     public Integer getUserId() {
-        Integer id = pref.getInt(KEY_USER_ID, 0);
-        return id;
+        try {
+            Integer id = pref.getInt(KEY_USER_ID, 0);
+            return id;
+        }catch (Exception e){
+            logoutUser();
+            return 0;
+        }
 
     }
 

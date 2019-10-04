@@ -6,6 +6,8 @@ import android.util.Log;
 import com.example.calidata.main.ParentController;
 import com.example.calidata.models.User;
 
+import java.util.HashMap;
+
 import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,9 +27,9 @@ public class RegisterController extends ParentController {
     }
 
 
-    public Single<User> registerUserByBody(User user) {
+    public Single<User> registerUserByBody(HashMap<String, Object> body) {
         return Single.create(emitter -> {
-            Call<User> call = restClient.registerUser(user);
+            Call<User> call = restClient.registerUserByBody(body);
             call.enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {

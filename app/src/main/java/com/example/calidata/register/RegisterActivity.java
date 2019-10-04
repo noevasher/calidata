@@ -125,7 +125,13 @@ public class RegisterActivity extends ParentActivity {
                         String json = gson.toJson(newUser);
 
                         System.out.println(json);
-                        registerController.registerUserByBody(newUser).subscribe(response -> {
+                        HashMap<String, Object> body = new HashMap<>();
+                        body.put("userName", name);
+                        body.put("email", email);
+                        body.put("password", encryptPassword);
+                        body.put("bankId", bankId);
+
+                        registerController.registerUserByBody(body).subscribe(response -> {
                             //registerController_.registerUserByJson(json).subscribe(response -> {
                             Double userId = (Double) response.getData().get("userId");
                             String username = newUser.getUserName();

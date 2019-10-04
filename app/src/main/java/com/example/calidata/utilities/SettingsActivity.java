@@ -392,6 +392,8 @@ public class SettingsActivity extends ParentActivity {
 
         } else if (requestCode == CAMERA) {
             Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+            thumbnail = compressImage(thumbnail);
+
             imageProfile.setImageBitmap(thumbnail);
             imageProfile.buildDrawingCache();
             String encodedImageData = getEncoded64ImageStringFromBitmap(thumbnail);

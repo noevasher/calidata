@@ -76,7 +76,7 @@ public interface JsonPlaceHolderApi {
 
     @POST("account/register")
     @Headers("Content-Type: application/json")
-    Call<User> registerUser(@Body User user);
+    Call<User> registerUserByBody(@Body HashMap<String, Object> body);
 
 
 
