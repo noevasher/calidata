@@ -37,7 +37,7 @@ public class ImageViewActivity extends ParentActivity {
         String image64 = sessionManager.getKeyImage64();
         userId = sessionManager.getUserId();
 
-        if(image64 != null ){
+        if(image64 == null ){
             UserController controller = new UserController(this);
             controller.getUserInformation(userId).subscribe(response -> {
                 String image64Response = response.getImage64();
