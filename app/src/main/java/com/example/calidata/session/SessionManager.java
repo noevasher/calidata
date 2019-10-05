@@ -44,6 +44,7 @@ public class SessionManager {
     private static final String KEY_EMAIL = "email";
     private static final String THEME_ID = "themeId";
     private static final String KEY_BANK_NAME = "bankName";
+    private static final String KEY_BANK_ID = "bankId";
     private static final String KEY_USERNAME = "username";
     private static final String KEY_IMAGE64 = "imageUser";
     private static final String KEY_TOKEN = "token";
@@ -76,13 +77,13 @@ public class SessionManager {
         editor.commit();
     }
 
-    public void createLoginSessionBank(String email, String bankName, Integer userId, String username) {
+    public void createLoginSessionBank(String email, Integer bankId, String bankName, Integer userId, String username) {
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
         // Storing name in pref
         editor.putString(KEY_BANK_NAME, bankName);
-
+        editor.putInt(KEY_BANK_ID, bankId);
         // Storing email in pref
         editor.putString(KEY_EMAIL, email);
 
@@ -94,12 +95,13 @@ public class SessionManager {
         editor.commit();
     }
 
-    public void createLoginSessionBank(String email, String bankName, Integer userId) {
+    public void createLoginSessionBank(String email, Integer bankId, String bankName, Integer userId) {
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
         // Storing name in pref
         editor.putString(KEY_BANK_NAME, bankName);
+        editor.putInt(KEY_BANK_ID, bankId);
 
         // Storing email in pref
         editor.putString(KEY_EMAIL, email);
@@ -231,6 +233,11 @@ public class SessionManager {
 
     public String getToken() {
         return pref.getString(KEY_TOKEN, null);
+
+    }
+
+    public Integer getBankId() {
+        return pref.getInt(KEY_BANK_ID, 0);
 
     }
 }

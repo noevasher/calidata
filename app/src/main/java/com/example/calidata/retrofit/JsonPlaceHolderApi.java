@@ -79,5 +79,20 @@ public interface JsonPlaceHolderApi {
     Call<User> registerUserByBody(@Body HashMap<String, Object> body);
 
 
+    //---------------SERVICIOS GENERALES-----------------//
+
+    @GET("Banco/getTermsConditions")
+    @Headers("Content-Type: application/json")
+    Call<HashMap<String, Object>> getTermsConditions(@Header("Authorization") String token, @Header("bankId") Integer bankId);
+
+    @GET("Banco/getPrivacyTerms")
+    @Headers("Content-Type: application/json")
+    Call<HashMap<String, Object>> getPrivacyTerms(@Header("Authorization") String token, @Header("bankId") Integer bankId);
+
+    @GET("Banco/getContactBank")
+    @Headers("Content-Type: application/json")
+    Call<HashMap<String, Object>> getContactBank(@Header("Authorization") String token, @Header("bankId") Integer bankId);
+
+
 
 }

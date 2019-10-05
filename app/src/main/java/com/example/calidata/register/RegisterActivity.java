@@ -41,7 +41,6 @@ public class RegisterActivity extends ParentActivity {
     //String[] bank = {"Selecciona Entidad", "Banamex", "Santander", "Bancomer", "Otro"};
     ArrayList<String> bankNames = new ArrayList<>();
     private boolean spinActive = false;
-    private HashMap<String, Object> bankIds = new HashMap<>();
     private int attemps = 5;
 
 
@@ -140,7 +139,7 @@ public class RegisterActivity extends ParentActivity {
                                 sessionManager.setAccessToken(response.getTokenType()
                                         + " " + response.getAccessToken());
 
-                                pickBankAndOpenCheckbookByName(bankNameSpin, email, userId.intValue(), username);
+                                pickBankAndOpenCheckbookByName(bankNameSpin, bankId, email, userId.intValue(), username);
                                 progressBar.setVisibility(View.GONE);
                                 LoginActivity.getInstance().finish();
                                 finish();
@@ -260,14 +259,5 @@ public class RegisterActivity extends ParentActivity {
         });
     }
 
-    private int getIdBank(String value) {
-        for (Map.Entry<String, Object> entry : bankIds.entrySet()) {
-            String name = entry.getKey();
-            int id = (int) entry.getValue();
-            if (name.equals(value))
-                return id;
-        }
 
-        return 0;
-    }
 }

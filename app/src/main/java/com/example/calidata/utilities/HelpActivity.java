@@ -35,6 +35,8 @@ public class HelpActivity extends ParentActivity {
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
+        ft.replace(R.id.list, new SettingFragment(fragment));
+/*
         switch (fragment) {
             case 0:
                 ft.replace(R.id.list, new TermsFragment());
@@ -47,6 +49,7 @@ public class HelpActivity extends ParentActivity {
                 break;
 
         }
+        //*/
         ft.commit();
     }
 

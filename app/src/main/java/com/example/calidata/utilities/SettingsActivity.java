@@ -324,7 +324,7 @@ public class SettingsActivity extends ParentActivity {
         });
 
         saveBtn.setOnClickListener(v -> {
-            if (newActive && oldActive) {
+            //if (newActive && oldActive) {
                 newPassword = newPasswordText.getText().toString();
                 oldPassword = oldPasswordText.getText().toString();
                 try {
@@ -357,7 +357,7 @@ public class SettingsActivity extends ParentActivity {
 
                 });
                 alertDialog.dismiss();
-            }
+            //}
         });
 
 

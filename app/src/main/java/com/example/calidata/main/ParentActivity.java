@@ -36,6 +36,7 @@ import com.example.calidata.models.CheckModel;
 import com.example.calidata.session.SessionManager;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static android.media.MediaRecorder.VideoSource.CAMERA;
@@ -52,6 +53,7 @@ public class ParentActivity extends AppCompatActivity {
     private String token;
     private static Integer TIME_EXPIRED_DEFAULT = 86400;
     private Integer TIME_EXPIRED;
+    protected HashMap<String, Object> bankIds = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,21 +253,21 @@ public class ParentActivity extends AppCompatActivity {
         startActivityForResult(intent, CAMERA);
     }
 
-    protected void pickBankAndOpenCheckbookByName(String bankName, String user, Integer userId, String username) {
+    protected void pickBankAndOpenCheckbookByName(String bankName, Integer bankId, String user, Integer userId, String username) {
         Intent intent = new Intent(this, CheckbookActivity.class);
         bankName = bankName.toLowerCase();
         intent.putExtra("bankName", bankName);
         //sessionManager.createLoginSession(user, bankName);
-        sessionManager.createLoginSessionBank(user, bankName, userId, username);
+        sessionManager.createLoginSessionBank(user, bankId,bankName, userId, username);
         startActivity(intent);
     }
 
-    protected void pickBankAndOpenCheckbookByName(String bankName, String user, Integer userId) {
+    protected void pickBankAndOpenCheckbookByName(String bankName, Integer bankId,String user, Integer userId) {
         Intent intent = new Intent(this, CheckbookActivity.class);
         bankName = bankName.toLowerCase();
         intent.putExtra("bankName", bankName);
         //sessionManager.createLoginSession(user, bankName);
-        sessionManager.createLoginSessionBank(user, bankName, userId);
+        sessionManager.createLoginSessionBank(user,  bankId,bankName, userId);
         startActivity(intent);
     }
 
@@ -424,5 +426,16 @@ public class ParentActivity extends AppCompatActivity {
 
         check.setStatus(pickStatus(status));
         return check;
+    }
+
+    protected int getIdBank(String value) {
+        for (Map.Entry<String, Object> entry : bankIds.entrySet()) {
+            String name = entry.getKey();
+            int id = (int) entry.getValue();
+            if (name.equals(value))
+                return id;
+        }
+
+        return 0;
     }
 }
