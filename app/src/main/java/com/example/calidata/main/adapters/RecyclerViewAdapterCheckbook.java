@@ -33,7 +33,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
     private static final int VIEW_TYPE_EMPTY = 0;
     private static final int VIEW_TYPE_DATA = 1;
-    private static final int EMIT_CODE = 2;
+    private static final int EMIT_CODE = 20;
 
     //private List<String> mData;
     private static List<CheckbookModel> mData;

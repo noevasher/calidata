@@ -6,6 +6,8 @@ import android.util.Log;
 import com.example.calidata.main.ParentController;
 import com.example.calidata.models.LoginResponse;
 
+import java.io.IOException;
+
 import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,9 +34,24 @@ public class LoginController extends ParentController {
                     if (response.code() == 200) {
                         LoginResponse data = response.body();
                         emitter.onSuccess(data);
+
+
                     } else if (response.code() == 400) {
                         //Throwable throwable = new Exception(mContext.getString(R.string.error_invalid_user));
                         Throwable throwable = new Exception(response.message());
+                        String error;
+                        if (response.errorBody() != null) {
+                            try {
+                                error = response.errorBody().string();
+                                error = error.replace("\"error\"", "")
+                                        .replace(":", "")
+                                        .replace("{","")
+                                        .replace("}","");
+                                throwable = new Exception(error);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                         emitter.onError(throwable);
                     } else {
                         Throwable throwable = new Exception(response.message());

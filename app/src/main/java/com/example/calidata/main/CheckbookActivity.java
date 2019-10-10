@@ -158,12 +158,12 @@ public class CheckbookActivity extends ParentActivity {
 
         if (sessionManager.getKeyUsername() != null) {
             textName.setText(sessionManager.getKeyUsername());
-        }else{
+        } else {
             controller.getUserInformation(sessionManager.getUserId()).subscribe(response -> {
                 String username = response.getUserName();
                 textName.setText(username);
                 sessionManager.saveProfileName(username);
-            }, t ->{
+            }, t -> {
                 Toast.makeText(this, t.getMessage(), Toast.LENGTH_LONG).show();
             });
         }
@@ -360,6 +360,9 @@ public class CheckbookActivity extends ParentActivity {
             if (data != null && data.getData() != null) {
                 imageProfile.setImageURI(data.getData());
             }
+        } else {
+            Log.w("DATA", "request not match: " + requestCode);
+
         }
         progressBar.setVisibility(View.GONE);
     }
