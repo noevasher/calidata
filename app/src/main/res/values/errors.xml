@@ -7,4 +7,6 @@
     <string name="error_emit_check">No pudo ser emitido correctamente</string>
     <string name="error_service_internal">Error interno de servicio</string>
 
+    <string name="error_cancel_check">No pudo ser cancelada la chequera, contacte a su banco</string>
+
 </resources>

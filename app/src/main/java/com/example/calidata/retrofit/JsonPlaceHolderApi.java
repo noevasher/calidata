@@ -54,6 +54,10 @@ public interface JsonPlaceHolderApi {
     @Headers("Content-Type: application/json")
     Call<CheckModel> cancelCheckId(@Header("Authorization") String token, @Body HashMap<String, Object> body);
 
+    @POST("cheque/CancelaChequera")
+    @Headers("Content-Type: application/json")
+    Call<CheckModel> cancelCheckbook(@Header("Authorization") String token, @Body HashMap<String, Object> body);
+
     //-----------SERVICIOS DE USUARIO----------------//
     @GET("login/getProfileInfo")
     Call<User> getUserInformation(@Header("idUsuario") Integer userId);

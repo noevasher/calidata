@@ -404,27 +404,6 @@ public class SettingsActivity extends ParentActivity {
 
     }
 
-    private Bitmap compressImage(Bitmap original) {
-        int ONE_MB = 1024;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Bitmap resized = Bitmap.createScaledBitmap(original, (int) (original.getWidth() * 0.8), (int) (original.getHeight() * 0.8), true);
-
-        resized.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        int realSize = baos.toByteArray().length;
-        System.out.println("realSize: " + realSize);
-
-        while (realSize / ONE_MB > ONE_MB) {
-            baos.reset();
-            resized = Bitmap.createScaledBitmap(resized, (int) (resized.getWidth() * 0.8), (int) (resized.getHeight() * 0.8), true);
-            resized.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-
-            realSize = baos.toByteArray().length;
-            System.out.println("realSize: " + realSize);
-
-        }
-
-        return resized;
-    }
 
     private String convertToBase64(String imagePath) {
         Bitmap bm = BitmapFactory.decodeFile(imagePath);
@@ -435,13 +414,5 @@ public class SettingsActivity extends ParentActivity {
         return encodedImage;
     }
 
-    public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-        byte[] byteFormat = stream.toByteArray();
-        // get the base 64 string
-        String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
 
-        return imgString;
-    }
 }

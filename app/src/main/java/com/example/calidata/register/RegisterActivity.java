@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -68,6 +69,9 @@ public class RegisterActivity extends ParentActivity {
     @BindView(R.id.progressBar)
     public ProgressBar progressBar;
 
+    @BindView(R.id.edittext_phone)
+    public EditText phoneText;
+
     private RegisterController registerController;
     private ArrayAdapter adapter;
 
@@ -89,6 +93,8 @@ public class RegisterActivity extends ParentActivity {
         adapter.setDropDownViewResource(R.layout.labels_bank);
         spin.setAdapter(adapter);
 
+        phoneText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+
         if (toolbar != null) {
             toolbar.setTitle(getResources().getString(R.string.register_title));
             final Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_24px);
@@ -107,6 +113,7 @@ public class RegisterActivity extends ParentActivity {
                 String email = emailText.getText().toString();
                 String password = passText.getText().toString();
                 String name = nameText.getText().toString();
+                String phone = phoneText.getText().toString();
                 String bankNameSpin = (String) spin.getItemAtPosition(spin.getSelectedItemPosition());
                 int bankId = getIdBank(bankNameSpin);
 
@@ -129,6 +136,7 @@ public class RegisterActivity extends ParentActivity {
                         body.put("email", email);
                         body.put("password", encryptPassword);
                         body.put("bankId", bankId);
+                        body.put("phone", phone);
 
                         registerController.registerUserByBody(body).subscribe(response -> {
                             //registerController_.registerUserByJson(json).subscribe(response -> {
@@ -207,14 +215,16 @@ public class RegisterActivity extends ParentActivity {
 
     private boolean ifValidForm() {
         displayEmptyField(nameText);
+        displayEmptyField(phoneText);
         displayEmptyField(emailText);
         displayEmptyField(passText);
         displayEmptyField(confirmPassText);
         displayEmptyField(spin);
 
         return !isEmptyField(nameText) && !isEmptyField(emailText) && !isEmptyField(passText)
-                && !isEmptyField(confirmPassText) && !isValidSpinner(spin)
+                && !isEmptyField(confirmPassText) && !isValidSpinner(spin) && !isEmptyField(phoneText)
                 && isValidEmail(emailText.getText().toString())
+                && isValidPhone(phoneText.getText().toString())
                 && comparePassword(passText, confirmPassText);
     }
 
@@ -228,6 +238,16 @@ public class RegisterActivity extends ParentActivity {
                 displayEmptyField(nameText);
             }
         });
+
+        phoneText.setOnFocusChangeListener((view, focus) -> {
+            if (!focus) {
+                displayEmptyField(phoneText);
+                if (!isValidPhone(phoneText.getText().toString())) {
+                    phoneText.setError(getString(R.string.invalid_phone));
+                }
+            }
+        });
+
         emailText.setOnFocusChangeListener((view, focus) -> {
             if (!focus) {
                 displayEmptyField(emailText);

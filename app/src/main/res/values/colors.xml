@@ -51,6 +51,7 @@
 
     <color name="colorBackgroundCheck">#F5F5F5</color>
     <color name="colorBackgroundSantander">#E53935</color>
+    <color name="colorDelete">#BA3300</color>
 
     <color name="colorPrimaryGray">#DDDDDD</color>
     <color name="colorGray">#BABABA</color>

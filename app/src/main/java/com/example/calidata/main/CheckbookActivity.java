@@ -7,16 +7,20 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -108,7 +112,6 @@ public class CheckbookActivity extends ParentActivity {
 
         addCheckbookBtn.bringToFront();
         progressBar.bringToFront();
-
         //Get All checkbooks
         readCheckBooks();
 
@@ -391,4 +394,5 @@ public class CheckbookActivity extends ParentActivity {
         }
 
     }
+
 }

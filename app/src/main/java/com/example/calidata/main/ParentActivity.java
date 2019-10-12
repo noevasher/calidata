@@ -1,7 +1,6 @@
 package com.example.calidata.main;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -35,9 +34,9 @@ import com.example.calidata.management.ManagerTheme;
 import com.example.calidata.models.CheckModel;
 import com.example.calidata.session.SessionManager;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static android.media.MediaRecorder.VideoSource.CAMERA;
 
@@ -65,6 +64,10 @@ public class ParentActivity extends AppCompatActivity {
 
     public static boolean isValidEmail(String target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
+    }
+
+    public static boolean isValidPhone(String target) {
+        return target.length() >= 11;
     }
 
     public static boolean isValidLength(String target) {
@@ -141,7 +144,7 @@ public class ParentActivity extends AppCompatActivity {
         }
     }
 
-    protected void logout() {
+    public void logout() {
         sessionManager.logoutUser();
         setTheme(managerTheme.getFirstTheme());
         if (timer != null) {
@@ -175,8 +178,6 @@ public class ParentActivity extends AppCompatActivity {
                 return;
             }
 
-            // other 'case' lines to check for other
-            // permissions this app might request.
         }
     }
 
@@ -198,11 +199,9 @@ public class ParentActivity extends AppCompatActivity {
                             break;
                     }
                 });
-        pictureDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
+        pictureDialog.setOnDismissListener(dialogInterface -> {
+            if (progressbar != null)
                 progressbar.setVisibility(View.GONE);
-            }
         });
 
         pictureDialog.show();
@@ -258,16 +257,16 @@ public class ParentActivity extends AppCompatActivity {
         bankName = bankName.toLowerCase();
         intent.putExtra("bankName", bankName);
         //sessionManager.createLoginSession(user, bankName);
-        sessionManager.createLoginSessionBank(user, bankId,bankName, userId, username);
+        sessionManager.createLoginSessionBank(user, bankId, bankName, userId, username);
         startActivity(intent);
     }
 
-    protected void pickBankAndOpenCheckbookByName(String bankName, Integer bankId,String user, Integer userId) {
+    protected void pickBankAndOpenCheckbookByName(String bankName, Integer bankId, String user, Integer userId) {
         Intent intent = new Intent(this, CheckbookActivity.class);
         bankName = bankName.toLowerCase();
         intent.putExtra("bankName", bankName);
         //sessionManager.createLoginSession(user, bankName);
-        sessionManager.createLoginSessionBank(user,  bankId,bankName, userId);
+        sessionManager.createLoginSessionBank(user, bankId, bankName, userId);
         startActivity(intent);
     }
 
@@ -438,4 +437,37 @@ public class ParentActivity extends AppCompatActivity {
 
         return 0;
     }
+
+    protected Bitmap compressImage(Bitmap original) {
+        int ONE_MB = 1024;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Bitmap resized = Bitmap.createScaledBitmap(original, (int) (original.getWidth() * 0.8), (int) (original.getHeight() * 0.8), true);
+
+        resized.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        int realSize = baos.toByteArray().length;
+        System.out.println("realSize: " + realSize);
+
+        while (realSize / ONE_MB > ONE_MB) {
+            baos.reset();
+            resized = Bitmap.createScaledBitmap(resized, (int) (resized.getWidth() * 0.8), (int) (resized.getHeight() * 0.8), true);
+            resized.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+            realSize = baos.toByteArray().length;
+            System.out.println("realSize: " + realSize);
+
+        }
+
+        return resized;
+    }
+
+    protected String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+        byte[] byteFormat = stream.toByteArray();
+        // get the base 64 string
+        String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
+
+        return imgString;
+    }
+
 }

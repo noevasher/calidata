@@ -5,11 +5,14 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
@@ -23,10 +26,13 @@ import com.example.calidata.activities.emit.CheckEmitActivity;
 import com.example.calidata.activities.query.CheckQueryActivity;
 import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentActivity;
+import com.example.calidata.main.controllers.CheckbookController;
 import com.example.calidata.management.ManagerTheme;
 import com.example.calidata.models.CheckbookModel;
+import com.example.calidata.session.SessionManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerViewAdapterCheckbook.ViewHolder> {
@@ -41,14 +47,19 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     private LayoutInflater mInflater;
     private Context mContext;
     private String bankName;
-
+    private int position;
+    private AlertDialog actionAlert;
+    private String checkbookId;
+    private CheckbookController controller;
+    private SessionManager sessionManager;
     public RecyclerViewAdapterCheckbook(Context context, List<CheckbookModel> data) {
         this.mInflater = LayoutInflater.from(context);
         mData = data;
         this.mContext = context;
         ManagerTheme managerTheme = ManagerTheme.getInstance();
         bankName = managerTheme.getBankName();
-
+        sessionManager = SessionManager.getInstance(mContext);
+        controller = new CheckbookController(mContext);
     }
 
 
@@ -91,7 +102,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
             holder.itemView.setOnClickListener(new OnSingleClickListener() {
                 @Override
                 public void onSingleClick(View v) {
-                    openActions(finalCheckbookId);
+                    openActions(finalCheckbookId, position);
                 }
             });
         }
@@ -143,7 +154,9 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     }
 
 
-    private void openActions(String checkbookId) {
+    private void openActions(String checkbookId, int position) {
+        this.checkbookId = checkbookId;
+        this.position = position;
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = ((CheckbookActivity) mContext).getLayoutInflater();
         ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.activity_main, null);
@@ -152,24 +165,22 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         ImageView closeWindow = view.findViewById(R.id.imageView_close);
 
         builder.setView(view);
-        Toolbar actionToolbar = view.findViewById(R.id.toolbar);
-
         String title = mContext.getString(R.string.main_title);
 
         titleText.setText(title);
         viewToolbar.setBackgroundColor(((CheckbookActivity) mContext).getPrimaryColorInTheme());
 
-        AlertDialog alertDialog = builder.create();
-        setImagesListeners(view, checkbookId, alertDialog);
+        actionAlert = builder.create();
+        setImagesListeners(view, actionAlert);
         closeWindow.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
-                alertDialog.dismiss();
+                actionAlert.dismiss();
             }
         });
         //*/
 
-        alertDialog.show();
+        actionAlert.show();
 
     }
 
@@ -180,14 +191,16 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     }
 
 
-    private void setImagesListeners(View view, String checkbookId, AlertDialog alertDialog) {
+    private void setImagesListeners(View view, AlertDialog alertDialog) {
         ImageView imageViewQuery = view.findViewById(R.id.imageView_query);
         ImageView imageViewEmit = view.findViewById(R.id.imageView_emit);
         ImageView imageViewCancel = view.findViewById(R.id.imageView_cancel);
+        ImageView imageViewDelete = view.findViewById(R.id.imageView_delete);
 
         imageViewQuery.setColorFilter(((CheckbookActivity) mContext).getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
         imageViewEmit.setColorFilter(((CheckbookActivity) mContext).getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
         imageViewCancel.setColorFilter(((CheckbookActivity) mContext).getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
+        imageViewDelete.setColorFilter(((CheckbookActivity) mContext).getPrimaryColorInTheme(), PorterDuff.Mode.SRC_IN);
 
         imageViewQuery.setOnClickListener(new OnSingleClickListener() {
             @Override
@@ -195,6 +208,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
                 Intent intent = new Intent(mContext, CheckQueryActivity.class);
                 intent.putExtra("checkbookId", checkbookId);
                 mContext.startActivity(intent);
+                actionAlert.dismiss();
             }
         });
 
@@ -202,7 +216,6 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
             @Override
             public void onSingleClick(View v) {
                 readCheckQR();
-
                 alertDialog.dismiss();
             }
         });
@@ -213,7 +226,14 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
                 Intent intent = new Intent(mContext, CheckCancelActivity.class);
                 intent.putExtra("checkbookId", checkbookId);
                 mContext.startActivity(intent);
+                actionAlert.dismiss();
 
+            }
+        });
+        imageViewDelete.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                showAlertMsg();
             }
         });
 
@@ -237,4 +257,69 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         }
     }
 
+    public void removeItem(int position) {
+        mData.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    private void showAlertMsg(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        LayoutInflater inflater = ((ParentActivity)mContext).getLayoutInflater();
+        ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.cancel_dialog, null);
+        TextView label = view.findViewById(R.id.textView_label);
+        String checkId = this.checkbookId;
+        checkId = "****" + checkId.substring(checkId.length() - 15, checkId.length() - 9);
+
+        label.setText(mContext.getResources().getString(R.string.checkbook_delete_label) + ": " + checkId);
+        builder.setView(view);
+
+        AlertDialog alertDialog = builder.create();
+
+        Button yesBtn = view.findViewById(R.id.button_yes);
+        yesBtn.setBackgroundColor(((ParentActivity)mContext).getPrimaryColorInTheme());
+        String finalCheckId = checkId;
+        yesBtn.setOnClickListener(v -> {
+            String token = sessionManager.getToken();
+
+            if(token != null){
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("idUsuario", sessionManager.getUserId());
+                body.put("ID_CheckId", checkbookId);
+                controller.cancelCheckbook(token, body).subscribe(response -> {
+                    if (response.getSuccess() && response.getMessage().equals("OK")) {
+                        Toast.makeText(mContext, "Chequera: "
+                                + finalCheckId + " " + mContext.getString(R.string.success_emit_check), Toast.LENGTH_LONG).show();
+                        removeItem(position);
+                    } else {
+                        Toast.makeText(mContext, "Cheque: " +
+                                finalCheckId + mContext.getString(R.string.error_cancel_check), Toast.LENGTH_LONG).show();
+                    }
+
+                    alertDialog.dismiss();
+                    actionAlert.dismiss();
+                }, t ->{
+                    if (t.getMessage().equals("Unauthorized")) {
+                        Toast.makeText(mContext, mContext.getString(R.string.start_session), Toast.LENGTH_LONG).show();
+                        ((ParentActivity)mContext).logout();
+                    } else {
+                        Log.e("", t.getMessage());
+                        Toast.makeText(mContext, t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+        });
+
+        Button noBtn = view.findViewById(R.id.button_no);
+        noBtn.setBackgroundColor(mContext.getColor(R.color.white));
+        noBtn.setTextColor(((ParentActivity)mContext).getPrimaryColorInTheme());
+        noBtn.setOnClickListener(v -> {
+            alertDialog.dismiss();
+
+        });
+
+
+        alertDialog.show();
+
+    }
 }

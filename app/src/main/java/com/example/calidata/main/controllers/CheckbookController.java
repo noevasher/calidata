@@ -7,6 +7,7 @@ import android.view.View;
 import com.example.calidata.main.CheckbookActivity;
 import com.example.calidata.main.ParentController;
 import com.example.calidata.models.CheckArrayModel;
+import com.example.calidata.models.CheckModel;
 import com.example.calidata.models.CheckbookArrayModel;
 import com.example.calidata.models.CheckbookModel;
 import com.example.calidata.models.User;
@@ -305,6 +306,43 @@ public class CheckbookController extends ParentController {
 
                         @Override
                         public void onFailure(Call<CheckArrayModel> call, Throwable t) {
+                            Log.e("error", t.toString());
+                            emitter.onError(t);
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("error", e.getMessage());
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.getStackTrace();
+                Log.e("ERROR", e.getMessage());
+            }
+
+        });
+        //*/
+    }
+
+    public Single<CheckModel> cancelCheckbook(String token, HashMap<String, Object> body) {
+        return Single.create(emitter -> {
+            try {
+
+                try {
+                    Call<CheckModel> call = restClient.cancelCheckbook(token, body);
+                    call.enqueue(new Callback<CheckModel>() {
+                        @Override
+                        public void onResponse(Call<CheckModel> call, Response<CheckModel> response) {
+                            if (response.code() == 200) {
+                                CheckModel data = response.body();
+                                emitter.onSuccess(data);
+                            } else {
+                                Throwable throwable = new Exception(response.message());
+                                emitter.onError(throwable);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CheckModel> call, Throwable t) {
                             Log.e("error", t.toString());
                             emitter.onError(t);
                         }
