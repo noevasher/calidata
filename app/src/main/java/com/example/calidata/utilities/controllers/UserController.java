@@ -1,11 +1,13 @@
 package com.example.calidata.utilities.controllers;
 
 import android.content.Context;
+import android.se.omapi.Session;
 import android.util.Log;
 
 import com.example.calidata.main.ParentController;
 import com.example.calidata.models.CheckModel;
 import com.example.calidata.models.User;
+import com.example.calidata.session.SessionManager;
 
 import java.util.HashMap;
 
@@ -22,7 +24,8 @@ public class UserController extends ParentController {
 
     public Single<User> saveProfile(HashMap<String, Object> body) {
         return Single.create(emitter -> {
-            Call<User> call = restClient.saveProfile(body);
+            String token = SessionManager.getInstance(mContext).getToken();
+            Call<User> call = restClient.saveProfile(token, body);
             //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
 
             call.enqueue(new Callback<User>() {
@@ -86,9 +89,11 @@ public class UserController extends ParentController {
                         User data = response.body();
                         data.setUserName((String) response.body().getData().get("usuario"));
                         String image = (String) response.body().getData().get("image64");
+                        String phone = (String) response.body().getData().get("celular");
                         if(image != null && !image.isEmpty()) {
                             data.setImage64(image);
                         }
+                        data.setPhone(phone.trim());
                         emitter.onSuccess(data);
                     } else {
                         Throwable throwable = new Exception(response.message());

@@ -18,8 +18,12 @@ public class User {
 
     public String password;
 
+
     @SerializedName("exito")
     public boolean isSuccess;
+
+    @SerializedName("celular")
+    public String phone;
 
     @SerializedName("mensaje")
     public String message;
@@ -151,5 +155,13 @@ public class User {
 
     public void setTokenType(String tokenType) {
         this.tokenType = tokenType;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

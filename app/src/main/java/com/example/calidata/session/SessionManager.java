@@ -42,6 +42,7 @@ public class SessionManager {
 
     // Email address (make variable public to access from outside)
     private static final String KEY_EMAIL = "email";
+    private static final String KEY_PHONE = "phone";
     private static final String THEME_ID = "themeId";
     private static final String KEY_BANK_NAME = "bankName";
     private static final String KEY_BANK_ID = "bankId";
@@ -77,7 +78,8 @@ public class SessionManager {
         editor.commit();
     }
 
-    public void createLoginSessionBank(String email, Integer bankId, String bankName, Integer userId, String username) {
+    public void createLoginSessionBank(String email, Integer bankId, String bankName,
+                                       Integer userId, String username, String phone) {
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
@@ -86,6 +88,7 @@ public class SessionManager {
         editor.putInt(KEY_BANK_ID, bankId);
         // Storing email in pref
         editor.putString(KEY_EMAIL, email);
+        editor.putString(KEY_PHONE, phone);
 
         editor.putInt(KEY_USER_ID, userId);
         editor.putString(KEY_USERNAME, username);
@@ -146,6 +149,7 @@ public class SessionManager {
 
         // user email id
         user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, null));
+        user.put(KEY_PHONE, pref.getString(KEY_PHONE, null));
 
         // return user
         return user;
@@ -197,6 +201,12 @@ public class SessionManager {
 
     }
 
+    public String getKeyPhone() {
+        //2 is default value
+        return pref.getString(KEY_PHONE, null);
+
+    }
+
     public Integer getUserId() {
         try {
             Integer id = pref.getInt(KEY_USER_ID, 0);
@@ -221,6 +231,12 @@ public class SessionManager {
 
     public void saveProfileName(String username) {
         editor.putString(KEY_USERNAME, username);
+        // commit changes
+        editor.commit();
+    }
+
+    public void savePhone(String phone) {
+        editor.putString(KEY_PHONE, phone);
         // commit changes
         editor.commit();
     }

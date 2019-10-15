@@ -63,7 +63,7 @@ public interface JsonPlaceHolderApi {
     Call<User> getUserInformation(@Header("idUsuario") Integer userId);
 
     @POST("login/saveProfileInfo")
-    Call<User> saveProfile(@Body HashMap<String, Object> body);
+    Call<User> saveProfile(@Header("Authorization") String token,@Body HashMap<String, Object> body);
 
     @POST("login/changePassword")
     @Headers("Content-Type: application/json")

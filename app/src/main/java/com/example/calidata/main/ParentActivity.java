@@ -252,12 +252,13 @@ public class ParentActivity extends AppCompatActivity {
         startActivityForResult(intent, CAMERA);
     }
 
-    protected void pickBankAndOpenCheckbookByName(String bankName, Integer bankId, String user, Integer userId, String username) {
+    protected void pickBankAndOpenCheckbookByName(String bankName, Integer bankId, String user,
+                                                  Integer userId, String username, String phone) {
         Intent intent = new Intent(this, CheckbookActivity.class);
         bankName = bankName.toLowerCase();
         intent.putExtra("bankName", bankName);
         //sessionManager.createLoginSession(user, bankName);
-        sessionManager.createLoginSessionBank(user, bankId, bankName, userId, username);
+        sessionManager.createLoginSessionBank(user, bankId, bankName, userId, username, phone);
         startActivity(intent);
     }
 

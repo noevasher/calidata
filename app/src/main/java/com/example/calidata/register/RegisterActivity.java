@@ -136,7 +136,7 @@ public class RegisterActivity extends ParentActivity {
                         body.put("email", email);
                         body.put("password", encryptPassword);
                         body.put("bankId", bankId);
-                        body.put("phone", phone);
+                        body.put("CELULAR", phone);
 
                         registerController.registerUserByBody(body).subscribe(response -> {
                             //registerController_.registerUserByJson(json).subscribe(response -> {
@@ -147,7 +147,8 @@ public class RegisterActivity extends ParentActivity {
                                 sessionManager.setAccessToken(response.getTokenType()
                                         + " " + response.getAccessToken());
 
-                                pickBankAndOpenCheckbookByName(bankNameSpin, bankId, email, userId.intValue(), username);
+                                pickBankAndOpenCheckbookByName(bankNameSpin, bankId, email,
+                                        userId.intValue(), username, phone);
                                 progressBar.setVisibility(View.GONE);
                                 LoginActivity.getInstance().finish();
                                 finish();

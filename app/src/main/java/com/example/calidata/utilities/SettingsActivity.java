@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -56,6 +57,10 @@ public class SettingsActivity extends ParentActivity {
     @BindView(R.id.textView_username)
     public TextView userNameText;
 
+    @BindView(R.id.textView_phone)
+    public TextView phoneText;
+
+
     @BindView(R.id.textView_email)
     public TextView emailText;
 
@@ -89,6 +94,8 @@ public class SettingsActivity extends ParentActivity {
     public static Observable<String> imageObs;
     public static Observable<String> usernameObs;
     private UserController userController;
+    private String phone;
+    private String phoneString = "Telefono: ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,9 +110,16 @@ public class SettingsActivity extends ParentActivity {
 
         String userName = sessionManager.getUserDetails().get("name");
         String email = sessionManager.getUserDetails().get("email");
+        phone = sessionManager.getUserDetails().get("phone");
+
 
         userNameText.setText(userName);
         emailText.setText(email);
+        if(phone == null || phone.isEmpty()){
+            phoneText.setVisibility(View.GONE);
+        }else{
+            phoneText.setText(phoneString + sessionManager.getKeyPhone());
+        }
 
         if (sessionManager.getKeyImage64() != null) {
             putImage(sessionManager.getKeyImage64(), imageProfile);
@@ -120,19 +134,24 @@ public class SettingsActivity extends ParentActivity {
             });
         }
 
-        if (sessionManager.getKeyUsername() != null) {
-            userNameText.setText(sessionManager.getKeyUsername());
-        } else {
+        //if (sessionManager.getKeyUsername() != null) {
+        //    userNameText.setText(sessionManager.getKeyUsername());
+        //} else {
             UserController controller = new UserController(this);
             controller.getUserInformation(sessionManager.getUserId()).subscribe(response -> {
                 String username = response.getUserName();
+                phone = response.getPhone();
+
                 userNameText.setText(username);
+                phoneText.setVisibility(View.VISIBLE);
+                phoneText.setText(phoneString + phone);
                 sessionManager.saveProfileName(username);
+                sessionManager.savePhone(phone.trim());
             }, t -> {
                 Toast.makeText(this, t.getMessage(), Toast.LENGTH_LONG).show();
             });
 
-        }
+        //}
 
         imageObs = Observable.create(emitter -> {
             String image64 = sessionManager.getKeyImage64();
@@ -183,6 +202,7 @@ public class SettingsActivity extends ParentActivity {
         }
     };
 
+    private boolean activeBtn;
     private void changeUsername() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -193,9 +213,15 @@ public class SettingsActivity extends ParentActivity {
         AlertDialog alertDialog = builder.create();
         Button saveBtn = view.findViewById(R.id.button_save);
         saveBtn.setEnabled(false);
-        EditText editText = view.findViewById(R.id.editText_username);
-        editText.setText(sessionManager.getKeyUsername());
-        editText.addTextChangedListener(new TextWatcher() {
+        EditText usernameText = view.findViewById(R.id.editText_username);
+        EditText phoneText = view.findViewById(R.id.edittext_phone);
+        usernameText.setText(sessionManager.getKeyUsername());
+        phoneText.setText(sessionManager.getKeyPhone());
+        //phoneText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        saveBtn.setEnabled(true);
+        saveBtn.setBackgroundColor(SettingsActivity.this.getPrimaryColorInTheme());
+
+        usernameText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -208,48 +234,87 @@ public class SettingsActivity extends ParentActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                String text = editText.getText().toString();
-
-                if (text.isEmpty()) {
-                    editText.setError("En necesario escribir un nombre de usuario");
+                String username = usernameText.getText().toString();
+                if (username.isEmpty()) {
+                    usernameText.setError("En necesario escribir un nombre de usuario");
+                    activeBtn = false;
                 } else {
-                    saveBtn.setEnabled(true);
-                    saveBtn.setBackgroundColor(SettingsActivity.this.getPrimaryColorInTheme());
-                    saveBtn.setOnClickListener(v -> {
-
-                        loadToSave(text, null);
-                        alertDialog.dismiss();
-                    });
+                    activeBtn = true;
                 }
             }
         });
 
+        phoneText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String phone = phoneText.getText().toString();
+                if (phone.isEmpty()) {
+                    phoneText.setError("En necesario escribir un nombre de usuario");
+                    activeBtn = false;
+                } else {
+                    activeBtn = true;
+                }
+            }
+        });
+
+        saveBtn.setOnClickListener(v -> {
+            if(activeBtn) {
+                String username = usernameText.getText().toString();
+                String phone = phoneText.getText().toString();
+
+                loadToSave(username, phone.trim(), null);
+            }else{
+                //listeners------
+            }
+            alertDialog.dismiss();
+        });
 
         alertDialog.show();
 
     }
 
-    private void loadToSave(String username, String image64) {
+    private void loadToSave(String username, String phone, String image64) {
         token = sessionManager.getToken();
         if (token != null) {
             HashMap<String, Object> body = new HashMap<>();
             body.put("ID_Usuario", sessionManager.getUserId());
             if (username != null && !username.isEmpty())
                 body.put("Usuario", username);
+            if (phone != null && !phone.isEmpty())
+                body.put("celular", phone);
             if (image64 != null && !image64.isEmpty())
                 body.put("image64", image64);
 
             userController.saveProfile(body).subscribe(response -> {
-                if (username != null && !username.isEmpty()) {
-                    userNameText.setText(username);
-                    sessionManager.saveProfileName(username);
-                }
-                if (image64 != null && !image64.isEmpty()) {
-                    sessionManager.saveProfileImage(image64);
-                    progressBar.setVisibility(View.GONE);
+                if(response.isSuccess()) {
+                    if (username != null && !username.isEmpty()) {
+                        userNameText.setText(username);
+                        sessionManager.saveProfileName(username);
+                    }
+                    if (phone != null && !phone.isEmpty()) {
+                        phoneText.setVisibility(View.VISIBLE);
+                        phoneText.setText(phoneString + phone.trim());
+                        sessionManager.savePhone(phone.trim());
+                    }
+                    if (image64 != null && !image64.isEmpty()) {
+                        sessionManager.saveProfileImage(image64);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }else{
+                    Toast.makeText(this, "Respuesta invalida", Toast.LENGTH_LONG).show();
                 }
             }, t -> {
-                Toast.makeText(this, "", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, t.getMessage(), Toast.LENGTH_LONG).show();
             });
         } else {
             Toast.makeText(this, R.string.error_fail_login, Toast.LENGTH_LONG).show();
@@ -380,7 +445,7 @@ public class SettingsActivity extends ParentActivity {
                     bitmap = compressImage(bitmap);
                     imageProfile.buildDrawingCache();
                     String encodedImageData = getEncoded64ImageStringFromBitmap(bitmap);
-                    loadToSave(null, encodedImageData);
+                    loadToSave(null, null, encodedImageData);
 
 
                 } catch (IOException e) {
@@ -397,7 +462,7 @@ public class SettingsActivity extends ParentActivity {
             imageProfile.setImageBitmap(thumbnail);
             imageProfile.buildDrawingCache();
             String encodedImageData = getEncoded64ImageStringFromBitmap(thumbnail);
-            loadToSave(null, encodedImageData);
+            loadToSave(null, null, encodedImageData);
             //saveImage(thumbnail);
         }
 

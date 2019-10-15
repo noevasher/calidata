@@ -11,6 +11,7 @@ import com.example.calidata.models.CheckModel;
 import com.example.calidata.models.CheckbookArrayModel;
 import com.example.calidata.models.CheckbookModel;
 import com.example.calidata.models.User;
+import com.example.calidata.session.SessionManager;
 
 import java.util.HashMap;
 
@@ -147,7 +148,8 @@ public class CheckbookController extends ParentController {
 
     public Single<User> saveProfile(HashMap<String, Object> body) {
         return Single.create(emitter -> {
-            Call<User> call = restClient.saveProfile(body);
+            String token = SessionManager.getInstance(mContext).getToken();
+            Call<User> call = restClient.saveProfile(token, body);
 
             call.enqueue(new Callback<User>() {
                 @Override
