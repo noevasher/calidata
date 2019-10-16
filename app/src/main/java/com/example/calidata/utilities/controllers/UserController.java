@@ -1,11 +1,9 @@
 package com.example.calidata.utilities.controllers;
 
 import android.content.Context;
-import android.se.omapi.Session;
 import android.util.Log;
 
 import com.example.calidata.main.ParentController;
-import com.example.calidata.models.CheckModel;
 import com.example.calidata.models.User;
 import com.example.calidata.session.SessionManager;
 
@@ -90,7 +88,7 @@ public class UserController extends ParentController {
                         data.setUserName((String) response.body().getData().get("usuario"));
                         String image = (String) response.body().getData().get("image64");
                         String phone = (String) response.body().getData().get("celular");
-                        if(image != null && !image.isEmpty()) {
+                        if (image != null && !image.isEmpty()) {
                             data.setImage64(image);
                         }
                         data.setPhone(phone.trim());
@@ -110,7 +108,6 @@ public class UserController extends ParentController {
         });
         //*/
     }
-
 
 
     public Single<String> forgotPassword(HashMap<String, Object> body) {

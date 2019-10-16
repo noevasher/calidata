@@ -93,7 +93,7 @@ public class RegisterActivity extends ParentActivity {
         adapter.setDropDownViewResource(R.layout.labels_bank);
         spin.setAdapter(adapter);
 
-        phoneText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        //phoneText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
         if (toolbar != null) {
             toolbar.setTitle(getResources().getString(R.string.register_title));
@@ -136,7 +136,7 @@ public class RegisterActivity extends ParentActivity {
                         body.put("email", email);
                         body.put("password", encryptPassword);
                         body.put("bankId", bankId);
-                        body.put("CELULAR", phone);
+                        body.put("CELULAR", phone.trim());
 
                         registerController.registerUserByBody(body).subscribe(response -> {
                             //registerController_.registerUserByJson(json).subscribe(response -> {

@@ -240,7 +240,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
 
     void addAndSort(CheckModel model) {
         mData.add(model);
-        Collections.sort(mData, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+        Collections.sort(mData, (o1, o2) -> o2.getDate().compareTo(o1.getDate()));
 
     }
 

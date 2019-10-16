@@ -76,7 +76,7 @@ public class CheckEmitActivity extends ParentActivity {
 
     @OnClick(R.id.imageView_camera)
     public void addPhoto() {
-        showPictureDialog(null);
+        showPictureDialog(null, false);
     }
 
     @BindView(R.id.imageView_delete_photo)
@@ -115,7 +115,7 @@ public class CheckEmitActivity extends ParentActivity {
                     body.put("ID_CheckID", checkId);
                     body.put("idUsuario", userId);
                     body.put("monto", mount.getText().toString());
-                    body.put("image", encodedImageData);
+                    body.put("Imagen64", encodedImageData);
                     String descriptionS = description.getText().toString();
                     String clientName = clientText.getText().toString();
 
@@ -134,8 +134,10 @@ public class CheckEmitActivity extends ParentActivity {
 
                         } else {
                             Toast.makeText(CheckEmitActivity.this, "Cheque: " +
-                                    checkId + getString(R.string.error_emit_check), Toast.LENGTH_LONG).show();
+                                    checkId + " " + getString(R.string.error_emit_check), Toast.LENGTH_LONG).show();
                         }
+                        finish();
+
                     }, t -> {
                         if (t.getMessage().equals("Unauthorized")) {
                             Toast.makeText(CheckEmitActivity.this, getString(R.string.start_session), Toast.LENGTH_LONG).show();

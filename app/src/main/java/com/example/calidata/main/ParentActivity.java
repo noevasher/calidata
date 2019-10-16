@@ -67,7 +67,7 @@ public class ParentActivity extends AppCompatActivity {
     }
 
     public static boolean isValidPhone(String target) {
-        return target.length() >= 11;
+        return target.length() == 10;
     }
 
     public static boolean isValidLength(String target) {
@@ -182,23 +182,35 @@ public class ParentActivity extends AppCompatActivity {
     }
 
 
-    protected void showPictureDialog(ProgressBar progressbar) {
+    protected void showPictureDialog(ProgressBar progressbar, boolean activeGallery) {
         AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
-        pictureDialog.setTitle("Select Action");
-        String[] pictureDialogItems = {
-                "Select photo from gallery",
-                "Capture photo from camera"};
-        pictureDialog.setItems(pictureDialogItems,
-                (dialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            choosePhotoFromGallary();
-                            break;
-                        case 1:
+        pictureDialog.setTitle("Seleciona Opción");
+        String[] pictureDialogItems;
+        String gallery = "Selecciona Imagen de tu Galeria";
+        String camera = "Captura Foto de Camara";
+        if (activeGallery) {
+            pictureDialogItems = new String[]{gallery, camera};
+            pictureDialog.setItems(pictureDialogItems,
+                    (dialog, which) -> {
+                        switch (which) {
+                            case 0:
+                                choosePhotoFromGallary();
+                                break;
+                            case 1:
+                                requestCameraPermission();
+                                break;
+                        }
+                    });
+        } else {
+            pictureDialogItems = new String[]{camera};
+            pictureDialog.setItems(pictureDialogItems,
+                    (dialog, which) -> {
+                        if (which == 0) {
                             requestCameraPermission();
-                            break;
-                    }
-                });
+                        }
+                    });
+        }
+
         pictureDialog.setOnDismissListener(dialogInterface -> {
             if (progressbar != null)
                 progressbar.setVisibility(View.GONE);
