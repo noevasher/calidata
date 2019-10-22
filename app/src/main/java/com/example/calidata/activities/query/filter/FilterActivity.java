@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
@@ -74,7 +77,7 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
     private String startTextDate = "";
     private String endTextDate = "";
 
-    private String startDateToShow= "";
+    private String startDateToShow = "";
     private String endDateToShow = "";
 
     //Calendario para obtener fecha & hora
@@ -234,7 +237,7 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
                 maxVal = maxValue;
                 String min = String.format(Locale.getDefault(), "min: %2.0f" + "", minValue);
                 String max = String.format(Locale.getDefault(), "max: %2.0f", maxValue);
-                if(maxValue == (float) MAX){
+                if (maxValue == (float) MAX) {
                     max = String.format(Locale.getDefault(), "max: %2.0f" + " +", maxValue);
                 }
                 minText.setText(min);
@@ -244,16 +247,16 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
 
     }
 
-    private List<Float> getSteps(){
+    private List<Float> getSteps() {
         List<Float> list = new ArrayList<>();
-        for(int i = 0; i< MAX; i++){
-            if(i % 1000 == 0) {
+        for (int i = 0; i < MAX; i++) {
+            if (i % 1000 == 0) {
                 Float f = (float) i;
                 list.add(f);
             }
         }
-        list.add((float)MAX);
-        return  list;
+        list.add((float) MAX);
+        return list;
     }
 
 

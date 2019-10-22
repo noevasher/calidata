@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +39,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     private static final int VIEW_TYPE_EMPTY = 0;
     private static final int VIEW_TYPE_DATA = 1;
     private static final int EMIT_CODE = 20;
+    private static final int CANCEL_CODE = 30;
 
     //private List<String> mData;
     private static List<CheckbookModel> mData;
@@ -52,6 +52,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
     private String checkbookId;
     private CheckbookController controller;
     private SessionManager sessionManager;
+
     public RecyclerViewAdapterCheckbook(Context context, List<CheckbookModel> data) {
         this.mInflater = LayoutInflater.from(context);
         mData = data;
@@ -215,7 +216,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         imageViewEmit.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
-                readCheckQR();
+                readCheckQR(EMIT_CODE);
                 alertDialog.dismiss();
             }
         });
@@ -223,10 +224,8 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         imageViewCancel.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
-                Intent intent = new Intent(mContext, CheckCancelActivity.class);
-                intent.putExtra("checkbookId", checkbookId);
-                mContext.startActivity(intent);
-                actionAlert.dismiss();
+                showAlertCancelOptions();
+                //actionAlert.dismiss();
 
             }
         });
@@ -239,32 +238,29 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
     }
 
-    private void readCheckQR() {
-
+    private void readCheckQR(int code) {
         try {
-
             Intent intent = new Intent("com.google.zxing.client.android.SCAN");
             intent.putExtra("SCAN_MODE", "QR_CODE_MODE"); // "PRODUCT_MODE for bar codes
             intent.putExtra("SCAN_MODE", "BAR_CODE_MODE"); // "PRODUCT_MODE for bar codes
 
-            ((CheckbookActivity) mContext).startActivityForResult(intent, EMIT_CODE);
+            ((CheckbookActivity) mContext).startActivityForResult(intent, code);
         } catch (Exception e) {
 
             Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
             Intent marketIntent = new Intent(Intent.ACTION_VIEW, marketUri);
             mContext.startActivity(marketIntent);
-
         }
     }
 
-    public void removeItem(int position) {
+    private void removeItem(int position) {
         mData.remove(position);
         notifyItemRemoved(position);
     }
 
-    private void showAlertMsg(){
+    private void showAlertMsg() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        LayoutInflater inflater = ((ParentActivity)mContext).getLayoutInflater();
+        LayoutInflater inflater = ((ParentActivity) mContext).getLayoutInflater();
         ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.cancel_dialog, null);
         TextView label = view.findViewById(R.id.textView_label);
         String checkId = this.checkbookId;
@@ -275,13 +271,13 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
         AlertDialog alertDialog = builder.create();
 
-        Button yesBtn = view.findViewById(R.id.button_yes);
-        yesBtn.setBackgroundColor(((ParentActivity)mContext).getPrimaryColorInTheme());
+        Button yesBtn = view.findViewById(R.id.button_read_qr);
+        yesBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
         String finalCheckId = checkId;
         yesBtn.setOnClickListener(v -> {
             String token = sessionManager.getToken();
 
-            if(token != null){
+            if (token != null) {
                 HashMap<String, Object> body = new HashMap<>();
                 body.put("idUsuario", sessionManager.getUserId());
                 body.put("ID_CheckId", checkbookId);
@@ -297,10 +293,10 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
                     alertDialog.dismiss();
                     actionAlert.dismiss();
-                }, t ->{
+                }, t -> {
                     if (t.getMessage().equals("Unauthorized")) {
                         Toast.makeText(mContext, mContext.getString(R.string.start_session), Toast.LENGTH_LONG).show();
-                        ((ParentActivity)mContext).logout();
+                        ((ParentActivity) mContext).logout();
                     } else {
                         Log.e("", t.getMessage());
                         Toast.makeText(mContext, t.getMessage(), Toast.LENGTH_LONG).show();
@@ -310,9 +306,9 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
         });
 
-        Button noBtn = view.findViewById(R.id.button_no);
+        Button noBtn = view.findViewById(R.id.button_search_list);
         noBtn.setBackgroundColor(mContext.getColor(R.color.white));
-        noBtn.setTextColor(((ParentActivity)mContext).getPrimaryColorInTheme());
+        noBtn.setTextColor(((ParentActivity) mContext).getPrimaryColorInTheme());
         noBtn.setOnClickListener(v -> {
             alertDialog.dismiss();
 
@@ -322,4 +318,39 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         alertDialog.show();
 
     }
+
+    private void showAlertCancelOptions() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        LayoutInflater inflater = ((ParentActivity) mContext).getLayoutInflater();
+        ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.cancel_check_dialog, null);
+
+        String checkId = this.checkbookId;
+        checkId = "****" + checkId.substring(checkId.length() - 15, checkId.length() - 9);
+
+        builder.setView(view);
+
+        AlertDialog alertDialog = builder.create();
+
+        Button readQRBtn = view.findViewById(R.id.button_read_qr);
+        readQRBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
+        readQRBtn.setOnClickListener(v -> {
+            readCheckQR(CANCEL_CODE);
+        });
+
+        Button searchListBtn = view.findViewById(R.id.button_search_list);
+        searchListBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
+        searchListBtn.setOnClickListener(v -> {
+
+            Intent intent = new Intent(mContext, CheckCancelActivity.class);
+            intent.putExtra("checkbookId", checkbookId);
+            mContext.startActivity(intent);
+            alertDialog.dismiss();
+
+        });
+
+
+        alertDialog.show();
+
+    }
+
 }

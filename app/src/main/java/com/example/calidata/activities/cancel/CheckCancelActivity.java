@@ -64,24 +64,16 @@ public class CheckCancelActivity extends ParentActivity {
         HashMap<String, Object> body = new HashMap<>();
         body.put("ID_CheckID", checkbookId);
         body.put("idUsuario", sessionManager.getUserId());
-        body.put("status", "4");
+        //body.put("status", "4");
         String token = sessionManager.getToken();
         if (token != null) {
             controller.getChecksByFilters(token, body).subscribe(response -> {
                 List<HashMap<String, Object>> data = response.getData();
                 for (HashMap<String, Object> item : data) {
                     CheckModel check = loadChecks(item);
-/*
-                    CheckModel check = new CheckModel();
-                    check.setCheckId((String) item.get("iD_CheckID"));
-                    check.setCheckModelId((String) item.get("iD_CheckID"));
-                    check.setDescription(item.get("descripcion"));
-                    check.setQuantity((Double) item.get("monto"));
-                    check.setDate((String) item.get("fecha"));
-                    check.setStatus("Activo");
-                    System.out.println(item.get("status"));
-                    //*/
-                    checks.add(check);
+                    if (check.getStatus().equals("Activado") || check.getStatus().equals("Liberado")) {
+                        checks.add(check);
+                    }
                 }
                 progressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);

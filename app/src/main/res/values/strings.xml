@@ -87,6 +87,11 @@
     <string name="hint_phone">Teléfono</string>
     <string name="invalid_phone">Teléfono no valido</string>
     <string name="checkbook_delete_label">Desea eliminar la chequera</string>
+    <string name="read_qr_label">Leer QR</string>
+    <string name="search_list">Buscar en Lista</string>
+    <string name="option_cancel_check_label">Selecciona la opción para cancelar cheque</string>
+    <string name="error_not_available_emit_check">El CheckId no es valido para liberarlo</string>
+    <string name="error_not_available_cancel_check">El Cheque no está disponible para cancelación</string>
 
 
     <!-- ERRORS -->

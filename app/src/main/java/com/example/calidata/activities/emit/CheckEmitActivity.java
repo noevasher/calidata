@@ -2,18 +2,16 @@ package com.example.calidata.activities.emit;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,14 +21,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
 import com.example.calidata.activities.emit.fragments.FragmentQR;
-import com.example.calidata.activities.emit.fragments.FragmentSearch;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.main.controllers.CheckbookController;
 import com.example.calidata.management.ManagerTheme;
 
-import java.io.File;
-import java.io.IOException;
+import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,12 +39,6 @@ import static android.media.MediaRecorder.VideoSource.CAMERA;
 
 @SuppressLint("CheckResult")
 public class CheckEmitActivity extends ParentActivity {
-    private ZXingScannerView mScannerView;
-
-
-    private FragmentSearch fragmentSearch;
-    private FragmentQR fragmentQR;
-
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
@@ -97,6 +89,24 @@ public class CheckEmitActivity extends ParentActivity {
         ButterKnife.bind(this);
         userId = sessionManager.getUserId();
         bankNameText.setText(sessionManager.getBankName());
+
+        //mount.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(10, 2)});
+        mount.setFilters(new InputFilter[]{new InputFilter() {
+
+            DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
+
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                int indexPoint = dest.toString().indexOf(decimalFormatSymbols.getDecimalSeparator());
+
+                if (indexPoint == -1)
+                    return source;
+
+                int decimals = dend - (indexPoint+1);
+                return decimals < 2 ? source : "";
+            }
+        }
+        });
 
         deletePhotoImg.setColorFilter(getColor(R.color.colorDelete), PorterDuff.Mode.SRC_IN);
 

@@ -8,6 +8,9 @@ public class CheckModel {
 
     private String checkModelId;
 
+    @SerializedName("beneficiario")
+    private String beneficiary;
+
     @SerializedName("iD_CheckID")
     private String checkId;
 
@@ -108,4 +111,11 @@ public class CheckModel {
         this.data = data;
     }
 
+    public String getBeneficiary() {
+        return beneficiary;
+    }
+
+    public void setBeneficiary(String beneficiary) {
+        this.beneficiary = beneficiary;
+    }
 }

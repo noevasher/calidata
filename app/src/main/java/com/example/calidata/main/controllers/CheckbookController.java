@@ -14,6 +14,7 @@ import com.example.calidata.models.User;
 import com.example.calidata.session.SessionManager;
 
 import java.util.HashMap;
+import java.util.List;
 
 import io.reactivex.Single;
 import retrofit2.Call;
@@ -126,7 +127,7 @@ public class CheckbookController extends ParentController {
                         User data = response.body();
                         data.setUserName((String) response.body().getData().get("usuario"));
                         String image = (String) response.body().getData().get("image64");
-                        if(image != null && !image.isEmpty()) {
+                        if (image != null && !image.isEmpty()) {
                             data.setImage64(image);
                         }
                         emitter.onSuccess(data);
@@ -158,7 +159,7 @@ public class CheckbookController extends ParentController {
                         User data = response.body();
                         data.setUserName((String) response.body().getData().get("usuario"));
                         String image = (String) response.body().getData().get("image64");
-                        if(image != null && !image.isEmpty()) {
+                        if (image != null && !image.isEmpty()) {
                             data.setImage64(image);
                         }
                         emitter.onSuccess(data);
@@ -246,6 +247,35 @@ public class CheckbookController extends ParentController {
 
         });
         //*/
+    }
+
+    public Single<CheckArrayModel> getCheckById(String token, HashMap<String, Object> body) {
+        return Single.create(emitter -> {
+            try {
+                Call<CheckArrayModel> call = restClient.getCheckById(token, body);
+                call.enqueue(new Callback<CheckArrayModel>() {
+                    @Override
+                    public void onResponse(Call<CheckArrayModel> call, Response<CheckArrayModel> response) {
+                        if (response.code() == 200) {
+                            CheckArrayModel data = response.body();
+                            emitter.onSuccess(data);
+                        } else {
+                            Throwable throwable = new Exception(response.message());
+                            emitter.onError(throwable);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CheckArrayModel> call, Throwable t) {
+                        Log.e("error", t.toString());
+                        emitter.onError(t);
+                    }
+                });
+            } catch (Exception e) {
+                Log.e("error", e.getMessage());
+                e.printStackTrace();
+            }
+        });
     }
 
     public Single<CheckArrayModel> getChecksByUserIdAndCheckId(String token, String checkId, Integer userId) {

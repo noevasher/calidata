@@ -7,29 +7,27 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
+import com.example.calidata.activities.CheckController;
 import com.example.calidata.activities.emit.CheckEmitActivity;
 import com.example.calidata.main.adapters.RecyclerViewAdapterCheckbook;
 import com.example.calidata.main.controllers.CheckbookController;
+import com.example.calidata.models.CheckModel;
 import com.example.calidata.models.CheckbookModel;
 import com.example.calidata.utilities.HelpActivity;
 import com.example.calidata.utilities.SettingsActivity;
@@ -275,7 +273,7 @@ public class CheckbookActivity extends ParentActivity {
         }
     }
 
-    private void readQR() {
+    public void readQR() {
         try {
 
             Intent intent = new Intent("com.google.zxing.client.android.SCAN");
@@ -293,16 +291,19 @@ public class CheckbookActivity extends ParentActivity {
         }
     }
 
+    private String token;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("onActivityResult in checkbookActiviy");
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 String checkId = data.getStringExtra("SCAN_RESULT");
 
 
                 if (checkId != null) {
-                    String token = sessionManager.getToken();
+                    token = sessionManager.getToken();
                     if (token != null) {
                         controller.addCheckbook(token, checkId, userId).subscribe(response -> {
                             if (response.getSuccess()) {
@@ -348,13 +349,71 @@ public class CheckbookActivity extends ParentActivity {
             Log.i("DATA", "data: " + data);
             if (resultCode == RESULT_OK) {
                 String checkId = data.getStringExtra("SCAN_RESULT");
-                if (checkId != null) {
-                    String token = sessionManager.getToken();
-                    if (token != null) {
-                        Intent intent = new Intent(CheckbookActivity.this, CheckEmitActivity.class);
-                        intent.putExtra("checkId", checkId);
-                        startActivity(intent);
-                    }
+                token = sessionManager.getToken();
+                if (token != null) {
+                    HashMap<String, Object> body = new HashMap<>();
+                    body.put("idUsuario", sessionManager.getUserId());
+                    body.put("ID_CheckId", checkId);
+
+                    controller.getCheckById(token, body).subscribe(response -> {
+                        List<HashMap<String, Object>> checkData = response.getData();
+                        if (!checkData.isEmpty()) {
+                            HashMap<String, Object> item = checkData.get(0);
+                            CheckModel check = loadChecks(item);
+                            if (response.getMessage().equals("OK") && check.getStatus() != null
+                                    && check.getStatus().equals("Activo")) {
+                                Intent intent = new Intent(CheckbookActivity.this,
+                                        CheckEmitActivity.class);
+                                intent.putExtra("checkId", checkId);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(CheckbookActivity.this, getString(R.string.error_not_available_emit_check), Toast.LENGTH_LONG).show();
+
+                            }
+                        }
+                    }, t -> {
+                        Toast.makeText(CheckbookActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                    });
+
+                }
+            }
+        }
+        if (requestCode == CANCEL_CODE) {
+            Log.i("DATA", "data: " + data);
+            if (resultCode == RESULT_OK) {
+                String checkId = data.getStringExtra("SCAN_RESULT");
+                token = sessionManager.getToken();
+                if (token != null) {
+                    HashMap<String, Object> body = new HashMap<>();
+                    body.put("idUsuario", sessionManager.getUserId());
+                    body.put("ID_CheckId", checkId);
+                    CheckController checkController = new CheckController(this);
+
+                    controller.getCheckById(token, body).subscribe(response -> {
+                        List<HashMap<String, Object>> checkData = response.getData();
+                        if (!checkData.isEmpty()) {
+                            HashMap<String, Object> item = checkData.get(0);
+                            CheckModel check = loadChecks(item);
+
+                            checkController.cancelCheckId(token, body).subscribe(responseCancel -> {
+                                if (responseCancel.getMessage().equals("OK") && check.getStatus() != null && check.getStatus().equals("Activo")) {
+                                    Toast.makeText(CheckbookActivity.this, "Cheque " +
+                                            "Eliminado Correctamente", Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(CheckbookActivity.this, responseCancel.getMessage(),
+                                            Toast.LENGTH_LONG).show();
+
+                                }
+                            }, throwable -> {
+                                Toast.makeText(CheckbookActivity.this, throwable.getMessage(),
+                                        Toast.LENGTH_LONG).show();
+                            });
+                        }
+
+                    }, t -> {
+                        Toast.makeText(CheckbookActivity.this, t.getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    });
                 }
             }
         }

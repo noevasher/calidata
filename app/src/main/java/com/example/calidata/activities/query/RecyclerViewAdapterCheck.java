@@ -34,6 +34,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
 
     private static final int VIEW_TYPE_EMPTY = 0;
     private static final int VIEW_TYPE_DATA = 1;
+    private final static int FREE_CHECK = 5;
 
     //private List<String> mData;
     private List<CheckModel> mData;
@@ -86,25 +87,84 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
 
             }
         } else {
+
             CheckModel model = mData.get(position);
             final char[] delimiters = {' ', '_'};
 
             String status = model.getStatus();
             String date = model.getDate();
-            String description = model.getDescription();
-            String quantity = "" + model.getQuantity();
+            String comment = model.getDescription();
+            Double quantity = model.getQuantity();
             String originalCheckId = model.getCheckId();
             String checkId = model.getCheckId();
+            String beneficiary = model.getBeneficiary();
+
             checkId = "****" + checkId.substring(checkId.length() - 15, checkId.length() - 9);
-            holder.statusText.setText(status);
-            holder.dateText.setText(date);
-            holder.descriptionText.setText(description);
-            holder.quantityText.setText(quantity);
-            holder.checkIdText.setText(checkId);
+
+            if (status != null && !status.isEmpty()) {
+                holder.statusText.setText(status);
+                holder.statusText.setVisibility(View.VISIBLE);
+                holder.labelStatus.setVisibility(View.VISIBLE);
+            }else{
+                holder.statusText.setVisibility(View.GONE);
+                holder.labelStatus.setVisibility(View.GONE);
+            }
+
+            if (date != null && !date.isEmpty()) {
+                holder.dateText.setText(date);
+                holder.dateText.setVisibility(View.VISIBLE);
+                holder.labelDate.setVisibility(View.VISIBLE);
+            }else{
+                holder.dateText.setVisibility(View.GONE);
+                holder.labelDate.setVisibility(View.GONE);
+
+            }
+
+
+            //holder.descriptionText.setText(description);
+            if (quantity != null && quantity > 0) {
+                holder.quantityText.setText("" + quantity);
+                holder.labelMount.setVisibility(View.VISIBLE);
+                holder.quantityText.setVisibility(View.VISIBLE);
+            }else{
+                holder.quantityText.setVisibility(View.GONE);
+                holder.labelMount.setVisibility(View.GONE);
+            }
+
+            if (!checkId.isEmpty()) {
+                holder.checkIdText.setText(checkId);
+            }else{
+                holder.checkIdText.setVisibility(View.GONE);
+            }
+
+
+            if (beneficiary != null && !beneficiary.isEmpty()) {
+                holder.benText.setText(beneficiary);
+                holder.benText.setVisibility(View.VISIBLE);
+                holder.labelBen.setVisibility(View.VISIBLE);
+            }else{
+                holder.benText.setVisibility(View.GONE);
+                holder.labelBen.setVisibility(View.GONE);
+
+            }
+
+
+            if (comment != null && !comment.isEmpty()) {
+                holder.comText.setText(comment);
+                holder.comText.setVisibility(View.VISIBLE);
+                holder.labelCom.setVisibility(View.VISIBLE);
+            }else{
+                holder.comText.setVisibility(View.GONE);
+                holder.labelCom.setVisibility(View.GONE);
+
+            }
+
+
             Drawable logoDrawable = ((ParentActivity) (mContext)).getLogoDrawableByBankName(bankName);
             holder.logo.setImageDrawable(logoDrawable);
             holder.textBank.setText(WordUtils.capitalizeFully(bankName, delimiters));
             holder.separator.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
+
             if (holder.cancelBtn != null) {
                 holder.cancelBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
                 holder.cancelBtn.setTextColor(ContextCompat.getColor(mContext, R.color.white));
@@ -115,6 +175,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             }
         }
     }
+
 
     @Override
     public int getItemCount() {
@@ -144,9 +205,17 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         TextView emptyText;
         TextView dateText;
         TextView statusText;
-        TextView descriptionText;
         TextView quantityText;
         TextView checkIdText;
+        TextView labelBen;
+        TextView labelCom;
+        TextView benText;
+        TextView comText;
+
+        TextView labelStatus;
+        TextView labelMount;
+        TextView labelDate;
+
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -157,9 +226,18 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             emptyText = itemView.findViewById(R.id.textView_empty);
             dateText = itemView.findViewById(R.id.textView_date);
             statusText = itemView.findViewById(R.id.textView_status);
-            descriptionText = itemView.findViewById(R.id.textView_description);
             quantityText = itemView.findViewById(R.id.textView_quantity);
             checkIdText = itemView.findViewById(R.id.textView_folio);
+
+            labelDate = itemView.findViewById(R.id.textView_label_date);
+            labelStatus = itemView.findViewById(R.id.textView_label_status);
+            labelMount = itemView.findViewById(R.id.textView_label_mount);
+            labelBen = itemView.findViewById(R.id.textView_label_ben);
+            labelCom = itemView.findViewById(R.id.textView_label_com);
+            benText = itemView.findViewById(R.id.textView_ben);
+            comText = itemView.findViewById(R.id.textView_comment);
+
+
             itemView.setOnClickListener(this);
         }
 
@@ -194,7 +272,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
 
         TextView label = view.findViewById(R.id.textView_label);
         label.setText(label.getText().toString() + ": " + checkId);
-        Button yesBtn = view.findViewById(R.id.button_yes);
+        Button yesBtn = view.findViewById(R.id.button_read_qr);
         yesBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
         yesBtn.setOnClickListener(v -> {
             CheckController checkController = new CheckController(mContext);
@@ -219,7 +297,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             alertDialog.dismiss();
         });
 
-        Button noBtn = view.findViewById(R.id.button_no);
+        Button noBtn = view.findViewById(R.id.button_search_list);
         noBtn.setBackgroundColor(mContext.getColor(R.color.white));
         noBtn.setTextColor(((ParentActivity) mContext).getPrimaryColorInTheme());
         noBtn.setOnClickListener(v -> {

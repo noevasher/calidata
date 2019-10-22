@@ -47,6 +47,7 @@ public class ParentActivity extends AppCompatActivity {
     public SessionManager sessionManager;
     public static final int PICK_IMAGE = 10;
     public static final int EMIT_CODE = 20;
+    public static final int CANCEL_CODE = 30;
 
     private static CountDownTimer timer;
     private String token;
@@ -429,13 +430,13 @@ public class ParentActivity extends AppCompatActivity {
         CheckModel check = new CheckModel();
         String[] date = ((String) item.get("fecha")).split("T");
         String checkId = (String) item.get("iD_CheckID");
-        System.out.println("cheque: " + checkId);
         check.setCheckId(checkId);
         check.setDescription((String) item.get("description"));
         check.setQuantity((Double) item.get("monto"));
         check.setDate(date[0]);
         String status = (String) item.get("estatus");
-
+        System.out.println("cheque: " + checkId + " --> " + pickStatus(status));
+        //check.setStatus();
         check.setStatus(pickStatus(status));
         return check;
     }

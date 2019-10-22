@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,7 +30,6 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -196,7 +194,6 @@ public class RegisterActivity extends ParentActivity {
 
 
     private void loadBanks() {
-
         registerController.getBanks().subscribe(response -> {
             for (BankModel bank : response) {
                 Log.i("TAG", bank.getIdBank() + "--> " + bank.getNameBank());
