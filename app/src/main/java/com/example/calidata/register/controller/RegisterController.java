@@ -29,6 +29,9 @@ public class RegisterController extends ParentController {
 
     public Single<User> registerUserByBody(HashMap<String, Object> body) {
         return Single.create(emitter -> {
+            body.put("Cofig", generateMapData());
+            System.out.println("mapa register: " + body);
+
             Call<User> call = restClient.registerUserByBody(body);
             call.enqueue(new Callback<User>() {
                 @Override

@@ -1,6 +1,8 @@
 package com.example.calidata.register;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.calidata.OnSingleClickListener;
@@ -42,6 +45,7 @@ public class RegisterActivity extends ParentActivity {
     private boolean spinActive = false;
     private int attemps = 5;
 
+    private static final int LOCATION_CODE_REGISTER = 1001;
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -192,6 +196,18 @@ public class RegisterActivity extends ParentActivity {
         validEmptyFields();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    LOCATION_CODE_REGISTER);
+
+        } else {
+            saveLocationData();
+        }
+    }
 
     private void loadBanks() {
         registerController.getBanks().subscribe(response -> {
@@ -275,6 +291,27 @@ public class RegisterActivity extends ParentActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        if (requestCode == LOCATION_CODE_REGISTER) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                            LOCATION_CODE_REGISTER);
+                    //return;
+                }
+
+            } else {
+                Toast.makeText(this, getString(R.string.error_location_message), Toast.LENGTH_LONG).show();
+                finish();
+                LoginActivity.getInstance().finish();
+            }
+        }
     }
 
 

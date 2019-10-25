@@ -1,13 +1,18 @@
 package com.example.calidata.main;
 
 import android.content.Context;
+import android.os.Build;
+import android.os.StrictMode;
 import android.util.Log;
 
 import com.example.calidata.models.BankModel;
 import com.example.calidata.retrofit.JsonPlaceHolderApi;
 import com.example.calidata.retrofit.RetrofitManager;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -17,24 +22,27 @@ import retrofit2.Response;
 
 public class ParentController {
 
-
+    private static final int LOCATION_CODE = 1000;
     protected Context mContext;
     private RetrofitManager retrofitManager;
     protected JsonPlaceHolderApi restClient;
+    protected FusedLocationProviderClient mFusedLocationClient;
 
     public ParentController(Context context) {
         retrofitManager = RetrofitManager.getInstance();
         restClient = retrofitManager.getRetrofit().create(JsonPlaceHolderApi.class);
         mContext = context;
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(mContext);
+
     }
 
     public Single<List<BankModel>> getBanks() {
-
-
         return Single.create(emitter -> {
-            Call<List<BankModel>> call = restClient.getBanks();
-            //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("Config", generateMapData());
+            System.out.println("mapa getBank: " + body);
 
+            Call<List<BankModel>> call = restClient.getBanks(body);
             call.enqueue(new Callback<List<BankModel>>() {
                 @Override
                 public void onResponse(Call<List<BankModel>> call, Response<List<BankModel>> response) {
@@ -57,5 +65,43 @@ public class ParentController {
             });
         });
     }
+
+    public HashMap<String, Object> generateMapData() {
+        String model = Build.MANUFACTURER + " " + Build.MODEL;
+        String SO = Build.VERSION.RELEASE;
+        String version = Build.VERSION_CODES.class.getFields()[android.os.Build.VERSION.SDK_INT].getName();
+        HashMap<String, Object> dataSystem = new HashMap<>();
+        dataSystem.put("IP", getIP());
+        dataSystem.put("SO", SO);
+        dataSystem.put("Version", version);
+        dataSystem.put("Modelo", model);
+        dataSystem.put("geodatos", ParentActivity.getWayLatitude() + ", " + ParentActivity.getWayLongitude());
+        return dataSystem;
+    }
+
+    private String getIP() {
+
+        StrictMode.ThreadPolicy old = StrictMode.getThreadPolicy();
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder(old)
+                .permitDiskWrites()
+                .build());
+        StrictMode.setThreadPolicy(old);
+        //*/
+        //StrictMode.enableDefaults();
+        //WifiManager wm = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        //String localIP = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+
+        String publicIP = null;
+        try (java.util.Scanner s = new java.util.Scanner(new java.net.URL("https://api.ipify.org")
+                .openStream(), "UTF-8").useDelimiter("\\A")) {
+            publicIP = s.next();
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
+        return publicIP;
+
+
+    }
+
 
 }

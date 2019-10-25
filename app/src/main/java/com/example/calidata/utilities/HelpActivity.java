@@ -3,7 +3,6 @@ package com.example.calidata.utilities;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.calidata.R;
@@ -21,8 +20,14 @@ public class HelpActivity extends ParentActivity {
     public Toolbar toolbar;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        validLocationPermission();
         setContentView(R.layout.activity_help);
         ButterKnife.bind(this);
         title = (String) getIntent().getExtras().get("title");
@@ -30,11 +35,8 @@ public class HelpActivity extends ParentActivity {
         if (title != null) {
             setToolbar(toolbar, title, true);
         }
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
         ft.replace(R.id.list, new SettingFragment(fragment));
 /*
         switch (fragment) {

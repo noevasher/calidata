@@ -40,6 +40,13 @@ public class CheckCancelActivity extends ParentActivity {
     private RecyclerViewAdapterCheck adapter;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        validLocationPermission();
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         managerTheme = ManagerTheme.getInstance();

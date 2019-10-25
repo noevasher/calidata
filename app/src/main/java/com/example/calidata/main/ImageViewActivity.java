@@ -30,6 +30,12 @@ public class ImageViewActivity extends ParentActivity {
     public Integer userId;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        validLocationPermission();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_view);
@@ -37,17 +43,16 @@ public class ImageViewActivity extends ParentActivity {
         String image64 = sessionManager.getKeyImage64();
         userId = sessionManager.getUserId();
 
-        if(image64 == null ){
+        if (image64 == null) {
             UserController controller = new UserController(this);
             controller.getUserInformation(userId).subscribe(response -> {
                 String image64Response = response.getImage64();
                 putImage(image64Response, profile);
 
-            }, t ->{
+            }, t -> {
                 Toast.makeText(this, t.getMessage(), Toast.LENGTH_LONG).show();
             });
-        }
-        else{
+        } else {
             putImage(image64, profile);
         }
         close.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);

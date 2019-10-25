@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -115,9 +114,9 @@ public class SettingsActivity extends ParentActivity {
 
         userNameText.setText(userName);
         emailText.setText(email);
-        if(phone == null || phone.isEmpty()){
+        if (phone == null || phone.isEmpty()) {
             phoneText.setVisibility(View.GONE);
-        }else{
+        } else {
             phoneText.setText(phoneString + sessionManager.getKeyPhone());
         }
 
@@ -203,6 +202,7 @@ public class SettingsActivity extends ParentActivity {
     };
 
     private boolean activeBtn;
+
     private void changeUsername() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -268,12 +268,12 @@ public class SettingsActivity extends ParentActivity {
         });
 
         saveBtn.setOnClickListener(v -> {
-            if(activeBtn) {
+            if (activeBtn) {
                 String username = usernameText.getText().toString();
                 String phone = phoneText.getText().toString();
 
                 loadToSave(username, phone.trim(), null);
-            }else{
+            } else {
                 //listeners------
             }
             alertDialog.dismiss();
@@ -296,7 +296,7 @@ public class SettingsActivity extends ParentActivity {
                 body.put("image64", image64);
 
             userController.saveProfile(body).subscribe(response -> {
-                if(response.isSuccess()) {
+                if (response.isSuccess()) {
                     if (username != null && !username.isEmpty()) {
                         userNameText.setText(username);
                         sessionManager.saveProfileName(username);
@@ -310,7 +310,7 @@ public class SettingsActivity extends ParentActivity {
                         sessionManager.saveProfileImage(image64);
                         progressBar.setVisibility(View.GONE);
                     }
-                }else{
+                } else {
                     Toast.makeText(this, "Respuesta invalida", Toast.LENGTH_LONG).show();
                 }
             }, t -> {
@@ -324,6 +324,12 @@ public class SettingsActivity extends ParentActivity {
 
     private boolean newActive;
     private boolean oldActive;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        validLocationPermission();
+    }
 
     private void openDialogPassword() {
 
@@ -381,8 +387,8 @@ public class SettingsActivity extends ParentActivity {
                 if (text.isEmpty()) {
                     newPasswordText.setError(getString(R.string.error_empty_username));
                 } else {
-                        saveBtn.setEnabled(true);
-                        saveBtn.setBackgroundColor(SettingsActivity.this.getPrimaryColorInTheme());
+                    saveBtn.setEnabled(true);
+                    saveBtn.setBackgroundColor(SettingsActivity.this.getPrimaryColorInTheme());
 
                 }
             }
@@ -390,38 +396,38 @@ public class SettingsActivity extends ParentActivity {
 
         saveBtn.setOnClickListener(v -> {
             //if (newActive && oldActive) {
-                newPassword = newPasswordText.getText().toString();
-                oldPassword = oldPasswordText.getText().toString();
-                try {
-                    newPassword = AESCrypt.encrypt(newPasswordText.getText().toString());
-                    newPassword = newPassword
-                            .replace("\n", "")
-                            .replace("\r", "");
-                    oldPassword = AESCrypt.encrypt(oldPassword);
-                    oldPassword = oldPassword
-                            .replace("\n", "")
-                            .replace("\r", "");
-                } catch (Exception e) {
-                    e.printStackTrace();
+            newPassword = newPasswordText.getText().toString();
+            oldPassword = oldPasswordText.getText().toString();
+            try {
+                newPassword = AESCrypt.encrypt(newPasswordText.getText().toString());
+                newPassword = newPassword
+                        .replace("\n", "")
+                        .replace("\r", "");
+                oldPassword = AESCrypt.encrypt(oldPassword);
+                oldPassword = oldPassword
+                        .replace("\n", "")
+                        .replace("\r", "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("ID_Usuario", sessionManager.getUserId());
+            body.put("newPassword", newPassword);
+            body.put("oldPassword", oldPassword);
+
+            userController.changePassword(token, body).subscribe(response -> {
+                String message = response.getMessage();
+                if (message.equals("OK")) {
+                    Toast.makeText(SettingsActivity.this, R.string.success_change_password, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(SettingsActivity.this, message, Toast.LENGTH_LONG).show();
                 }
+            }, t -> {
+                Toast.makeText(SettingsActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
 
-                HashMap<String, Object> body = new HashMap<>();
-                body.put("ID_Usuario", sessionManager.getUserId());
-                body.put("newPassword", newPassword);
-                body.put("oldPassword", oldPassword);
-
-                userController.changePassword(token, body).subscribe(response -> {
-                    String message = response.getMessage();
-                    if (message.equals("OK")) {
-                        Toast.makeText(SettingsActivity.this, R.string.success_change_password, Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(SettingsActivity.this, message, Toast.LENGTH_LONG).show();
-                    }
-                }, t -> {
-                    Toast.makeText(SettingsActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-
-                });
-                alertDialog.dismiss();
+            });
+            alertDialog.dismiss();
             //}
         });
 

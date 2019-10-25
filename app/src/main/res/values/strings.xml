@@ -92,6 +92,7 @@
     <string name="option_cancel_check_label">Selecciona la opción para cancelar cheque</string>
     <string name="error_not_available_emit_check">El CheckId no es valido para liberarlo</string>
     <string name="error_not_available_cancel_check">El Cheque no está disponible para cancelación</string>
+    <string name="error_location_message">Permisos Denegados: Es necesario aceptar permisos para usar la aplicación</string>
 
 
     <!-- ERRORS -->

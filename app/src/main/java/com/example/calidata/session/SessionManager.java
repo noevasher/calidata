@@ -211,7 +211,7 @@ public class SessionManager {
         try {
             Integer id = pref.getInt(KEY_USER_ID, 0);
             return id;
-        }catch (Exception e){
+        } catch (Exception e) {
             logoutUser();
             return 0;
         }

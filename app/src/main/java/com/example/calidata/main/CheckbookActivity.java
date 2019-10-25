@@ -44,6 +44,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 @SuppressLint("CheckResult")
 public class CheckbookActivity extends ParentActivity {
 
+    private static final int LOCATION_CODE = 1111;
     @BindView(R.id.drawer)
     public DrawerLayout drawerLayout;
 
@@ -69,20 +70,24 @@ public class CheckbookActivity extends ParentActivity {
     private Integer userId;
     private TextView textName;
     private RecyclerView recyclerView;
+    private String status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         Intent intent = getIntent();
-        //setTheme(intent);
         setThemeByName(intent);
+        System.out.println("onCreate Checkbook");
+
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_checkbook);
         ButterKnife.bind(this);
         controller = new CheckbookController(this);
         String title = getResources().getString(R.string.checkbook_title);
         setToolbar(toolbar, title, false);
         userId = sessionManager.getUserId();
-
         initNavBar();
         checkbooksList = new ArrayList<>();
 
@@ -115,38 +120,61 @@ public class CheckbookActivity extends ParentActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("onDestroy Checkbook");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        System.out.println("onPause Checkbook");
+
+    }
+
+
     private void readCheckBooks() {
         if (userId != 0) {
             String token = sessionManager.getToken();
-            controller.getCheckbooks(token, userId).subscribe(response -> {
-                List<HashMap<String, Object>> data = response.getData();
-                for (HashMap<String, Object> checkbook : data) {
-                    CheckbookModel checkbookModel = new CheckbookModel();
-                    String checkbookId = (String) checkbook.get("iD_CheckID");
-                    Log.i("", checkbookId);
-                    checkbookModel.setCheckbookId(checkbookId);
-                    checkbookModel.setCheckId(checkbookId);
-                    checkbookModel.setTypeDoc("00");
-                    checkbooksList.add(checkbookModel);
-                }
-                adapter.notifyDataSetChanged();
-                progressBar.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
-                recyclerView.postDelayed(() -> {
-                    recyclerView.scrollToPosition(checkbooksList.size() - 1);
-                }, 500);
+            System.out.println("token" + token);
+            System.out.println("controller: " + controller);
+            System.out.println("userId: " + userId);
 
-            }, t -> {
-                if (t.getMessage().equals("Unauthorized")) {
-                    Toast.makeText(CheckbookActivity.this, getString(R.string.start_session), Toast.LENGTH_LONG).show();
-                    logout();
-                } else {
-                    Toast.makeText(CheckbookActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-                }
-                //logout();
+            if (controller != null) {
+                controller.getCheckbooks(token, userId).subscribe(response -> {
+                    List<HashMap<String, Object>> data = response.getData();
+                    for (HashMap<String, Object> checkbook : data) {
+                        CheckbookModel checkbookModel = new CheckbookModel();
+                        String checkbookId = (String) checkbook.get("iD_CheckID");
+                        Log.i("", checkbookId);
+                        checkbookModel.setCheckbookId(checkbookId);
+                        checkbookModel.setCheckId(checkbookId);
+                        checkbookModel.setTypeDoc("00");
+                        checkbooksList.add(checkbookModel);
+                    }
 
-            });
+                    adapter.notifyDataSetChanged();
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    recyclerView.postDelayed(() -> {
+                        recyclerView.scrollToPosition(checkbooksList.size() - 1);
+                    }, 500);
+
+                }, t -> {
+                    if (t.getMessage().equals("Unauthorized")) {
+                        Toast.makeText(CheckbookActivity.this, getString(R.string.start_session), Toast.LENGTH_LONG).show();
+                        logout();
+                    } else {
+                        Toast.makeText(CheckbookActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                    //logout();
+
+                });
+            }
+
         }
+
     }
 
     private void initNavBar() {
@@ -361,11 +389,13 @@ public class CheckbookActivity extends ParentActivity {
                             HashMap<String, Object> item = checkData.get(0);
                             CheckModel check = loadChecks(item);
                             if (response.getMessage().equals("OK") && check.getStatus() != null
-                                    && check.getStatus().equals("Activo")) {
+                                    && check.getStatus().equals("Activado")) {
                                 Intent intent = new Intent(CheckbookActivity.this,
                                         CheckEmitActivity.class);
                                 intent.putExtra("checkId", checkId);
-                                startActivity(intent);
+                                intent.putExtra("status", check.getStatus());
+
+                                CheckbookActivity.this.startActivity(intent);
                             } else {
                                 Toast.makeText(CheckbookActivity.this, getString(R.string.error_not_available_emit_check), Toast.LENGTH_LONG).show();
 
@@ -437,6 +467,8 @@ public class CheckbookActivity extends ParentActivity {
     @Override
     public void onResume() {
         super.onResume();
+        System.out.println("onResume Checkbook");
+
         if (SettingsActivity.imageObs != null) {
             SettingsActivity.imageObs.subscribe(response -> {
                 if (response != null) {
@@ -451,7 +483,8 @@ public class CheckbookActivity extends ParentActivity {
                 }
             });
         }
-
+        validLocationPermission();
     }
+
 
 }

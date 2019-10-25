@@ -60,6 +60,8 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         ManagerTheme managerTheme = ManagerTheme.getInstance();
         bankName = managerTheme.getBankName();
         sessionManager = SessionManager.getInstance(mContext);
+        if (bankName == null)
+            bankName = sessionManager.getBankName();
         controller = new CheckbookController(mContext);
     }
 

@@ -15,15 +15,14 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 public interface JsonPlaceHolderApi {
 
-    @GET("banco/listadoBanco")
-    Call<List<BankModel>> getBanks();
+    @POST("banco/listadoBanco")
+    Call<List<BankModel>> getBanks(@Body HashMap<String, Object> body);
 
     @Headers("Content-Type: application/json")
     @POST("cheque/AgregarChequera")
@@ -63,11 +62,11 @@ public interface JsonPlaceHolderApi {
     @POST("cheque/ConsultarEstatusCheckId")
     @Headers("Content-Type: application/json")
     Call<CheckArrayModel> getCheckById(@Header("Authorization") String token,
-                                     @Body HashMap<String, Object> body);
+                                       @Body HashMap<String, Object> body);
 
     //-----------SERVICIOS DE USUARIO----------------//
-    @GET("login/getProfileInfo")
-    Call<User> getUserInformation(@Header("idUsuario") Integer userId);
+    @POST("login/getProfileInfo")
+    Call<User> getUserInformation(@Header("idUsuario") Integer userId, @Body HashMap<String, Object> body);
 
     @POST("login/saveProfileInfo")
     Call<User> saveProfile(@Header("Authorization") String token,
@@ -96,20 +95,23 @@ public interface JsonPlaceHolderApi {
 
     //---------------SERVICIOS GENERALES-----------------//
 
-    @GET("Banco/getTermsConditions")
+    @POST("Banco/getTermsConditions")
     @Headers("Content-Type: application/json")
     Call<HashMap<String, Object>> getTermsConditions(@Header("Authorization") String token,
-                                                     @Header("bankId") Integer bankId);
+                                                     @Header("bankId") Integer bankId,
+                                                     @Body HashMap<String, Object> body);
 
-    @GET("Banco/getPrivacyTerms")
+    @POST("Banco/getPrivacyTerms")
     @Headers("Content-Type: application/json")
     Call<HashMap<String, Object>> getPrivacyTerms(@Header("Authorization") String token,
-                                                  @Header("bankId") Integer bankId);
+                                                  @Header("bankId") Integer bankId,
+                                                  @Body HashMap<String, Object> body);
 
-    @GET("Banco/getContactBank")
+    @POST("Banco/getContactBank")
     @Headers("Content-Type: application/json")
     Call<HashMap<String, Object>> getContactBank(@Header("Authorization") String token,
-                                                 @Header("bankId") Integer bankId);
+                                                 @Header("bankId") Integer bankId,
+                                                 @Body HashMap<String, Object> body);
 
 
 }

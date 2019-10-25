@@ -33,6 +33,8 @@ import com.example.calidata.R;
 import com.example.calidata.management.ManagerTheme;
 import com.example.calidata.models.CheckModel;
 import com.example.calidata.session.SessionManager;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -41,8 +43,11 @@ import java.util.Map;
 import static android.media.MediaRecorder.VideoSource.CAMERA;
 
 public class ParentActivity extends AppCompatActivity {
+    public static ParentActivity parentActivity;
+
     private static final int WORD_LENGTH = 6;
     private static final int PERMISSIONS_REQUEST_CAMERA = 555;
+    private static final int PERMISSIONS_LOCATION_CODE_CHECKBOOK = 1111;
     public ManagerTheme managerTheme;
     public SessionManager sessionManager;
     public static final int PICK_IMAGE = 10;
@@ -50,17 +55,22 @@ public class ParentActivity extends AppCompatActivity {
     public static final int CANCEL_CODE = 30;
 
     private static CountDownTimer timer;
-    private String token;
-    private static Integer TIME_EXPIRED_DEFAULT = 86400;
     private Integer TIME_EXPIRED;
     protected HashMap<String, Object> bankIds = new HashMap<>();
 
+    protected FusedLocationProviderClient mFusedLocationClient;
+    protected static double wayLatitude = 0.0, wayLongitude = 0.0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("onCreate Parent");
         super.onCreate(savedInstanceState);
+        parentActivity = this;
         managerTheme = ManagerTheme.getInstance();
         sessionManager = SessionManager.getInstance(getApplicationContext());
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         setTheme(managerTheme.getThemeId());
+
     }
 
     public static boolean isValidEmail(String target) {
@@ -155,6 +165,12 @@ public class ParentActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        System.out.println("onResume Parent");
+
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -178,10 +194,51 @@ public class ParentActivity extends AppCompatActivity {
                 }
                 return;
             }
+            case PERMISSIONS_LOCATION_CODE_CHECKBOOK: {
+                // If request is cancelled, the result arrays are empty.
+                logout();
+                /*
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    System.out.println("ACEPT");
+                    takePhotoFromCamera();
 
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    System.out.println("DENEGADO");
+
+                }
+                //*/
+
+            }
         }
     }
 
+    public void saveLocationData() {
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            return;
+        }
+        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+            if (location != null) {
+                setWayLatitude(location.getLatitude());
+                setWayLongitude(location.getLongitude());
+            }
+        });
+
+
+    }
 
     protected void showPictureDialog(ProgressBar progressbar, boolean activeGallery) {
         AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
@@ -275,7 +332,8 @@ public class ParentActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    protected void pickBankAndOpenCheckbookByName(String bankName, Integer bankId, String user, Integer userId) {
+    protected void pickBankAndOpenCheckbookByName(String bankName, Integer bankId, String
+            user, Integer userId) {
         Intent intent = new Intent(this, CheckbookActivity.class);
         bankName = bankName.toLowerCase();
         intent.putExtra("bankName", bankName);
@@ -286,6 +344,7 @@ public class ParentActivity extends AppCompatActivity {
 
     protected void initCountdown() {
         if (timer == null) {
+            Integer TIME_EXPIRED_DEFAULT = 86400;
             if (TIME_EXPIRED == null)
                 setExpireTime(TIME_EXPIRED_DEFAULT);
             timer = new CountDownTimer(TIME_EXPIRED, 1000) {
@@ -306,30 +365,41 @@ public class ParentActivity extends AppCompatActivity {
     }
 
     public Drawable getLogoDrawableByBankName(String bankName) {
-
-        switch (bankName) {
-            case "santander":
-                return ContextCompat.getDrawable(this, R.drawable.ic_santander_logo);
-            case "banamex":
-                return ContextCompat.getDrawable(this, R.drawable.ic_citibanamex_logo);
-            case "citibanamex":
-                return ContextCompat.getDrawable(this, R.drawable.ic_citibanamex_logo);
-            case "hsbc":
-                return ContextCompat.getDrawable(this, R.drawable.ic_hsbc_logo);
-            case "bancomer":
-                return ContextCompat.getDrawable(this, R.drawable.ic_bancomer_logo);
-            case "banbajio":
-                return ContextCompat.getDrawable(this, R.drawable.ic_banbajio_logo);
-            case "scotiabank":
-                return ContextCompat.getDrawable(this, R.drawable.ic_scotiabank_logo);
-            case "banorte":
-                return ContextCompat.getDrawable(this, R.drawable.ic_banorte_logo);
-            case "inbursa":
-                return ContextCompat.getDrawable(this, R.drawable.ic_inbursa_logo);
-            case "compartamos":
-                return ContextCompat.getDrawable(this, R.drawable.ic_compartamos_logo);
-            default:
-                return ContextCompat.getDrawable(this, R.drawable.ic_default_logo);
+        Log.i("PARENT", "bankName: " + bankName);
+        if (bankName != null) {
+            switch (bankName) {
+                case "santander":
+                    return ContextCompat.getDrawable(this, R.drawable.ic_santander_logo);
+                case "banamex":
+                    return ContextCompat.getDrawable(this, R.drawable.ic_citibanamex_logo);
+                case "citibanamex":
+                    return ContextCompat.getDrawable(this, R.drawable.ic_citibanamex_logo);
+                case "hsbc":
+                    return ContextCompat.getDrawable(this, R.drawable.ic_hsbc_logo);
+                case "bancomer":
+                    return ContextCompat.getDrawable(this, R.drawable.ic_bancomer_logo);
+                case "banbajio":
+                    return ContextCompat.getDrawable(this, R.drawable.ic_banbajio_logo);
+                case "scotiabank":
+                    return ContextCompat.getDrawable(this, R.drawable.ic_scotiabank_logo);
+                case "banorte":
+                    return ContextCompat.getDrawable(this, R.drawable.ic_banorte_logo);
+                case "inbursa":
+                    return ContextCompat.getDrawable(this, R.drawable.ic_inbursa_logo);
+                case "compartamos":
+                    return ContextCompat.getDrawable(this, R.drawable.ic_compartamos_logo);
+                default:
+                    return ContextCompat.getDrawable(this, R.drawable.ic_default_logo);
+            }
+        } else {
+            Log.e("Error", "bankName is null");
+            String bank = managerTheme.getBankName();
+            if (bank != null) {
+                Log.e("Error", "bankName is " + bank);
+                return getLogoDrawableByBankName(bank);
+            } else
+                return null;
+            //return  ContextCompat.getDrawable(this, R.drawable.ic_default_logo);
         }
     }
 
@@ -378,6 +448,7 @@ public class ParentActivity extends AppCompatActivity {
             Log.e("Error", "bankName is null");
             String bank = managerTheme.getBankName();
             if (bank != null) {
+                Log.e("Error", "bankName is " + bank);
                 intent.putExtra("bankName", bank);
                 setThemeByName(intent);
             }
@@ -397,10 +468,6 @@ public class ParentActivity extends AppCompatActivity {
 
     protected void setExpireTime(Integer expire) {
         this.TIME_EXPIRED = expire * 1000;
-    }
-
-    protected void setToken(String token) {
-        this.token = token;
     }
 
     protected String pickStatus(String status) {
@@ -433,6 +500,7 @@ public class ParentActivity extends AppCompatActivity {
         check.setCheckId(checkId);
         check.setDescription((String) item.get("description"));
         check.setQuantity((Double) item.get("monto"));
+        check.setBeneficiary((String) item.get("beneficiario"));
         check.setDate(date[0]);
         String status = (String) item.get("estatus");
         System.out.println("cheque: " + checkId + " --> " + pickStatus(status));
@@ -482,6 +550,33 @@ public class ParentActivity extends AppCompatActivity {
         String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
 
         return imgString;
+    }
+
+    public static double getWayLatitude() {
+        return wayLatitude;
+    }
+
+    public static void setWayLatitude(double wayLatitude) {
+        ParentActivity.wayLatitude = wayLatitude;
+    }
+
+    public static double getWayLongitude() {
+        return wayLongitude;
+    }
+
+    public static void setWayLongitude(double wayLongitude) {
+        ParentActivity.wayLongitude = wayLongitude;
+    }
+
+    protected void validLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            logout();
+        } else {
+            saveLocationData();
+        }
+
+
     }
 
 }

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,8 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
@@ -99,13 +96,16 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
     private Date endDate;
     Calendar calendar = Calendar.getInstance();
 
-    private boolean activeStartDate;
-    private boolean activeEndDate;
 
     @OnClick(R.id.constraintLayout_date_start)
     public void getStartDate() {
-        activeStartDate = true;
         configPicker(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        validLocationPermission();
     }
 
     @Override
@@ -356,22 +356,6 @@ public class FilterActivity extends ParentActivity implements AdapterView.OnItem
         if (endDate != null && startDate != null) {
             return endDate.getTime() >= startDate.getTime();
         } else return false;
-    }
-
-    public String formatDate(String target) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        //String dateInString = "07/06/2013";
-        try {
-
-            Date date = formatter.parse(target);
-            System.out.println(date);
-            System.out.println(formatter.format(date));
-            return formatter.format(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-
     }
 
 

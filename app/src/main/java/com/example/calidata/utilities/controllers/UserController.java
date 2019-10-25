@@ -23,6 +23,7 @@ public class UserController extends ParentController {
     public Single<User> saveProfile(HashMap<String, Object> body) {
         return Single.create(emitter -> {
             String token = SessionManager.getInstance(mContext).getToken();
+            body.put("Config", generateMapData());
             Call<User> call = restClient.saveProfile(token, body);
             //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
 
@@ -51,6 +52,8 @@ public class UserController extends ParentController {
     public Single<User> changePassword(String token, HashMap<String, Object> body) {
         return Single.create(emitter -> {
             Call<User> call = restClient.changePassword(token, body);
+            body.put("Config", generateMapData());
+
             //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
 
             call.enqueue(new Callback<User>() {
@@ -77,7 +80,9 @@ public class UserController extends ParentController {
 
     public Single<User> getUserInformation(Integer userId) {
         return Single.create(emitter -> {
-            Call<User> call = restClient.getUserInformation(userId);
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("Config", generateMapData());
+            Call<User> call = restClient.getUserInformation(userId, body);
             //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
 
             call.enqueue(new Callback<User>() {
@@ -113,6 +118,8 @@ public class UserController extends ParentController {
     public Single<String> forgotPassword(HashMap<String, Object> body) {
         return Single.create(emitter -> {
             Call<User> call = restClient.forgotPassword(body);
+            body.put("Config", generateMapData());
+
             //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
 
             call.enqueue(new Callback<User>() {

@@ -2,6 +2,7 @@ package com.example.calidata.activities.query;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -36,6 +37,7 @@ import butterknife.ButterKnife;
 @SuppressLint("CheckResult")
 public class CheckQueryActivity extends ParentActivity {
     private final static int FILTER_CODE = 222;
+    private final static int LOCATION_CODE_CHECK_QUERY = 1003;
     /*
     @BindView(R.id.imageView_back)
     public ImageView backImg;
@@ -67,7 +69,11 @@ public class CheckQueryActivity extends ParentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.out.println("onCreate CheckQueryActivity");
+
         managerTheme = ManagerTheme.getInstance();
+        System.out.println("managerTheme CheckQueryActivity: " + managerTheme.getThemeId());
+
         setTheme(managerTheme.getThemeId());
         setContentView(R.layout.activity_check_query);
         ButterKnife.bind(this);
@@ -99,19 +105,6 @@ public class CheckQueryActivity extends ParentActivity {
                 List<HashMap<String, Object>> data = response.getData();
                 for (HashMap<String, Object> item : data) {
                     CheckModel check = loadChecks(item);
-                    /*
-                    CheckModel check = new CheckModel();
-                    String[] date = ((String) item.get("fecha")).split("T");
-                    String checkId = (String) item.get("iD_CheckID");
-                    System.out.println("cheque: " + checkId);
-                    check.setCheckId(checkId);
-                    check.setDescription((String) item.get("description"));
-                    check.setQuantity((Double) item.get("monto"));
-                    check.setDate(date[0]);
-                    String status = (String) item.get("estatus");
-
-                    check.setStatus(pickStatus(status));
-                    //*/
                     adapter.addAndSort(check);
                 }
                 recyclerView.setVisibility(View.VISIBLE);
@@ -129,6 +122,26 @@ public class CheckQueryActivity extends ParentActivity {
             });
 
         }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        validLocationPermission();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        System.out.println("onPause CheckQueryActivity");
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("onDestroy CheckQueryActivity");
 
     }
 
@@ -236,6 +249,25 @@ public class CheckQueryActivity extends ParentActivity {
                 return "Bloqueado";
             default:
                 return "";
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        System.out.println("requestPermissions");
+        if (requestCode == LOCATION_CODE_CHECK_QUERY) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission was granted, yay! Do the
+                // contacts-related task you need to do.
+                return;
+            } else {
+                Toast.makeText(this, getString(R.string.error_location_message), Toast.LENGTH_LONG).show();
+                System.out.println("finish query");
+                finish();
+                //LoginActivity.getInstance().finish();
+            }
         }
     }
 }

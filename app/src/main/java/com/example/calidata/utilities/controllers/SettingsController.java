@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.calidata.main.ParentController;
-import com.example.calidata.models.User;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.HashMap;
@@ -22,7 +21,10 @@ public class SettingsController extends ParentController {
 
     public Single<String> getTermsConditions(String token, Integer bankId) {
         return Single.create(emitter -> {
-            Call<HashMap<String, Object>> call = restClient.getTermsConditions(token, bankId);
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("Config", generateMapData());
+
+            Call<HashMap<String, Object>> call = restClient.getTermsConditions(token, bankId, body);
             //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
 
             call.enqueue(new Callback<HashMap<String, Object>>() {
@@ -48,9 +50,12 @@ public class SettingsController extends ParentController {
         });
         //*/
     }
+
     public Single<String> getPrivacyTerms(String token, Integer bankId) {
         return Single.create(emitter -> {
-            Call<HashMap<String, Object>> call = restClient.getPrivacyTerms(token, bankId);
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("Config", generateMapData());
+            Call<HashMap<String, Object>> call = restClient.getPrivacyTerms(token, bankId, body);
             //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
 
             call.enqueue(new Callback<HashMap<String, Object>>() {
@@ -76,9 +81,13 @@ public class SettingsController extends ParentController {
         });
         //*/
     }
+
     public Single<String> getContactBank(String token, Integer bankId) {
         return Single.create(emitter -> {
-            Call<HashMap<String, Object>> call = restClient.getContactBank(token, bankId);
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("Config", generateMapData());
+
+            Call<HashMap<String, Object>> call = restClient.getContactBank(token, bankId, body);
             //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
 
             call.enqueue(new Callback<HashMap<String, Object>>() {

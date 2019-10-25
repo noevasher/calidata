@@ -105,7 +105,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
                 holder.statusText.setText(status);
                 holder.statusText.setVisibility(View.VISIBLE);
                 holder.labelStatus.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 holder.statusText.setVisibility(View.GONE);
                 holder.labelStatus.setVisibility(View.GONE);
             }
@@ -114,7 +114,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
                 holder.dateText.setText(date);
                 holder.dateText.setVisibility(View.VISIBLE);
                 holder.labelDate.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 holder.dateText.setVisibility(View.GONE);
                 holder.labelDate.setVisibility(View.GONE);
 
@@ -126,14 +126,14 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
                 holder.quantityText.setText("" + quantity);
                 holder.labelMount.setVisibility(View.VISIBLE);
                 holder.quantityText.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 holder.quantityText.setVisibility(View.GONE);
                 holder.labelMount.setVisibility(View.GONE);
             }
 
             if (!checkId.isEmpty()) {
                 holder.checkIdText.setText(checkId);
-            }else{
+            } else {
                 holder.checkIdText.setVisibility(View.GONE);
             }
 
@@ -142,7 +142,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
                 holder.benText.setText(beneficiary);
                 holder.benText.setVisibility(View.VISIBLE);
                 holder.labelBen.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 holder.benText.setVisibility(View.GONE);
                 holder.labelBen.setVisibility(View.GONE);
 
@@ -153,7 +153,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
                 holder.comText.setText(comment);
                 holder.comText.setVisibility(View.VISIBLE);
                 holder.labelCom.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 holder.comText.setVisibility(View.GONE);
                 holder.labelCom.setVisibility(View.GONE);
 

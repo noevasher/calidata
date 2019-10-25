@@ -20,11 +20,17 @@ class SettingFragment extends Fragment {
     private String token;
     private int fragmentInt;
     private SessionManager sessionManager;
-    public SettingFragment(int option) {
+
+    SettingFragment(int option) {
         this.fragmentInt = option;
-         sessionManager = SessionManager.getInstance(getContext());
+        sessionManager = SessionManager.getInstance(getContext());
 
     }
+
+    public SettingFragment() {
+
+    }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -34,13 +40,13 @@ class SettingFragment extends Fragment {
         token = sessionManager.getToken();
         Integer bankId = sessionManager.getBankId();
         //sessionManager.getBankId();
-        if(token != null) {
-            switch (fragmentInt){
+        if (token != null) {
+            switch (fragmentInt) {
                 case 0:
                     controller.getTermsConditions(token, bankId).subscribe(response -> {
                         termsText.setText(Html.fromHtml(response));
 
-                    }, t->{
+                    }, t -> {
                         Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
                     });
                     break;
@@ -48,7 +54,7 @@ class SettingFragment extends Fragment {
                     controller.getPrivacyTerms(token, bankId).subscribe(response -> {
                         termsText.setText(Html.fromHtml(response));
 
-                    }, t->{
+                    }, t -> {
                         Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
                     });
                     break;
@@ -56,7 +62,7 @@ class SettingFragment extends Fragment {
                     controller.getContactBank(token, bankId).subscribe(response -> {
                         termsText.setText(Html.fromHtml(response));
 
-                    }, t->{
+                    }, t -> {
                         Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
                     });
                     break;
@@ -65,5 +71,6 @@ class SettingFragment extends Fragment {
         }
         return view;
     }
+
 
 }

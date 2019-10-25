@@ -7,6 +7,7 @@ import com.example.calidata.main.ParentController;
 import com.example.calidata.models.LoginResponse;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import io.reactivex.Single;
 import retrofit2.Call;
@@ -25,9 +26,10 @@ public class LoginController extends ParentController {
     //public Single<LoginResponse> loadJson(String user, String password) {
     public Single<LoginResponse> authentication(String email, String password) {
         return Single.create(emitter -> {
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("Config", generateMapData());
+            System.out.println("mapa auth: " + body);
             Call<LoginResponse> call = restClient.authentication(email, password, GRANT_TYPE);
-            //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
-
             call.enqueue(new Callback<LoginResponse>() {
                 @Override
                 public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
@@ -45,8 +47,8 @@ public class LoginController extends ParentController {
                                 error = response.errorBody().string();
                                 error = error.replace("\"error\"", "")
                                         .replace(":", "")
-                                        .replace("{","")
-                                        .replace("}","");
+                                        .replace("{", "")
+                                        .replace("}", "");
                                 throwable = new Exception(error);
                             } catch (IOException e) {
                                 e.printStackTrace();

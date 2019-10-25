@@ -20,20 +20,16 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.calidata.OnSingleClickListener;
 import com.example.calidata.R;
-import com.example.calidata.activities.emit.fragments.FragmentQR;
 import com.example.calidata.main.ParentActivity;
 import com.example.calidata.main.controllers.CheckbookController;
 import com.example.calidata.management.ManagerTheme;
 
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.media.MediaRecorder.VideoSource.CAMERA;
 
@@ -74,11 +70,22 @@ public class CheckEmitActivity extends ParentActivity {
     @BindView(R.id.imageView_delete_photo)
     public ImageView deletePhotoImg;
 
+    @BindView(R.id.textView_status)
+    public TextView statusText;
+
     private Integer userId;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        validLocationPermission();
+
+    }
 
     private String checkId;
     private OnSingleClickListener clickListener;
     private String encodedImageData;
+    private String status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +109,7 @@ public class CheckEmitActivity extends ParentActivity {
                 if (indexPoint == -1)
                     return source;
 
-                int decimals = dend - (indexPoint+1);
+                int decimals = dend - (indexPoint + 1);
                 return decimals < 2 ? source : "";
             }
         }
@@ -112,7 +119,9 @@ public class CheckEmitActivity extends ParentActivity {
 
         setToolbar(toolbar, getResources().getString(R.string.emit_title), true);
         checkId = (String) getIntent().getExtras().get("checkId");
+        status = (String) getIntent().getExtras().get("status");
         checkIdText.setText(checkId);
+        statusText.setText(status);
         //initToolbar();
         emitBtn.setBackgroundColor(getPrimaryColorInTheme());
         emitBtn.setOnClickListener(new OnSingleClickListener() {
@@ -130,9 +139,9 @@ public class CheckEmitActivity extends ParentActivity {
                     String clientName = clientText.getText().toString();
 
                     //if(!descriptionS.isEmpty())
-                    body.put("Descripcion", descriptionS);
+                    body.put("descripcion", descriptionS);
                     //if(!clientName.isEmpty())
-                    body.put("Beneficiario", clientName);
+                    body.put("beneficiario", clientName);
 
 
                     controller.emitCheckId(token, body).subscribe(response -> {
@@ -140,11 +149,11 @@ public class CheckEmitActivity extends ParentActivity {
                         response.getData();
                         if (response.getSuccess() && response.getMessage().equals("OK")) {
                             Toast.makeText(CheckEmitActivity.this, "Cheque: "
-                                    + checkId + " " + getString(R.string.success_emit_check), Toast.LENGTH_LONG).show();
+                                    + getString(R.string.success_emit_check), Toast.LENGTH_LONG).show();
 
                         } else {
-                            Toast.makeText(CheckEmitActivity.this, "Cheque: " +
-                                    checkId + " " + getString(R.string.error_emit_check), Toast.LENGTH_LONG).show();
+                            Toast.makeText(CheckEmitActivity.this, "Cheque: "
+                                    + getString(R.string.error_emit_check), Toast.LENGTH_LONG).show();
                         }
                         finish();
 
@@ -157,7 +166,7 @@ public class CheckEmitActivity extends ParentActivity {
                             Toast.makeText(CheckEmitActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
-                }else{
+                } else {
                     displayEmptyField(mount);
                 }
 

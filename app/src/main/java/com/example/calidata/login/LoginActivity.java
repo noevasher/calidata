@@ -1,10 +1,12 @@
 package com.example.calidata.login;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.calidata.OnSingleClickListener;
@@ -65,11 +68,30 @@ public class LoginActivity extends ParentActivity {
     private static final int DEFAULT_BANK = 2;
     private String user;
     private String password;
+    private static final int LOCATION_CODE_LOGIN = 1000;
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    LOCATION_CODE_LOGIN);
+
+        } else {
+            saveLocationData();
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loginActivity = this;
+        //Necessary to getIP()
+        StrictMode.enableDefaults();
+
+        //requestLocationPermissions();
 
         //logout();
         if (managerTheme.getThemeId() != 0) {
@@ -132,7 +154,7 @@ public class LoginActivity extends ParentActivity {
                             LoginController loginController = new LoginController(getApplicationContext());
                             loginController.authentication(user, encryptPassword).subscribe(response -> {
                                 sessionManager.isLoggedIn();
-                                Integer bankId = response.getBankId() == null ? DEFAULT_BANK : response.getBankId();
+                                int bankId = response.getBankId() == null ? DEFAULT_BANK : response.getBankId();
                                 loginController.getBanks().subscribe(list -> {
                                     for (BankModel bank : list) {
                                         if (bank.getIdBank() == bankId) {
@@ -172,6 +194,7 @@ public class LoginActivity extends ParentActivity {
                 }
             });
 
+
         } else {
             Intent intent = new Intent(this, CheckbookActivity.class);
             int themeId = sessionManager.getTheme();
@@ -181,6 +204,7 @@ public class LoginActivity extends ParentActivity {
             managerTheme.setBankName(bankName);
             startActivity(intent);
             finish();
+
         }
     }
 
@@ -265,4 +289,29 @@ public class LoginActivity extends ParentActivity {
         });
         alertDialog.show();
     }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_CODE_LOGIN: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                                LOCATION_CODE_LOGIN);
+                        //return;
+                    }
+
+                } else {
+                    Toast.makeText(this, getString(R.string.error_location_message), Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            }
+        }
+    }
+
+
 }
