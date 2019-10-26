@@ -26,10 +26,16 @@ public class LoginController extends ParentController {
     //public Single<LoginResponse> loadJson(String user, String password) {
     public Single<LoginResponse> authentication(String email, String password) {
         return Single.create(emitter -> {
-            HashMap<String, Object> body = new HashMap<>();
-            body.put("Config", generateMapData());
-            System.out.println("mapa auth: " + body);
-            Call<LoginResponse> call = restClient.authentication(email, password, GRANT_TYPE);
+            HashMap<String, Object> config = generateMapData();
+            String ip = (String) config.get("IP");
+            String so = (String) config.get("SO");
+            String version = (String) config.get("Version");
+            String model = (String) config.get("Modelo");
+            String geoData = (String) config.get("geodatos");
+
+            Call<LoginResponse> call = restClient.authentication(email, password, ip, so, version,
+                    model, geoData, GRANT_TYPE);
+
             call.enqueue(new Callback<LoginResponse>() {
                 @Override
                 public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {

@@ -32,7 +32,6 @@ public class CheckbookController extends ParentController {
             HashMap<String, Object> body = new HashMap();
             body.put("idUsuario", userId);
             body.put("Config", generateMapData());
-            System.out.println("exito al generar mapa");
             try {
                 Call<CheckbookArrayModel> call = restClient.getCheckbookByUserId(token, body);
                 ((CheckbookActivity) mContext).progressBar.setVisibility(View.VISIBLE);

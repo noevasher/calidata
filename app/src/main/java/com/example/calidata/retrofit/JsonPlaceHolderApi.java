@@ -86,6 +86,11 @@ public interface JsonPlaceHolderApi {
     @POST("autenticacion")
     Call<LoginResponse> authentication(@Header("Usuario") String user,
                                        @Header("IdPass") String password,
+                                       @Header("IP") String ip,
+                                       @Header("SO") String so,
+                                       @Header("Version") String version,
+                                       @Header("Modelo") String model,
+                                       @Header("geodatos") String geoData,
                                        @Field("grant_type") String type);
 
     @POST("account/register")

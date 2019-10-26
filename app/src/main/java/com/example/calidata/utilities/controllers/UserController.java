@@ -51,10 +51,8 @@ public class UserController extends ParentController {
 
     public Single<User> changePassword(String token, HashMap<String, Object> body) {
         return Single.create(emitter -> {
-            Call<User> call = restClient.changePassword(token, body);
             body.put("Config", generateMapData());
-
-            //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
+            Call<User> call = restClient.changePassword(token, body);
 
             call.enqueue(new Callback<User>() {
                 @Override
@@ -117,8 +115,9 @@ public class UserController extends ParentController {
 
     public Single<String> forgotPassword(HashMap<String, Object> body) {
         return Single.create(emitter -> {
-            Call<User> call = restClient.forgotPassword(body);
             body.put("Config", generateMapData());
+
+            Call<User> call = restClient.forgotPassword(body);
 
             //Call<LoginResponse> call = restClient.authentication(user,password, GRANT_TYPE);
 

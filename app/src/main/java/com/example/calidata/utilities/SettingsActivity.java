@@ -133,9 +133,9 @@ public class SettingsActivity extends ParentActivity {
             });
         }
 
-        if (sessionManager.getKeyUsername() != null) {
-            userNameText.setText(sessionManager.getKeyUsername());
-        } else {
+        //if (sessionManager.getKeyUsername() != null) {
+          //  userNameText.setText(sessionManager.getKeyUsername());
+        //} else {
             UserController controller = new UserController(this);
             controller.getUserInformation(sessionManager.getUserId()).subscribe(response -> {
                 String username = response.getUserName();
@@ -150,7 +150,7 @@ public class SettingsActivity extends ParentActivity {
                 Toast.makeText(this, t.getMessage(), Toast.LENGTH_LONG).show();
             });
 
-        }
+//        }
 
         imageObs = Observable.create(emitter -> {
             String image64 = sessionManager.getKeyImage64();

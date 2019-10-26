@@ -2,7 +2,6 @@ package com.example.calidata.main;
 
 import android.content.Context;
 import android.os.Build;
-import android.os.StrictMode;
 import android.util.Log;
 
 import com.example.calidata.models.BankModel;
@@ -40,7 +39,6 @@ public class ParentController {
         return Single.create(emitter -> {
             HashMap<String, Object> body = new HashMap<>();
             body.put("Config", generateMapData());
-            System.out.println("mapa getBank: " + body);
 
             Call<List<BankModel>> call = restClient.getBanks(body);
             call.enqueue(new Callback<List<BankModel>>() {
@@ -66,31 +64,21 @@ public class ParentController {
         });
     }
 
-    public HashMap<String, Object> generateMapData() {
+    protected HashMap<String, Object> generateMapData() {
         String model = Build.MANUFACTURER + " " + Build.MODEL;
-        String SO = Build.VERSION.RELEASE;
-        String version = Build.VERSION_CODES.class.getFields()[android.os.Build.VERSION.SDK_INT].getName();
+        String version = Build.VERSION.RELEASE;
+        String SO = "Android " + Build.VERSION_CODES.class.getFields()[android.os.Build.VERSION.SDK_INT].getName();
         HashMap<String, Object> dataSystem = new HashMap<>();
         dataSystem.put("IP", getIP());
         dataSystem.put("SO", SO);
         dataSystem.put("Version", version);
         dataSystem.put("Modelo", model);
         dataSystem.put("geodatos", ParentActivity.getWayLatitude() + ", " + ParentActivity.getWayLongitude());
+
         return dataSystem;
     }
 
     private String getIP() {
-
-        StrictMode.ThreadPolicy old = StrictMode.getThreadPolicy();
-        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder(old)
-                .permitDiskWrites()
-                .build());
-        StrictMode.setThreadPolicy(old);
-        //*/
-        //StrictMode.enableDefaults();
-        //WifiManager wm = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        //String localIP = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-
         String publicIP = null;
         try (java.util.Scanner s = new java.util.Scanner(new java.net.URL("https://api.ipify.org")
                 .openStream(), "UTF-8").useDelimiter("\\A")) {
@@ -98,6 +86,7 @@ public class ParentController {
         } catch (java.io.IOException e) {
             e.printStackTrace();
         }
+
         return publicIP;
 
 

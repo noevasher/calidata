@@ -86,12 +86,12 @@ public class LoginActivity extends ParentActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        loginActivity = this;
         //Necessary to getIP()
         StrictMode.enableDefaults();
 
-        //requestLocationPermissions();
+        super.onCreate(savedInstanceState);
+        loginActivity = this;
+
 
         //logout();
         if (managerTheme.getThemeId() != 0) {
