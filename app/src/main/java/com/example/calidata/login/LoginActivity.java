@@ -86,8 +86,6 @@ public class LoginActivity extends ParentActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        //Necessary to getIP()
-        StrictMode.enableDefaults();
 
         super.onCreate(savedInstanceState);
         loginActivity = this;
@@ -160,10 +158,10 @@ public class LoginActivity extends ParentActivity {
                                         if (bank.getIdBank() == bankId) {
                                             Double userId = response.getUserId();
                                             setExpireTime(response.getExpiteIn());
-                                            User newUser = User.getInstance(response.getUserId(), user, bankId);
                                             pickBankAndOpenCheckbookByName(bank.getNameBank(), bankId, user, userId.intValue());
                                             sessionManager.setAccessToken(response.getTokenType()
                                                     + " " + response.getAccessToken());
+                                            setThemeByName(bank.getNameBank());// set myTheme -->
                                             finish();
                                             showLoginFailed(R.string.success_login);
                                             progressBar.setVisibility(View.GONE);

@@ -74,12 +74,10 @@ public class CheckbookActivity extends ParentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        Intent intent = getIntent();
-        setThemeByName(intent);
+        super.onCreate(savedInstanceState);
+        setThemeByName(bankName);
         System.out.println("onCreate Checkbook");
 
-        super.onCreate(savedInstanceState);
 
 
         setContentView(R.layout.activity_checkbook);

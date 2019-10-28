@@ -148,10 +148,12 @@ public class RegisterActivity extends ParentActivity {
                             loginController.authentication(email, encryptPassword).subscribe(loginResponse -> {
                                 sessionManager.setAccessToken(response.getTokenType()
                                         + " " + response.getAccessToken());
-
                                 pickBankAndOpenCheckbookByName(bankNameSpin, bankId, email,
                                         userId.intValue(), username, phone);
                                 progressBar.setVisibility(View.GONE);
+                                setThemeByName(bankName);// set myTheme -->
+                                sessionManager.setTheme(myTheme); //save theme
+
                                 LoginActivity.getInstance().finish();
                                 finish();
                                 Toast.makeText(RegisterActivity.this, R.string.success_login, Toast.LENGTH_LONG).show();

@@ -256,4 +256,9 @@ public class SessionManager {
         return pref.getInt(KEY_BANK_ID, 0);
 
     }
+
+    public void setTheme(int appThemeRed) {
+            editor.putInt(THEME_ID, appThemeRed);
+
+    }
 }

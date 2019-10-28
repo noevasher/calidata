@@ -99,7 +99,11 @@ public class SettingsActivity extends ParentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(managerTheme.getThemeId());
+        System.out.println("TEMA setting:" + sessionManager.getTheme());
+        if(managerTheme.getThemeId() == 0)
+            setTheme(sessionManager.getTheme());
+        else
+            setTheme(managerTheme.getThemeId());
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
         setToolbar(toolbar, "Settings", true);

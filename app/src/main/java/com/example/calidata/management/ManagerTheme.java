@@ -1,12 +1,14 @@
 package com.example.calidata.management;
 
+import com.example.calidata.session.SessionManager;
+
 public class ManagerTheme {
     private static ManagerTheme instance = null;
     private int themeId;
     private String bankName;
     private int firstTheme;
 
-    public ManagerTheme() {
+    private ManagerTheme() {
 
     }
 

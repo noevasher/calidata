@@ -10,6 +10,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.StrictMode;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -50,6 +51,8 @@ public class ParentActivity extends AppCompatActivity {
     private static final int PERMISSIONS_LOCATION_CODE_CHECKBOOK = 1111;
     public ManagerTheme managerTheme;
     public SessionManager sessionManager;
+    protected int myTheme;
+    protected String bankName;
     public static final int PICK_IMAGE = 10;
     public static final int EMIT_CODE = 20;
     public static final int CANCEL_CODE = 30;
@@ -62,14 +65,53 @@ public class ParentActivity extends AppCompatActivity {
     protected static double wayLatitude = 0.0, wayLongitude = 0.0;
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt("theme", myTheme);
+        savedInstanceState.putString("bank", bankName);
+        System.out.println("save instance: " + myTheme + " " + bankName);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // Restore UI state from the savedInstanceState.
+        // This bundle has also been passed to onCreate.
+        myTheme = savedInstanceState.getInt("theme");
+        bankName = savedInstanceState.getString("bank");
+        System.out.println("restore instance: " + myTheme + " " + bankName);
+
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("onCreate Parent");
-        super.onCreate(savedInstanceState);
-        parentActivity = this;
         managerTheme = ManagerTheme.getInstance();
         sessionManager = SessionManager.getInstance(getApplicationContext());
+        myTheme = managerTheme.getThemeId();
+        bankName = sessionManager.getBankName();
+        System.out.println("onCreate Parent instance: " + + myTheme + " " + bankName);
+        setThemeByName(bankName);
+
+        super.onCreate(savedInstanceState);
+        //Necessary to getIP()
+        StrictMode.enableDefaults();
+
+        parentActivity = this;
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        setTheme(managerTheme.getThemeId());
+
+        /*
+        if(managerTheme.getThemeId() == 0)
+            setTheme(sessionManager.getTheme());
+        else
+            setTheme(managerTheme.getThemeId());
+
+        //*/
+        myTheme = sessionManager.getTheme();
+        setTheme(sessionManager.getTheme());
+        bankName = sessionManager.getBankName();
+        System.out.println("TEMA " + myTheme);
 
     }
 
@@ -327,6 +369,7 @@ public class ParentActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CheckbookActivity.class);
         bankName = bankName.toLowerCase();
         intent.putExtra("bankName", bankName);
+
         //sessionManager.createLoginSession(user, bankName);
         sessionManager.createLoginSessionBank(user, bankId, bankName, userId, username, phone);
         startActivity(intent);
@@ -393,7 +436,7 @@ public class ParentActivity extends AppCompatActivity {
             }
         } else {
             Log.e("Error", "bankName is null");
-            String bank = managerTheme.getBankName();
+            String bank = sessionManager.getBankName();
             if (bank != null) {
                 Log.e("Error", "bankName is " + bank);
                 return getLogoDrawableByBankName(bank);
@@ -403,12 +446,11 @@ public class ParentActivity extends AppCompatActivity {
         }
     }
 
-
-    protected void setThemeByName(Intent intent) {
-        String bankName = intent.getStringExtra("bankName");
+    protected void setThemeByName(String bankName) {
         managerTheme = ManagerTheme.getInstance();
 
-        if (bankName != null) {
+        if (bankName != null && !bankName.isEmpty()) {
+            bankName = bankName.toLowerCase();
             managerTheme.setBankName(bankName);
             switch (bankName) {
                 case "santander":
@@ -417,8 +459,7 @@ public class ParentActivity extends AppCompatActivity {
                 case "banorte":
                 case "autofin":
                 case "bansefi":
-                    setTheme(R.style.AppThemeRed);
-                    managerTheme.setThemeId(R.style.AppThemeRed);
+                    myTheme = R.style.AppThemeRed;
                     break;
                 case "citibanamex":
                 case "banamex":
@@ -426,31 +467,31 @@ public class ParentActivity extends AppCompatActivity {
                 case "famsa":
                 case "bancoppel":
                 case "monex":
-                    setTheme(R.style.AppThemeBlue);
-                    managerTheme.setThemeId(R.style.AppThemeBlue);
+                    myTheme = R.style.AppThemeBlue;
                     break;
                 case "compartamos":
                 case "banbajio":
-                    setTheme(R.style.AppThemeBanbajio);
-                    managerTheme.setThemeId(R.style.AppThemeBanbajio);
+                    myTheme = R.style.AppThemeBanbajio;
                     break;
                 case "inbursa":
                 case "actinver":
-                    setTheme(R.style.AppThemeDarkBlue);
-                    managerTheme.setThemeId(R.style.AppThemeDarkBlue);
+                    myTheme = R.style.AppThemeDarkBlue;
                     break;
                 default:
-                    setTheme(R.style.AppThemeOther);
-                    managerTheme.setThemeId(R.style.AppThemeOther);
+                    myTheme = R.style.AppThemeOther;
                     break;
             }
+            setTheme(myTheme);
+            sessionManager.setTheme(myTheme);
+            managerTheme.setThemeId(myTheme);
+
         } else {
             Log.e("Error", "bankName is null");
-            String bank = managerTheme.getBankName();
+            String bank = sessionManager.getBankName();
             if (bank != null) {
+                bank = bank.toLowerCase();
                 Log.e("Error", "bankName is " + bank);
-                intent.putExtra("bankName", bank);
-                setThemeByName(intent);
+                setThemeByName(bank);
             }
         }
     }
@@ -578,5 +619,4 @@ public class ParentActivity extends AppCompatActivity {
 
 
     }
-
 }
