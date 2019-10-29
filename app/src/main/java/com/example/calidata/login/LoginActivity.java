@@ -231,6 +231,8 @@ public class LoginActivity extends ParentActivity {
 
         EditText password = view.findViewById(R.id.editText_username);
         password.setHint(getString(R.string.prompt_email));
+        EditText phoneText = view.findViewById(R.id.edittext_phone);
+        phoneText.setVisibility(View.GONE);
         Button sendBtn = view.findViewById(R.id.button_save);
         sendBtn.setText(getString(R.string.send_email));
         AlertDialog alertDialog = builder.create();

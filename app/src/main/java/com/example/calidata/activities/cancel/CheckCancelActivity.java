@@ -78,7 +78,7 @@ public class CheckCancelActivity extends ParentActivity {
                 List<HashMap<String, Object>> data = response.getData();
                 for (HashMap<String, Object> item : data) {
                     CheckModel check = loadChecks(item);
-                    if (check.getStatus().equals("Activado") || check.getStatus().equals("Liberado")) {
+                    if (check.getStatus().equals("Activado")) {
                         checks.add(check);
                     }
                 }
@@ -87,11 +87,13 @@ public class CheckCancelActivity extends ParentActivity {
                 adapter.notifyDataSetChanged();
             }, t -> {
                 if (t.getMessage().equals("Unauthorized")) {
-                    Toast.makeText(CheckCancelActivity.this, getString(R.string.start_session), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CheckCancelActivity.this,
+                            getString(R.string.start_session), Toast.LENGTH_LONG).show();
                     logout();
                 } else {
                     Log.e("", t.getMessage());
-                    Toast.makeText(CheckCancelActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CheckCancelActivity.this, t.getMessage(),
+                            Toast.LENGTH_LONG).show();
                 }
             });
         }

@@ -91,7 +91,8 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
 
         } else {
             String checkbookId = mData.get(position).getCheckId();
-            String checkbookIdCut = checkbookId.substring(0, checkbookId.length() - 9);
+            //String checkbookIdCut = checkbookId.substring(0, checkbookId.length() - 9);
+            String checkbookIdCut = checkbookId.substring(checkbookId.length() - 6);
 
             //Drawable logoDrawable = getLogoDrawable(themeId);
             Drawable logoDrawable = ((ParentActivity) (mContext)).getLogoDrawableByBankName(bankName);
@@ -100,7 +101,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
             String output = bankName.substring(0, 1).toUpperCase() + bankName.substring(1);
 
             holder.textBank.setText(output);
-            holder.textViewCheckNumber.setText(checkbookIdCut);
+            holder.textViewCheckNumber.setText("**" + checkbookIdCut);
             String finalCheckbookId = checkbookId;
             holder.itemView.setOnClickListener(new OnSingleClickListener() {
                 @Override
@@ -266,7 +267,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.cancel_dialog, null);
         TextView label = view.findViewById(R.id.textView_label);
         String checkId = this.checkbookId;
-        checkId = "****" + checkId.substring(checkId.length() - 15, checkId.length() - 9);
+        checkId = "**" + checkId.substring(checkId.length() - 6);
 
         label.setText(mContext.getResources().getString(R.string.checkbook_delete_label) + ": " + checkId);
         builder.setView(view);
@@ -327,7 +328,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
         ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.cancel_check_dialog, null);
 
         String checkId = this.checkbookId;
-        checkId = "****" + checkId.substring(checkId.length() - 15, checkId.length() - 9);
+        //checkId = "****" + checkId.substring(checkId.length() - 15, checkId.length() - 9);
 
         builder.setView(view);
 

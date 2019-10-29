@@ -99,7 +99,8 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             String checkId = model.getCheckId();
             String beneficiary = model.getBeneficiary();
 
-            checkId = "****" + checkId.substring(checkId.length() - 15, checkId.length() - 9);
+            String checkIdCut = "**" + checkId.substring(checkId.length() - 6);
+
 
             if (status != null && !status.isEmpty()) {
                 holder.statusText.setText(status);
@@ -132,7 +133,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             }
 
             if (!checkId.isEmpty()) {
-                holder.checkIdText.setText(checkId);
+                holder.checkIdText.setText(checkIdCut);
             } else {
                 holder.checkIdText.setVisibility(View.GONE);
             }
