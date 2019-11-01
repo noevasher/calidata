@@ -120,9 +120,9 @@ public class CheckEmitActivity extends ParentActivity {
         setToolbar(toolbar, getResources().getString(R.string.emit_title), true);
         checkId = (String) getIntent().getExtras().get("checkId");
         status = (String) getIntent().getExtras().get("status");
-        String checkbookIdCut = checkId.substring(checkId.length() - 6);
+        String checkIdCut = checkId.substring(checkId.length() - 6);
 
-        checkIdText.setText("**" + checkbookIdCut);
+        checkIdText.setText("**" + checkIdCut);
         statusText.setText(status);
         //initToolbar();
         emitBtn.setBackgroundColor(getPrimaryColorInTheme());

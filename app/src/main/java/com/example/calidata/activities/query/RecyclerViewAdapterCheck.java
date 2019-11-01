@@ -95,11 +95,12 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             String date = model.getDate();
             String comment = model.getDescription();
             Double quantity = model.getQuantity();
-            String originalCheckId = model.getCheckId();
             String checkId = model.getCheckId();
+            String checkIdCut = model.getCheckIdCut();
+
             String beneficiary = model.getBeneficiary();
 
-            String checkIdCut = "**" + checkId.substring(checkId.length() - 6);
+            //String checkIdCut = "**" + checkId.substring(checkId.length() - 6);
 
 
             if (status != null && !status.isEmpty()) {
@@ -169,9 +170,8 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             if (holder.cancelBtn != null) {
                 holder.cancelBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
                 holder.cancelBtn.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-                String finalCheckId = originalCheckId;
                 holder.cancelBtn.setOnClickListener(v -> {
-                    openDialogToDelete(finalCheckId, position);
+                    openDialogToDelete(checkId, checkIdCut, position);
                 });
             }
         }
@@ -263,7 +263,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         void onItemClick(View view, int position);
     }
 
-    private void openDialogToDelete(String checkId, int position) {
+    private void openDialogToDelete(String checkId, String checkIdCut, int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = ((ParentActivity) mContext).getLayoutInflater();
         ConstraintLayout view = (ConstraintLayout) inflater.inflate(R.layout.cancel_dialog, null);
@@ -272,7 +272,7 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
         AlertDialog alertDialog = builder.create();
 
         TextView label = view.findViewById(R.id.textView_label);
-        label.setText(label.getText().toString() + ": " + checkId);
+        label.setText(label.getText().toString() + ": " + checkIdCut);
         Button yesBtn = view.findViewById(R.id.button_read_qr);
         yesBtn.setBackgroundColor(((ParentActivity) mContext).getPrimaryColorInTheme());
         yesBtn.setOnClickListener(v -> {

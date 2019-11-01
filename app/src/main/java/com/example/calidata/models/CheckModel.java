@@ -14,6 +14,8 @@ public class CheckModel {
     @SerializedName("iD_CheckID")
     private String checkId;
 
+    private String checkIdCut;
+
     @SerializedName("estatus")
     private String status;
 
@@ -117,5 +119,13 @@ public class CheckModel {
 
     public void setBeneficiary(String beneficiary) {
         this.beneficiary = beneficiary;
+    }
+
+    public String getCheckIdCut() {
+        return checkIdCut;
+    }
+
+    public void setCheckIdCut(String checkIdCut) {
+        this.checkIdCut = checkIdCut;
     }
 }

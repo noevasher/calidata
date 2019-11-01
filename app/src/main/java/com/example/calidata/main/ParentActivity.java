@@ -538,9 +538,11 @@ public class ParentActivity extends AppCompatActivity {
         CheckModel check = new CheckModel();
         String[] date = ((String) item.get("fecha")).split("T");
         String checkId = (String) item.get("iD_CheckID");
-        String checkIdCut = checkId.substring(checkId.length() - 6);
+        String checkIdCut = "**" + checkId.substring(checkId.length() - 6);
 
-        check.setCheckId("**" + checkIdCut);
+        check.setCheckId(checkId);
+        check.setCheckIdCut(checkIdCut);
+
         check.setDescription((String) item.get("description"));
         check.setQuantity((Double) item.get("monto"));
         check.setBeneficiary((String) item.get("beneficiario"));
