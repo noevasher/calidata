@@ -95,8 +95,8 @@ public class RecyclerViewAdapterCheck extends RecyclerView.Adapter<RecyclerViewA
             String date = model.getDate();
             String comment = model.getDescription();
             Double quantity = model.getQuantity();
-            String checkId = model.getCheckId();
-            String checkIdCut = model.getCheckIdCut();
+            final String checkId = model.getCheckId();
+            final String checkIdCut = model.getCheckIdCut();
 
             String beneficiary = model.getBeneficiary();
 

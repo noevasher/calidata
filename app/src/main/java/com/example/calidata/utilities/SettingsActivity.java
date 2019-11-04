@@ -99,14 +99,13 @@ public class SettingsActivity extends ParentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("TEMA setting:" + sessionManager.getTheme());
         if(managerTheme.getThemeId() == 0)
             setTheme(sessionManager.getTheme());
         else
             setTheme(managerTheme.getThemeId());
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
-        setToolbar(toolbar, "Settings", true);
+        setToolbar(toolbar, getString(R.string.profile_title), true);
         userController = new UserController(this);
         constraintImage.setBackgroundColor(getPrimarySoftColorInTheme());
         //scrollview.setBackgroundColor(getPrimarySoftColorInTheme());

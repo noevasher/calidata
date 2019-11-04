@@ -145,7 +145,7 @@ public class CheckbookActivity extends ParentActivity {
                     for (HashMap<String, Object> checkbook : data) {
                         CheckbookModel checkbookModel = new CheckbookModel();
                         String checkbookId = (String) checkbook.get("iD_CheckID");
-                        Log.i("", checkbookId);
+                        System.out.println( checkbookId);
                         checkbookModel.setCheckbookId(checkbookId);
                         checkbookModel.setCheckId(checkbookId);
                         checkbookModel.setTypeDoc("00");

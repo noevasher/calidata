@@ -287,7 +287,7 @@ public class RecyclerViewAdapterCheckbook extends RecyclerView.Adapter<RecyclerV
                 controller.cancelCheckbook(token, body).subscribe(response -> {
                     if (response.getSuccess() && response.getMessage().equals("OK")) {
                         Toast.makeText(mContext, "Chequera: "
-                                + finalCheckId + " " + mContext.getString(R.string.success_emit_check), Toast.LENGTH_LONG).show();
+                                + finalCheckId + " " + mContext.getString(R.string.success_cancel_checkbook), Toast.LENGTH_LONG).show();
                         removeItem(position);
                     } else {
                         Toast.makeText(mContext, "Cheque: " +
