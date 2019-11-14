@@ -394,7 +394,11 @@ public class CheckbookActivity extends ParentActivity {
                                 intent.putExtra("status", check.getStatus());
 
                                 CheckbookActivity.this.startActivity(intent);
-                            } else {
+                            } else if(check.getStatus() != null
+                                    && check.getStatus().equals("Liberado")){
+                                Toast.makeText(CheckbookActivity.this, getString(R.string.error_emit_check_previously), Toast.LENGTH_LONG).show();
+
+                            } else{
                                 Toast.makeText(CheckbookActivity.this, getString(R.string.error_not_available_emit_check), Toast.LENGTH_LONG).show();
 
                             }
