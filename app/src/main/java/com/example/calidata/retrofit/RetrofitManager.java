@@ -14,7 +14,8 @@ public class RetrofitManager {
     //  private static final String BASE_URL = "http://servicekeycheckcalidata.azurewebsites.net/api/";
     //private static final String BASE_URL = "https://servicerestkeycheck20190827085849.azurewebsites.net/api/";
     //private static final String BASE_URL = "https://webapicalidata.azurewebsites.net/api/";
-    private static final String BASE_URL = "https://201.148.81.195:50918/";
+    //private static final String BASE_URL = "https://201.148.81.195:9091/api/";
+    private static final String BASE_URL = "https://keycheck.mx:9091/api/";
 
     private Retrofit retrofit;
 

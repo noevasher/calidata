@@ -6,6 +6,6 @@
         </trust-anchors>
     </base-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">https://201.148.81.195:50918/</domain>
+        <domain includeSubdomains="true">https://keycheck.mx:9091/</domain>
     </domain-config>
 </network-security-config>
